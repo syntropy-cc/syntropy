@@ -5,8 +5,77 @@ import type React from "react"
 import { useRef } from "react"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Users, FlaskConical, Check, ChevronDown } from "lucide-react"
+import { BookOpen, Users, FlaskConical, Check } from "lucide-react"
 import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+
+// Portfolio Preview Component
+function PortfolioPreview() {
+  return (
+    <div className="relative w-80 h-96 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+      {/* Header */}
+      <div className="p-4 border-b border-slate-700">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+            JS
+          </div>
+          <div>
+            <h3 className="text-white font-semibold">João Silva</h3>
+            <p className="text-slate-400 text-sm">Desenvolvedor Full Stack</p>
+          </div>
+        </div>
+
+        {/* Tech Stack */}
+        <div className="flex gap-2 mt-3">
+          <Badge className="bg-blue-600 text-white">React</Badge>
+          <Badge className="bg-green-600 text-white">Node.js</Badge>
+          <Badge className="bg-purple-600 text-white">Python</Badge>
+        </div>
+      </div>
+
+      {/* Projects */}
+      <div className="p-4 space-y-3">
+        <div className="bg-slate-700/50 rounded-lg p-3">
+          <div className="flex justify-between items-center">
+            <div>
+              <h4 className="text-white font-medium">Sistema de E-commerce</h4>
+              <p className="text-slate-400 text-sm">React + Node.js</p>
+            </div>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          </div>
+        </div>
+
+        <div className="bg-slate-700/50 rounded-lg p-3">
+          <div className="flex justify-between items-center">
+            <div>
+              <h4 className="text-white font-medium">API de Gestão</h4>
+              <p className="text-slate-400 text-sm">Python + FastAPI</p>
+            </div>
+            <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="absolute bottom-4 left-4 right-4">
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div className="text-blue-400 font-bold text-lg">12</div>
+            <div className="text-slate-400 text-xs">Projetos</div>
+          </div>
+          <div>
+            <div className="text-green-400 font-bold text-lg">156</div>
+            <div className="text-slate-400 text-xs">Commits</div>
+          </div>
+          <div>
+            <div className="text-purple-400 font-bold text-lg">8</div>
+            <div className="text-slate-400 text-xs">Cursos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // 3D Laptop Component
 function Laptop3D() {
@@ -222,15 +291,6 @@ export default function HomePage() {
               </motion.button>
             ))}
           </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          >
-            <ChevronDown className="h-8 w-8 text-blue-400" />
-          </motion.div>
         </div>
       </motion.section>
 
@@ -339,6 +399,47 @@ export default function HomePage() {
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
                 <Link href="/labs">Conhecer Labs</Link>
               </Button>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Portfolio Section */}
+      <AnimatedSection id="portfolio">
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">Seu currículo vivo no ecossistema Syntropy</h2>
+              <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                Cada curso concluído, projeto desenvolvido e experimento em labs se integra automaticamente ao seu
+                portfólio dinâmico. Aprenda, construa, pesquise e veja seu currículo evoluir em tempo real dentro do
+                ecossistema Syntropy.
+              </p>
+              <div className="space-y-4 mb-8">
+                {[
+                  "Cursos e certificações verificáveis",
+                  "Projetos com deploy automático",
+                  "Contribuições em labs experimentais",
+                  "Histórico completo de atividades",
+                ].map((item, index) => (
+                  <motion.div
+                    key={item}
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                  >
+                    <Check className="h-5 w-5 text-blue-400" />
+                    <span className="text-white/80">{item}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                <Link href="/auth?mode=signup">Criar meu portfólio</Link>
+              </Button>
+            </div>
+            <div className="flex justify-center">
+              <PortfolioPreview />
             </div>
           </div>
         </div>
