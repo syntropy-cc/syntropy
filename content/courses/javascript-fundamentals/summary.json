@@ -1,0 +1,65 @@
+{
+  "id": "js-fundamentals",
+  "title": "JavaScript Fundamentals",
+  "slug": "javascript-fundamentals",
+  "description": "Master the core concepts of JavaScript programming language. Learn variables, functions, objects, and modern ES6+ features through hands-on exercises.",
+  "author": {
+    "name": "Sarah Johnson",
+    "avatar": "/placeholder.svg?height=40&width=40",
+    "bio": "Senior Frontend Developer with 8+ years of experience"
+  },
+  "level": "beginner",
+  "duration": 12,
+  "tags": ["JavaScript", "Programming", "Web Development", "ES6"],
+  "chapters": [
+    {
+      "id": "intro",
+      "title": "Introduction to JavaScript",
+      "slug": "introduction",
+      "description": "Learn what JavaScript is and why it's important",
+      "duration": 30,
+      "completed": false,
+      "locked": false
+    },
+    {
+      "id": "variables",
+      "title": "Variables and Data Types",
+      "slug": "variables-data-types",
+      "description": "Understanding different data types and variable declarations",
+      "duration": 45,
+      "completed": false,
+      "locked": false
+    },
+    {
+      "id": "functions",
+      "title": "Functions and Scope",
+      "slug": "functions-scope",
+      "description": "Creating and using functions, understanding scope",
+      "duration": 60,
+      "completed": false,
+      "locked": true
+    },
+    {
+      "id": "objects",
+      "title": "Objects and Arrays",
+      "slug": "objects-arrays",
+      "description": "Working with complex data structures",
+      "duration": 50,
+      "completed": false,
+      "locked": true
+    },
+    {
+      "id": "dom",
+      "title": "DOM Manipulation",
+      "slug": "dom-manipulation",
+      "description": "Interacting with web pages using JavaScript",
+      "duration": 40,
+      "completed": false,
+      "locked": true
+    }
+  ],
+  "thumbnail": "/placeholder.svg?height=200&width=400",
+  "published": true,
+  "createdAt": "2024-01-15T00:00:00Z",
+  "updatedAt": "2024-01-20T00:00:00Z"
+}

@@ -1,0 +1,56 @@
+{
+  "id": "nextjs-advanced",
+  "title": "Next.js Advanced Concepts",
+  "slug": "nextjs-advanced",
+  "description": "Master advanced Next.js features including App Router, Server Components, streaming, and performance optimization techniques.",
+  "author": {
+    "name": "Alex Rodriguez",
+    "avatar": "/placeholder.svg?height=40&width=40",
+    "bio": "Full-stack developer and Next.js expert"
+  },
+  "level": "advanced",
+  "duration": 20,
+  "tags": ["Next.js", "React", "SSR", "Performance", "App Router"],
+  "chapters": [
+    {
+      "id": "app-router",
+      "title": "App Router Deep Dive",
+      "slug": "app-router-deep-dive",
+      "description": "Understanding the new App Router architecture",
+      "duration": 45,
+      "completed": false,
+      "locked": false
+    },
+    {
+      "id": "server-components",
+      "title": "Server Components",
+      "slug": "server-components",
+      "description": "Leveraging React Server Components in Next.js",
+      "duration": 55,
+      "completed": false,
+      "locked": false
+    },
+    {
+      "id": "streaming",
+      "title": "Streaming and Suspense",
+      "slug": "streaming-suspense",
+      "description": "Implementing streaming for better UX",
+      "duration": 40,
+      "completed": false,
+      "locked": true
+    },
+    {
+      "id": "caching",
+      "title": "Advanced Caching Strategies",
+      "slug": "caching-strategies",
+      "description": "Optimizing performance with smart caching",
+      "duration": 50,
+      "completed": false,
+      "locked": true
+    }
+  ],
+  "thumbnail": "/placeholder.svg?height=200&width=400",
+  "published": true,
+  "createdAt": "2024-02-01T00:00:00Z",
+  "updatedAt": "2024-02-05T00:00:00Z"
+}
