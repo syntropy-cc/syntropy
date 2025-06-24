@@ -1,0 +1,142 @@
+# Purpose
+
+Guide Cursor in scaffolding, refactoring and extending full‑stack web applications that use **Next.js 14**, **TypeScript**, **TailwindCSS** and **Supabase**. Rules below are *authoritative*; Cursor must follow them strictly.
+
+---
+
+# Stack
+
+* Always use the **latest stable** versions of Next.js 14, Supabase JS client, TailwindCSS and TypeScript.
+* Package manager: **pnpm**.
+
+---
+
+# Naming
+
+* **File & directory names:** `kebab-case`. Examples:
+
+  * Component file: `course-card.tsx`
+  * Hook file: `use-courses.ts`
+* **Default exports:** `PascalCase` that matches the feature (`CourseCard`).
+* **Route groups / segments:** use parentheses when grouping (e.g. `/app/(marketing)/pricing/page.tsx`).
+
+---
+
+# Coding‑style
+
+* Prioritise **readability** over micro‑optimisations.
+* No TODOs, placeholders or incomplete code.
+* Use **semantic HTML** and add meaningful `aria-*` attributes for interactive elements.
+* All forms must have associated `<label>` elements; headings must keep hierarchical order.
+
+---
+
+# React Server Components (RSC) vs Client Components
+
+* Default to **Server Components**.
+* Add `"use client"` **only** when browser‑only APIs, imperative DOM handlers or React context that requires hydration are needed.
+* Isolate side‑effects into dedicated client hooks (`use-hydrated-*.ts`).
+
+---
+
+# Data Fetching
+
+* Leverage **Next.js Route Handlers**, `fetch` with proper caching headers and streaming where appropriate.
+* Every data‑fetching component **must implement** loading (`<Skeleton />` or `<Spinner />`) and error fallbacks.
+
+---
+
+# Supabase
+
+* Provide typed wrappers:
+
+  * **Server:** `/lib/supabase/server.ts`
+  * **Client:** `/lib/supabase/client.ts`
+* **Row Level Security** is always enabled; never call `service_role` keys from the browser.
+* Generate DB types via Supabase CLI and re‑export from `@/types/supabase.ts`.
+
+---
+
+# Error Handling & Logging
+
+* Wrap async logic in `try/catch` blocks.
+* Log server‑side errors with `console.error` **and** (if installed) Sentry/LogRocket.
+* Display user‑friendly messages; never expose stack traces in the UI.
+
+---
+
+# Loading & Error States
+
+* Central components:
+
+  * `/components/ui/spinner.tsx`
+  * `/components/ui/error-boundary.tsx`
+* Pages must be wrapped in `<ErrorBoundary>` where hydration is required.
+
+---
+
+# Security
+
+* Never commit secrets. Provide `.env.example`.
+* Validate & sanitise all user input with **zod** before sending to Supabase.
+
+---
+
+# Testing & CI
+
+* **Unit tests:** Vitest + Testing Library React.
+* **E2E:** Playwright.
+* **Lint:** ESLint (`next/core-web-vitals`) + Prettier.
+* **CI:** GitHub Actions workflow at `/.github/workflows/ci.yml` that runs:
+
+  1. `pnpm lint`
+  2. `pnpm typecheck`
+  3. `pnpm test`
+
+---
+
+# Cursor Response Format
+
+* Output **complete code blocks only**; outside code blocks keep prose ≤ 3 lines.
+* Prefix each file with its relative path like:
+
+  ```
+  /src/app/page.tsx
+  ------------------
+  ```
+* Use ⚠️ to highlight critical warnings (e.g. destructive migrations).
+* If an answer is uncertain or unknown, *state that clearly*.
+
+---
+
+# Example Snippet
+
+*Expect Cursor to match this style.*
+
+```
+/src/app/(learn)/courses/page.tsx
+------------------------------------------------
+import { getCourses } from '@/lib/supabase/server';
+import CourseCard from '@/components/course-card';
+
+export default async function CoursesPage() {
+  const courses = await getCourses();
+
+  if (!courses.length) {
+    return (
+      <p className="text-muted-foreground">
+        No courses found.
+      </p>
+    );
+  }
+
+  return (
+    <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {courses.map(course => (
+        <CourseCard key={course.id} course={course} />
+      ))}
+    </section>
+  );
+}
+------------------------------------------------
+```
