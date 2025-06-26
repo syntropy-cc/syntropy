@@ -105,10 +105,10 @@ Guide Cursor in scaffolding, refactoring and extending full‑stack web applicat
 * Output **complete code blocks only**; outside code blocks keep prose ≤ 3 lines.
 * Prefix each file with its relative path like:
 
-  ```
+  \`\`\`
   /src/app/page.tsx
   ------------------
-  ```
+  \`\`\`
 * Use ⚠️ to highlight critical warnings (e.g. destructive migrations).
 * If an answer is uncertain or unknown, *state that clearly*.
 
@@ -118,7 +118,7 @@ Guide Cursor in scaffolding, refactoring and extending full‑stack web applicat
 
 *Expect Cursor to match this style.*
 
-```
+\`\`\`
 /src/app/(learn)/courses/page.tsx
 ------------------------------------------------
 import { getCourses } from '@/lib/supabase/server';
@@ -144,4 +144,4 @@ export default async function CoursesPage() {
   );
 }
 ------------------------------------------------
-```
+\`\`\`
