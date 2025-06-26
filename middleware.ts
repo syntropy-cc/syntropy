@@ -1,13 +1,12 @@
-import { createMiddlewareClient } from "@/lib/supabase"
-import type { NextRequest } from "next/server"
+import { getSupabaseReqResClient } from "@/lib/supabase"
+import { NextRequest } from "next/server"
 
-export async function middleware(request: NextRequest) {
-  const { supabase, response } = createMiddlewareClient(request)
+export async function middleware(req: NextRequest) {
+  const { supabase, response } = getSupabaseReqResClient(req)
 
-  // Refresh session if expired - required for Server Components
-  await supabase.auth.getSession()
+  // … sua lógica (ex.: proteger rotas) usando supabase …
 
-  return response
+  return response          // devolve a mesma instância já com os cookies certos
 }
 
 export const config = {
