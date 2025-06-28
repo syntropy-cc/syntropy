@@ -1,0 +1,104 @@
+/* components/myst/code/prism-syntropy.css */
+
+.code-container code[class*="language-"] {
+  background: none !important;
+  color: #f8fafc;
+  font-family: 'Fira Mono', 'JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 1em;
+  line-height: 1.7;
+}
+
+/* Comentários */
+.code-container .token.comment,
+.code-container .token.prolog,
+.code-container .token.doctype,
+.code-container .token.cdata {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Pontuação */
+.code-container .token.punctuation {
+  color: #e5e7eb;
+}
+
+/* Propriedades, tags, constantes, símbolos, deleted */
+.code-container .token.property,
+.code-container .token.tag,
+.code-container .token.constant,
+.code-container .token.symbol,
+.code-container .token.deleted {
+  color: #f472b6;
+}
+
+/* Booleanos, números */
+.code-container .token.boolean,
+.code-container .token.number {
+  color: #fbbf24;
+}
+
+/* Strings, seletores, atributos, builtin, inserted */
+.code-container .token.selector,
+.code-container .token.attr-name,
+.code-container .token.string,
+.code-container .token.char,
+.code-container .token.builtin,
+.code-container .token.inserted {
+  color: #34d399;
+}
+
+/* Operadores, entidades, URLs */
+.code-container .token.operator,
+.code-container .token.entity,
+.code-container .token.url {
+  color: #a5b4fc;
+}
+
+/* At-rules, valores de atributo, keywords */
+.code-container .token.atrule,
+.code-container .token.attr-value,
+.code-container .token.keyword {
+  color: #818cf8;
+  font-weight: 500;
+}
+
+/* Funções, nomes de classe */
+.code-container .token.function,
+.code-container .token.class-name {
+  color: #60a5fa;
+}
+
+/* Regex, importante, variáveis */
+.code-container .token.regex,
+.code-container .token.important,
+.code-container .token.variable {
+  color: #f472b6;
+}
+
+/* Bold e itálico */
+.code-container .token.bold {
+  font-weight: bold;
+}
+.code-container .token.italic {
+  font-style: italic;
+}
+
+/* Entidades */
+.code-container .token.entity {
+  cursor: help;
+}
+
+/* Seleção de texto */
+.code-container code[class*="language-"] ::selection {
+  background: #334155;
+}
+
+/* Scrollbar customizada */
+.code-container .code-content::-webkit-scrollbar {
+  height: 8px;
+  background: transparent;
+}
+.code-container .code-content::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+} 

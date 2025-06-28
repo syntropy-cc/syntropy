@@ -7,11 +7,12 @@ import "prismjs/components/prism-bash";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-r";
 import "prismjs/components/prism-yaml";
- import "prismjs/components/prism-json";
-///import "prismjs/components/prism-html";
+import "prismjs/components/prism-json";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
 import { Copy, Check } from "lucide-react";
+import "prismjs/themes/prism-tomorrow.css";
+import "./prism-syntropy.css";
 
 const LANG_LABELS: Record<string, string> = {
   python: "Python",
@@ -54,7 +55,6 @@ interface CodeBlockProps {
 }
 
 function parseMystCodeBlock(content: string) {
-  // Suporta :::code-block, ::: {code-block}, ::: {code-block} lang
   const regex = /:::\s*\{?code-block\}?\s*(\w+)?\s*\n([\s\S]*?):::/i;
   const match = content.match(regex);
   return {
@@ -72,7 +72,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   copyable = true,
   className = "",
 }) => {
-  // Parsing
   const { code, language } = useMemo(() => {
     if (mystDirective) return parseMystCodeBlock(mystDirective);
     return {
@@ -85,7 +84,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   const codeRef = useRef<HTMLPreElement>(null);
   const lines = code.split("\n");
 
-  // Highlight code
   const html = useMemo(
     () => Prism.highlight(code, Prism.languages[language] || Prism.languages.text, language),
     [code, language]
@@ -104,13 +102,11 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       tabIndex={0}
       aria-label={`Bloco de código em ${LANG_LABELS[language] || language}`}
     >
-      {/* Título opcional */}
       {title && (
         <div className="px-6 pt-5 pb-1 text-[15px] font-semibold text-[var(--text-primary)] opacity-80">
           {title}
         </div>
       )}
-      {/* Badge da linguagem */}
       <span
         className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-indigo-500 to-pink-500 shadow-md select-none border border-white/10"
         style={{
@@ -122,7 +118,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       >
         {LANG_LABELS[language] || language}
       </span>
-      {/* Botão copiar */}
       {copyable && (
         <button
           className="absolute top-3 right-24 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -133,28 +128,13 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-white" />}
         </button>
       )}
-      {/* Bloco de código */}
       <pre
         ref={codeRef}
         className="code-content scrollbar-thin scrollbar-thumb-[#334155] scrollbar-track-transparent text-sm font-mono px-6 pt-12 pb-6 min-h-[56px]"
         tabIndex={0}
         aria-label="Código fonte"
       >
-        <code className={`language-${language} flex w-full`}> 
-          {showLineNumbers && (
-            <span className="line-numbers select-none text-[#64748b] text-right pr-4 mr-4 border-r border-[#334155] opacity-70">
-              {lines.map((_, i) => (
-                <span key={i} className="block leading-6">
-                  {i + 1}
-                </span>
-              ))}
-            </span>
-          )}
-          <span
-            className="whitespace-pre text-[#f8fafc]"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        </code>
+        <code className={`language-${language} whitespace-pre`} dangerouslySetInnerHTML={{ __html: html }} />
       </pre>
     </div>
   );

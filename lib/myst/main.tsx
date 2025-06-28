@@ -1,6 +1,7 @@
 import { mystParse } from 'myst-parser';
 import React from 'react';
-import CodeBlock from '@/components/myst/code/code';
+import CodeBlock from '@/components/myst/code/code-block';
+import CodeLine from '@/components/myst/code/code-line';
 import Note from '@/components/myst/admonitions/note';
 import Tip from '@/components/myst/admonitions/tip';
 import Warning from '@/components/myst/admonitions/warning';
@@ -182,9 +183,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   // Códigos inline
   if (node.type === 'inlineCode') {
     return (
-      <code key={key} className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">
-        {node.value}
-      </code>
+      <CodeLine key={key}>{node.value}</CodeLine>
     );
   }
 
