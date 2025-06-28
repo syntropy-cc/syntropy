@@ -5,22 +5,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MystRenderer } from "@/lib/myst/main";
-import { useEffect, useState } from "react";
 
-import path from "path";
-import { readFile } from "fs/promises";
-import matter from "gray-matter";
-
-// Adaptar interface para receber courseSlug e chapterSlug
 interface Props {
   chapter: any;
   idx: number;
   course: any;
   prevChapter: any | null;
   nextChapter: any | null;
+  mdSource: string;
   chapterCount: number;
-  courseSlug: string;
-  chapterSlug: string;
 }
 
 export default function ChapterContent({
@@ -29,42 +22,9 @@ export default function ChapterContent({
   course,
   prevChapter,
   nextChapter,
+  mdSource,
   chapterCount,
-  courseSlug,
-  chapterSlug,
 }: Props) {
-  const [mdSource, setMdSource] = useState<string>("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchMD() {
-      setLoading(true);
-      setError(null);
-      try {
-        // Caminho absoluto para SSR/Edge, pode precisar de ajuste para ambiente Next.js
-        const filePath = path.join(process.cwd(), "content/courses", courseSlug, `${chapterSlug}.md`);
-        const raw = await readFile(filePath, "utf8");
-        setMdSource(matter(raw).content);
-      } catch (err: any) {
-        setError("Conteúdo não encontrado.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchMD();
-  }, [courseSlug, chapterSlug]);
-
-  if (loading) {
-    return <div className="p-8 text-muted-foreground">Carregando conteúdo...</div>;
-  }
-  if (error) {
-    return <div className="p-8 text-red-500">{error}</div>;
-  }
-
-  /* --------- 1. Parse + compile no browser ---------- */
-
-  /* -------------------- UI -------------------------- */
   return (
     <section className="flex-1 p-8 overflow-y-auto">
       {/* cabeçalho */}

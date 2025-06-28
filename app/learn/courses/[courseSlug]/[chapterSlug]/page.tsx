@@ -1,10 +1,25 @@
 // app/learn/courses/[courseSlug]/[chapterSlug]/page.tsx
+import path from "path";
+import { readFile } from "fs/promises";
+import matter from "gray-matter";
 import { getCourseSummary } from "@/lib/courses";
 import { ChapterSidebar } from "./ChapterSidebar";
 import { ChapterTopbar } from "./ChapterTopbar";
 import ChapterContent from "./ChapterContent";
 import { ChapterIDE } from "./ChapterIDE";
 import { notFound } from "next/navigation";
+
+async function loadChapterMD(course: string, chapter: string) {
+  try {
+    const raw = await readFile(
+      path.join(process.cwd(), "content/courses", course, `${chapter}.md`),
+      "utf8"
+    );
+    return matter(raw).content;
+  } catch {
+    return null;
+  }
+}
 
 export default async function ChapterPage({
   params,
@@ -24,6 +39,10 @@ export default async function ChapterPage({
   const nextChapter =
     idx < course.chapters.length - 1 ? course.chapters[idx + 1] : null;
 
+  // Carregar o conteúdo do markdown do capítulo
+  const mdSource = await loadChapterMD(courseSlug, chapterSlug);
+  if (!mdSource) notFound();
+
   const progressPct = ((idx + 1) / course.chapters.length) * 100;
 
   return (
@@ -41,8 +60,7 @@ export default async function ChapterPage({
             prevChapter={prevChapter}
             nextChapter={nextChapter}
             chapterCount={course.chapters.length}
-            courseSlug={courseSlug}
-            chapterSlug={chapterSlug}
+            mdSource={mdSource}
           />
 
           <ChapterIDE chapterTitle={chapter.title} />
