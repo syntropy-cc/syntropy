@@ -5,6 +5,12 @@ import CodeLine from '@/components/myst/code/code-line';
 import Note from '@/components/myst/admonitions/note';
 import Tip from '@/components/myst/admonitions/tip';
 import Warning from '@/components/myst/admonitions/warning';
+import Important from '@/components/myst/admonitions/important';
+import Caution from '@/components/myst/admonitions/caution';
+import Attention from '@/components/myst/admonitions/attention';
+import Challenge from '@/components/myst/admonitions/challenge';
+import MathBlock from '@/components/myst/math/math-block';
+import MathLine from '@/components/myst/math/math-line';
 
 // Componentes de admonition básicos (implementação funcional)
 const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.ReactNode }> = ({ 
@@ -71,10 +77,10 @@ const DIRECTIVE_COMPONENTS: Record<string, React.FC<any>> = {
   note: Note,
   tip: Tip,
   warning: Warning,
-  important: (props: any) => <AdmonitionBase type="important" {...props} />, 
-  caution: (props: any) => <AdmonitionBase type="caution" {...props} />, 
-  attention: (props: any) => <AdmonitionBase type="attention" {...props} />, 
-  admonition: (props: any) => <AdmonitionBase type="note" {...props} />, 
+  important: Important,
+  caution: Caution,
+  attention: Attention,
+  admonition: (props: any) => <AdmonitionBase type="note" {...props} />,
 };
 
 // Função para fuzzy matching de diretivas de admonition
@@ -206,19 +212,19 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
 
   // Math (bloco)
   if (node.type === 'math') {
+    // Suporte a label: node.label ou node.options?.label
+    const label = node.label || (node.options && node.options.label) || undefined;
     return (
-      <div key={key} className="my-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg text-center">
-        <span className="font-mono text-lg">{node.value}</span>
-      </div>
+      <MathBlock key={key} label={label}>
+        {node.value}
+      </MathBlock>
     );
   }
   
   // Math (inline)
   if (node.type === 'inlineMath') {
     return (
-      <span key={key} className="font-mono bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
-        {node.value}
-      </span>
+      <MathLine key={key}>{node.value}</MathLine>
     );
   }
 
@@ -338,6 +344,17 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
           children={code}
           copyable={true}
         />
+      );
+    }
+
+    // Bloco de desafio (admonition com título 'Desafio')
+    if (name === 'admonition' && typeof node.args === 'string' && node.args.trim().toLowerCase() === 'desafio') {
+      return (
+        <Challenge key={key} title={node.args}>
+          {typeof node.value === 'string'
+            ? node.value
+            : node.children?.map((child: any, i: number) => renderNode(child, i))}
+        </Challenge>
       );
     }
 
