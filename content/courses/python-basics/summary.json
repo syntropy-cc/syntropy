@@ -1,0 +1,66 @@
+{
+    "id": "python-basics",
+    "title": "Python Basics",
+    "slug": "python-basics",
+    "description": "Learn the basics of Python programming including variables, data types, control structures, functions, and file operations. Start building your own scripts and automation tools.",
+    "author": {
+      "name": "Laura Mendes",
+      "avatar": "/placeholder.svg?height=40&width=40",
+      "bio": "Software engineer and Python educator"
+    },
+    "level": "beginner",
+    "duration": 20,
+    "tags": ["Python", "Programming", "Scripting", "Backend"],
+    "chapters": [
+      {
+        "id": "intro-python",
+        "title": "Introduction to Python",
+        "slug": "introduction-to-python",
+        "description": "Overview of Python, its uses, and how to set up your environment",
+        "duration": 20,
+        "completed": false,
+        "locked": false
+      },
+      {
+        "id": "variables-data-types",
+        "title": "Variables and Data Types",
+        "slug": "variables-data-types",
+        "description": "Understanding Python variables, numbers, strings, lists, and more",
+        "duration": 35,
+        "completed": false,
+        "locked": false
+      },
+      {
+        "id": "control-flow",
+        "title": "Control Flow",
+        "slug": "control-flow",
+        "description": "Using if statements, loops, and logical operators",
+        "duration": 40,
+        "completed": false,
+        "locked": true
+      },
+      {
+        "id": "functions",
+        "title": "Functions",
+        "slug": "functions",
+        "description": "Defining and using functions in Python",
+        "duration": 45,
+        "completed": false,
+        "locked": true
+      },
+      {
+        "id": "file-io",
+        "title": "Working with Files",
+        "slug": "file-io",
+        "description": "Reading from and writing to files in Python",
+        "duration": 30,
+        "completed": false,
+        "locked": true
+      }
+    ],
+    "thumbnail": "/placeholder.svg?height=200&width=400",
+    "published": true,
+    "createdAt": "2024-02-15T00:00:00Z",
+    "updatedAt": "2024-02-28T00:00:00Z"
+  }
+  
