@@ -11,7 +11,7 @@ const Note: React.FC<{ title?: string; children: React.ReactNode }> = ({ title =
       <span className="text-blue-500 text-lg" aria-hidden>📝</span>
       <span className="font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-200 text-sm">{title}</span>
     </div>
-    <div className="text-blue-900 dark:text-blue-100 text-sm leading-relaxed">{children}</div>
+    <div className="not-prose text-blue-900 dark:text-blue-100 text-sm leading-relaxed">{children}</div>
   </aside>
 );
 

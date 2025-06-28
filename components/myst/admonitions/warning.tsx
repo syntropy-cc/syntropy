@@ -11,7 +11,7 @@ const Warning: React.FC<{ title?: string; children: React.ReactNode }> = ({ titl
       <span className="text-yellow-500 text-lg" aria-hidden>⚠️</span>
       <span className="font-semibold uppercase tracking-wide text-yellow-700 dark:text-yellow-200 text-sm">{title}</span>
     </div>
-    <div className="text-yellow-900 dark:text-yellow-100 text-sm leading-relaxed">{children}</div>
+    <div className="not-prose text-yellow-900 dark:text-yellow-100 text-sm leading-relaxed">{children}</div>
   </aside>
 );
 
