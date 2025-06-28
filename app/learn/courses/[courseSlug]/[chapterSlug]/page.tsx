@@ -1,26 +1,10 @@
 // app/learn/courses/[courseSlug]/[chapterSlug]/page.tsx
-import path from "path";
-import { readFile } from "fs/promises";
-import matter from "gray-matter";
-import { notFound } from "next/navigation";
-
 import { getCourseSummary } from "@/lib/courses";
 import { ChapterSidebar } from "./ChapterSidebar";
 import { ChapterTopbar } from "./ChapterTopbar";
 import ChapterContent from "./ChapterContent";
 import { ChapterIDE } from "./ChapterIDE";
-
-async function loadChapterMD(course: string, chapter: string) {
-  try {
-    const raw = await readFile(
-      path.join(process.cwd(), "content/courses", course, `${chapter}.md`),
-      "utf8"
-    );
-    return matter(raw).content;
-  } catch {
-    return null;
-  }
-}
+import { notFound } from "next/navigation";
 
 export default async function ChapterPage({
   params,
@@ -40,9 +24,6 @@ export default async function ChapterPage({
   const nextChapter =
     idx < course.chapters.length - 1 ? course.chapters[idx + 1] : null;
 
-  const mdSource = await loadChapterMD(courseSlug, chapterSlug);
-  if (!mdSource) notFound();
-
   const progressPct = ((idx + 1) / course.chapters.length) * 100;
 
   return (
@@ -59,8 +40,9 @@ export default async function ChapterPage({
             course={course}
             prevChapter={prevChapter}
             nextChapter={nextChapter}
-            mdSource={mdSource}
             chapterCount={course.chapters.length}
+            courseSlug={courseSlug}
+            chapterSlug={chapterSlug}
           />
 
           <ChapterIDE chapterTitle={chapter.title} />
