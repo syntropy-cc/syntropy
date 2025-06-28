@@ -1,66 +1,123 @@
 {
-    "id": "python-basics",
-    "title": "Python Basics",
-    "slug": "python-basics",
-    "description": "Learn the basics of Python programming including variables, data types, control structures, functions, and file operations. Start building your own scripts and automation tools.",
-    "author": {
-      "name": "Laura Mendes",
-      "avatar": "/placeholder.svg?height=40&width=40",
-      "bio": "Software engineer and Python educator"
+  "id": "python-basics",
+  "title": "Python Basics",
+  "slug": "python-basics",
+  "description": "Master the fundamentals of Python programming: from variables and data types to control flow, functions, and file handling. Learn by building your own scripts and automation tools in real-world examples.",
+  "author": {
+    "name": "Laura Mendes",
+    "avatar": "/placeholder.svg?height=40&width=40",
+    "bio": "Software engineer and Python educator"
+  },
+  "level": "beginner",
+  "duration": 20,
+  "tags": ["Python", "Programming", "Scripting", "Backend"],
+  "outcomes": [
+    {
+      "title": "Automatize tarefas chatas",
+      "description": "Crie scripts que fazem o trabalho pesado por você"
     },
-    "level": "beginner",
-    "duration": 20,
-    "tags": ["Python", "Programming", "Scripting", "Backend"],
-    "chapters": [
-      {
-        "id": "intro-python",
-        "title": "Introduction to Python",
-        "slug": "introduction-to-python",
-        "description": "Overview of Python, its uses, and how to set up your environment",
-        "duration": 20,
-        "completed": false,
-        "locked": false
-      },
-      {
-        "id": "variables-data-types",
-        "title": "Variables and Data Types",
-        "slug": "variables-data-types",
-        "description": "Understanding Python variables, numbers, strings, lists, and more",
-        "duration": 35,
-        "completed": false,
-        "locked": false
-      },
-      {
-        "id": "control-flow",
-        "title": "Control Flow",
-        "slug": "control-flow",
-        "description": "Using if statements, loops, and logical operators",
-        "duration": 40,
-        "completed": false,
-        "locked": true
-      },
-      {
-        "id": "functions",
-        "title": "Functions",
-        "slug": "functions",
-        "description": "Defining and using functions in Python",
-        "duration": 45,
-        "completed": false,
-        "locked": true
-      },
-      {
-        "id": "file-io",
-        "title": "Working with Files",
-        "slug": "file-io",
-        "description": "Reading from and writing to files in Python",
-        "duration": 30,
-        "completed": false,
-        "locked": true
-      }
-    ],
-    "thumbnail": "/placeholder.svg?height=200&width=400",
-    "published": true,
-    "createdAt": "2024-02-15T00:00:00Z",
-    "updatedAt": "2024-02-28T00:00:00Z"
-  }
-  
+    {
+      "title": "Domine a linguagem do futuro",
+      "description": "Python é usado por Google, Netflix e NASA"
+    },
+    {
+      "title": "Construa projetos reais",
+      "description": "Calculadoras, jogos simples e ferramentas úteis"
+    },
+    {
+      "title": "Prepare-se para o mercado",
+      "description": "Saia pronto para desafios reais de programação"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "intro-python",
+      "title": "Introduction to Python",
+      "slug": "introduction-to-python",
+      "description": "Overview of Python, its use cases, and setting up your environment.",
+      "duration": 20,
+      "completed": false,
+      "locked": false,
+      "project": "Write a simple script that prints 'Hello, World!' and your name.",
+      "sections": [
+        "What is Python and Why Use It?",
+        "Installing Python and VS Code",
+        "Writing and Running Your First Python Script",
+        "Understanding the Python Interpreter",
+        "Using Comments and Formatting Code"
+      ]
+    },
+    {
+      "id": "variables-data-types",
+      "title": "Variables and Data Types",
+      "slug": "variables-data-types",
+      "description": "Learn how to store and manipulate different types of data using variables.",
+      "duration": 35,
+      "completed": false,
+      "locked": false,
+      "project": "Create a script that takes user input, processes it, and prints a formatted message.",
+      "sections": [
+        "Declaring Variables in Python",
+        "Working with Strings, Integers, and Floats",
+        "Type Conversion and Casting",
+        "Lists, Tuples, and Dictionaries Overview",
+        "Getting User Input"
+      ]
+    },
+    {
+      "id": "control-flow",
+      "title": "Control Flow",
+      "slug": "control-flow",
+      "description": "Make decisions in your code using conditions and loops.",
+      "duration": 40,
+      "completed": false,
+      "locked": true,
+      "project": "Build a number guessing game using conditionals and loops.",
+      "sections": [
+        "If, Elif, and Else Statements",
+        "Using Comparison and Logical Operators",
+        "While Loops and Infinite Loops",
+        "For Loops and Ranges",
+        "Loop Control with Break and Continue"
+      ]
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "slug": "functions",
+      "description": "Learn to define and reuse blocks of code with functions.",
+      "duration": 45,
+      "completed": false,
+      "locked": true,
+      "project": "Create a calculator that supports basic arithmetic using functions.",
+      "sections": [
+        "Why Use Functions?",
+        "Defining and Calling Functions",
+        "Function Parameters and Return Values",
+        "Default Arguments and Keyword Arguments",
+        "Organizing Code with Functions"
+      ]
+    },
+    {
+      "id": "file-io",
+      "title": "Working with Files",
+      "slug": "file-io",
+      "description": "Read from and write to text files using Python.",
+      "duration": 30,
+      "completed": false,
+      "locked": true,
+      "project": "Build a simple note-taking app that saves and loads notes from a file.",
+      "sections": [
+        "Opening and Reading Files",
+        "Writing to Text Files",
+        "Using With Statement for File Handling",
+        "Reading Files Line by Line",
+        "File Paths and Error Handling"
+      ]
+    }
+  ],
+  "thumbnail": "/placeholder.svg?height=200&width=400",
+  "published": true,
+  "createdAt": "2024-02-15T00:00:00Z",
+  "updatedAt": "2024-02-28T00:00:00Z"
+}

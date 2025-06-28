@@ -14,7 +14,6 @@ export default async function CoursesPage() {
       <div className="container pt-16">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 md:gap-8">
           {courses.map((course, i) => {
-            /* ――― cálculo das tags que aparecerão na linha ――― */
             const VISIBLE_TAGS = 2
             const visibleTags = course.tags?.slice(0, VISIBLE_TAGS) ?? []
             const hiddenCount = (course.tags?.length ?? 0) - visibleTags.length
@@ -27,13 +26,13 @@ export default async function CoursesPage() {
                 aria-label={`Acessar curso ${course.title}`}
               >
                 <Card className="relative flex flex-col overflow-hidden rounded-2xl bg-slate-800/80 shadow-md transition-shadow hover:shadow-lg">
-                  {/* ----------- CAPA 3:4 ----------- */}
-                  <figure className="relative aspect-[3/4] w-full overflow-hidden">
+                  {/* ----------- CAPA 4:5 ----------- */}
+                  <figure className="relative aspect-[4/5] w-full overflow-hidden">
                     <Image
                       src={course.cover}
                       alt={`Capa do curso ${course.title}`}
                       width={320}
-                      height={427}
+                      height={400}               // altura 4:5
                       sizes="(max-width:640px) 60vw,
                              (max-width:1024px) 30vw,
                              (max-width:1280px) 23vw,
@@ -50,9 +49,8 @@ export default async function CoursesPage() {
                       {course.description}
                     </p>
 
-                    {/* --- Linha única: nível • capítulos • tags --- */}
+                    {/* nível • capítulos • tags */}
                     <div className="flex items-center gap-2 text-xs text-blue-200/70">
-                      {/* Nível */}
                       <Badge
                         variant="secondary"
                         className={`px-2 py-0.5 shrink-0 rounded-full font-medium ${
@@ -70,10 +68,8 @@ export default async function CoursesPage() {
                           : "Avançado"}
                       </Badge>
 
-                      {/* Capítulos */}
                       <span className="shrink-0">{course.chapters.length} capítulos</span>
 
-                      {/* Tags visíveis */}
                       {visibleTags.map((tag) => (
                         <Badge
                           key={tag}
@@ -84,7 +80,6 @@ export default async function CoursesPage() {
                         </Badge>
                       ))}
 
-                      {/* Indicador de tags escondidas */}
                       {hiddenCount > 0 && (
                         <span className="shrink-0 text-blue-300/80">+{hiddenCount}</span>
                       )}

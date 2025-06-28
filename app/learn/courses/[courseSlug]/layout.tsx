@@ -1,5 +1,4 @@
 import type React from "react"
-import { CourseSidebar } from "@/components/syntropy/CourseSidebar"
 import { getCourseSummary } from "@/lib/courses"
 import { notFound } from "next/navigation"
 
@@ -14,9 +13,8 @@ export default async function CourseLayout({
     const course = await getCourseSummary(params.courseSlug)
 
     return (
-      <div className="flex h-[calc(100vh-4rem)]">
-        <CourseSidebar course={course} />
-        <div className="flex-1 overflow-auto">{children}</div>
+      <div className="h-[calc(100vh-4rem)]">
+        <div className="h-full overflow-auto">{children}</div>
       </div>
     )
   } catch (error) {

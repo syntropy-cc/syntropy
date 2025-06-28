@@ -1,0 +1,31 @@
+diff --git a/node_modules/myst-to-react/dist/crossReference.js b/node_modules/myst-to-react/dist/crossReference.js
+index b6034bb..3b6a6fe 100644
+--- a/node_modules/myst-to-react/dist/crossReference.js
++++ b/node_modules/myst-to-react/dist/crossReference.js
+@@ -1,7 +1,25 @@
+ import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+ import { useLinkProvider, useReferences, useBaseurl, withBaseurl, XRefProvider, useXRefState, useFrontmatter, } from '@myst-theme/providers';
+ import { InlineError } from './inlineError.js';
+-import { default as useSWR } from 'swr';
++// -------------- SWR hot-fix (remove import estático!) --------------
++let useSWR = () => ({
++  data: undefined,
++  error: undefined,
++  isLoading: false,
++  mutate: () => Promise.resolve(),
++  // acrescente outras chaves se algum componente as usar
++});
++if (typeof window !== "undefined") {
++  try {
++    // Só no browser: carrega swr real
++    // eslint-disable-next-line global-require
++    const swr = require("swr");
++    useSWR = swr.useSWR || swr.default || useSWR;
++  } catch (_) {
++    /* mantém stub se o require falhar */
++  }
++}
++// ------------------------------------------------------------
+ import { HoverPopover } from './components/index.js';
+ import { MyST } from './MyST.js';
+ import { selectMdastNodes } from 'myst-common';
