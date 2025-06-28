@@ -68,23 +68,40 @@ const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.R
 const DIRECTIVE_COMPONENTS: Record<string, React.FC<any>> = {
   code: CodeBlock,
   'code-block': CodeBlock,
-  note: (props: any) => <AdmonitionBase type="note" {...props} />,
-  tip: (props: any) => <AdmonitionBase type="tip" {...props} />,
-  warning: (props: any) => <AdmonitionBase type="warning" {...props} />,
-  important: (props: any) => <AdmonitionBase type="important" {...props} />,
-  caution: (props: any) => <AdmonitionBase type="caution" {...props} />,
-  attention: (props: any) => <AdmonitionBase type="attention" {...props} />,
-  admonition: (props: any) => <AdmonitionBase type="note" {...props} />,
+  note: Note,
+  tip: Tip,
+  warning: Warning,
+  important: (props: any) => <AdmonitionBase type="important" {...props} />, 
+  caution: (props: any) => <AdmonitionBase type="caution" {...props} />, 
+  attention: (props: any) => <AdmonitionBase type="attention" {...props} />, 
+  admonition: (props: any) => <AdmonitionBase type="note" {...props} />, 
 };
+
+// Função para fuzzy matching de diretivas de admonition
+function normalizeAdmonitionName(name: string): string {
+  if (!name) return '';
+  const n = name.toLowerCase();
+  if (n.startsWith('warn')) return 'warning';
+  if (n.startsWith('tip')) return 'tip';
+  if (n.startsWith('not')) return 'note';
+  if (n.startsWith('imp')) return 'important';
+  if (n.startsWith('caut')) return 'caution';
+  if (n.startsWith('att')) return 'attention';
+  return n;
+}
 
 function renderNode(node: any, index: number = 0): React.ReactNode {
   if (!node) return null;
+
+  // Log para depuração do tipo de nó e conteúdo
+  console.log('[MystRenderer] renderNode:', node.type, node);
 
   const key = `node-${index}-${node.type || 'unknown'}`;
 
   // Diretivas (admonitions, code, etc)
   if (node.type === 'directive') {
-    const name = node.name?.toLowerCase();
+    const rawName = node.name?.toLowerCase();
+    const name = normalizeAdmonitionName(rawName);
     
     // Bloco de código
     if (name === 'code' || name === 'code-block') {
@@ -95,7 +112,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
         <CodeBlock 
           key={key}
           language={language} 
-          children={code}
+          children={typeof code === 'string' ? code : String(code)}
           copyable={true}
         />
       );
@@ -113,7 +130,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     
     // Fallback para diretiva desconhecida
     return (
-      <AdmonitionBase key={key} type="note" title={name}>
+      <AdmonitionBase key={key} type="note" title={rawName}>
         {node.children?.map((child: any, i: number) => renderNode(child, i))}
       </AdmonitionBase>
     );
@@ -304,6 +321,48 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     return <hr key={key} className="my-8 border-gray-300 dark:border-gray-600" />;
   }
 
+  // --- NOVO: Tratar mystDirective como code-block ---
+  if (node.type === 'mystDirective') {
+    const rawName = node.name?.toLowerCase();
+    const name = normalizeAdmonitionName(rawName);
+
+    // Bloco de código
+    if (name === 'code' || name === 'code-block') {
+      // node.args pode ser a linguagem, node.value o código
+      const language = node.args || 'text';
+      const code = typeof node.value === 'string' ? node.value : '';
+      return (
+        <CodeBlock
+          key={key}
+          language={language}
+          children={code}
+          copyable={true}
+        />
+      );
+    }
+
+    // Admonitions
+    const Comp = DIRECTIVE_COMPONENTS[name];
+    if (Comp) {
+      return (
+        <Comp key={key} title={node.args}>
+          {typeof node.value === 'string'
+            ? node.value
+            : node.children?.map((child: any, i: number) => renderNode(child, i))}
+        </Comp>
+      );
+    }
+
+    // Fallback para diretiva desconhecida
+    return (
+      <AdmonitionBase key={key} type="note" title={rawName}>
+        {typeof node.value === 'string'
+          ? node.value
+          : node.children?.map((child: any, i: number) => renderNode(child, i))}
+      </AdmonitionBase>
+    );
+  }
+
   // Recursão para nós com children
   if (Array.isArray(node.children)) {
     return node.children.map((child: any, i: number) => renderNode(child, i));
@@ -327,7 +386,7 @@ export const MystRenderer: React.FC<MystRendererProps> = ({
 }) => {
   try {
     const tree = mystParse(content);
-    console.log('Árvore MyST parseada:', tree); // Debug
+    console.log('Árvore MyST parseada:', JSON.stringify(tree, null, 2)); // Debug
     
     return (
       <div 

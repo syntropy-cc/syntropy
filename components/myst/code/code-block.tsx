@@ -82,7 +82,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   const [copied, setCopied] = useState(false);
   const codeRef = useRef<HTMLPreElement>(null);
-  const lines = code.split("\n");
+  const lines = typeof code === 'string' ? code.split("\n") : [];
 
   const html = useMemo(
     () => Prism.highlight(code, Prism.languages[language] || Prism.languages.text, language),
@@ -107,30 +107,32 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           {title}
         </div>
       )}
-      <span
-        className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-indigo-500 to-pink-500 shadow-md select-none border border-white/10"
-        style={{
-          background: LANGUAGE_COLORS[language]
-            ? `linear-gradient(90deg, ${LANGUAGE_COLORS[language]}, #ec4899)`
-            : undefined,
-        }}
-        aria-label={`Linguagem: ${LANG_LABELS[language] || language}`}
-      >
-        {LANG_LABELS[language] || language}
-      </span>
-      {copyable && (
-        <button
-          className="absolute top-3 right-24 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          onClick={handleCopy}
-          aria-label="Copiar código"
-          type="button"
+      <div className="flex items-center justify-between px-6 pt-5 pb-1">
+        <span
+          className="z-10 px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r from-indigo-500 to-pink-500 shadow-md select-none border border-white/10"
+          style={{
+            background: LANGUAGE_COLORS[language]
+              ? `linear-gradient(90deg, ${LANGUAGE_COLORS[language]}, #ec4899)`
+              : undefined,
+          }}
+          aria-label={`Linguagem: ${LANG_LABELS[language] || language}`}
         >
-          {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-white" />}
-        </button>
-      )}
+          {LANG_LABELS[language] || language}
+        </span>
+        {copyable && (
+          <button
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            onClick={handleCopy}
+            aria-label="Copiar código"
+            type="button"
+          >
+            {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-white" />}
+          </button>
+        )}
+      </div>
       <pre
         ref={codeRef}
-        className="code-content scrollbar-thin scrollbar-thumb-[#334155] scrollbar-track-transparent text-sm font-mono px-6 pt-12 pb-6 min-h-[56px]"
+        className="code-content scrollbar-thin scrollbar-thumb-[#334155] scrollbar-track-transparent text-sm font-mono px-6 pt-4 pb-6 min-h-[56px]"
         tabIndex={0}
         aria-label="Código fonte"
       >
