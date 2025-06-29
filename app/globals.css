@@ -212,3 +212,101 @@ html {
     transform: translateY(0);
   }
 }
+
+/* Personalização das cores do KaTeX para o tema escuro */
+.katex {
+  font-size: 1.1em;
+}
+
+/* Equações em bloco */
+.katex-display {
+  margin: 0;
+  padding: 0;
+}
+
+.katex-display .katex {
+  color: #e5e7eb; /* gray-200 */
+}
+
+/* Equações inline */
+.katex:not(.katex-display) {
+  color: #93c5fd; /* blue-300 */
+}
+
+/* Frações */
+.katex .frac-line {
+  background-color: #9ca3af; /* gray-400 */
+}
+
+/* Símbolos especiais e operadores */
+.katex .mrel,
+.katex .mop,
+.katex .mbin {
+  color: #fbbf24; /* amber-400 */
+}
+
+/* Delimitadores (parênteses, colchetes, etc) */
+.katex .mopen,
+.katex .mclose {
+  color: #a78bfa; /* purple-400 */
+}
+
+/* Texto em modo matemático */
+.katex .mord.text {
+  color: #d1d5db; /* gray-300 */
+}
+
+/* Matrizes e arrays */
+.katex .arraycolsep {
+  width: 0.5em;
+}
+
+.katex .col-align-l {
+  text-align: left;
+}
+
+.katex .col-align-c {
+  text-align: center;
+}
+
+.katex .col-align-r {
+  text-align: right;
+}
+
+/* Sublinhados e sobrescritos */
+.katex .msupsub {
+  color: #fde68a; /* yellow-200 */
+}
+
+/* Raízes */
+.katex .sqrt .sqrt-line {
+  background-color: #9ca3af; /* gray-400 */
+}
+
+/* Setas e símbolos de relação */
+.katex .mrel {
+  color: #34d399; /* emerald-400 */
+}
+
+/* Animação suave ao carregar */
+.katex {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorar legibilidade em telas pequenas */
+@media (max-width: 640px) {
+  .katex-display .katex {
+    font-size: 0.9em;
+  }
+}
