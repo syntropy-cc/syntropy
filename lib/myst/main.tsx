@@ -11,6 +11,7 @@ import Attention from '@/components/myst/admonitions/attention';
 import Challenge from '@/components/myst/admonitions/challenge';
 import MathBlock, { resetEquationCounter } from '@/components/myst/math/math-block';
 import MathLine from '@/components/myst/math/math-line';
+import Figure from '@/components/myst/content/figure';
 
 // Componentes de admonition básicos (implementação funcional)
 const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.ReactNode }> = ({ 
@@ -121,7 +122,7 @@ function extractMathLabel(content: string): { label: string | null; equation: st
   return { label, equation };
 }
 
-function renderNode(node: any, index: number = 0): React.ReactNode {
+function renderNode(node: any, index: number = 0, courseSlug?: string): React.ReactNode {
   if (!node) return null;
 
   const key = `node-${index}-${node.type || 'unknown'}`;
@@ -151,7 +152,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     if (Comp) {
       return (
         <Comp key={key} title={node.argument}>
-          {node.children?.map((child: any, i: number) => renderNode(child, i))}
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
         </Comp>
       );
     }
@@ -159,7 +160,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     // Fallback para diretiva desconhecida
     return (
       <AdmonitionBase key={key} type="note" title={rawName}>
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </AdmonitionBase>
     );
   }
@@ -181,7 +182,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     return (
       <div key={key} className="overflow-x-auto my-6">
         <table className="min-w-full border border-gray-200 dark:border-gray-700 text-sm">
-          <tbody>{node.children?.map((child: any, i: number) => renderNode(child, i))}</tbody>
+          <tbody>{node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}</tbody>
         </table>
       </div>
     );
@@ -190,7 +191,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'tableRow') {
     return (
       <tr key={key} className="border-b border-gray-200 dark:border-gray-700">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </tr>
     );
   }
@@ -198,7 +199,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'tableCell') {
     return (
       <td key={key} className="border px-3 py-2 border-gray-200 dark:border-gray-700">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </td>
     );
   }
@@ -213,14 +214,14 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     return React.createElement(
       Component,
       { key, className },
-      node.children?.map((child: any, i: number) => renderNode(child, i))
+      node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))
     );
   }
   
   if (node.type === 'listItem') {
     return (
       <li key={key} className="leading-relaxed">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </li>
     );
   }
@@ -234,8 +235,6 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
 
   // Math (bloco) - VERSÃO MELHORADA
   if (node.type === 'math') {
-    console.log('[DEBUG] Math node SIMPLES encontrado:', JSON.stringify(node, null, 2));
-    
     // IMPORTANTE: Não renderizar aqui se é um child de mystDirective
     // Verificar se este nó é filho de um mystDirective
     return null; // Será tratado pelo mystDirective pai
@@ -265,7 +264,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     return React.createElement(
       Tag,
       { key, className: `${className} text-gray-900 dark:text-gray-100` },
-      node.children?.map((child: any, i: number) => renderNode(child, i))
+      node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))
     );
   }
 
@@ -273,7 +272,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'paragraph') {
     return (
       <p key={key} className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </p>
     );
   }
@@ -282,7 +281,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'blockquote') {
     return (
       <blockquote key={key} className="border-l-4 border-blue-400 pl-4 italic my-4 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/30 py-2 rounded-r">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </blockquote>
     );
   }
@@ -297,7 +296,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
         target={node.url?.startsWith('http') ? '_blank' : undefined}
         rel={node.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
       >
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </a>
     );
   }
@@ -323,7 +322,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'strong') {
     return (
       <strong key={key} className="font-bold">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </strong>
     );
   }
@@ -332,7 +331,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
   if (node.type === 'emphasis') {
     return (
       <em key={key} className="italic">
-        {node.children?.map((child: any, i: number) => renderNode(child, i))}
+        {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </em>
     );
   }
@@ -349,8 +348,6 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
 
   // --- TRATAMENTO ESPECIAL PARA BLOCOS DE MATEMÁTICA MyST ---
   if (node.type === 'mystDirective' && node.name === 'math') {
-    console.log('[DEBUG] Math mystDirective encontrado:', JSON.stringify(node, null, 2));
-    
     // Extrair o label do args
     let label: string | null = null;
     let mathContent = '';
@@ -371,13 +368,50 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
       mathContent = node.children[0].value || '';
     }
     
-    console.log('[DEBUG] Math content extraído do mystDirective:', { label, mathContent });
-    
     return (
       <MathBlock key={key} label={label || undefined}>
         {mathContent}
       </MathBlock>
     );
+  }
+
+  // --- TRATAMENTO PARA FIGURE MyST ---
+  if (node.type === 'mystDirective' && node.name === 'figure') {
+    // Extrair informações da figura
+    const imageSrc = node.args || '';
+    const options = node.options || {};
+    
+    console.log('[DEBUG FIGURE] Processando figure mystDirective:', {
+      imageSrc,
+      options,
+      courseSlug,
+      node: JSON.stringify(node, null, 2)
+    });
+    
+    // Procurar por nó de imagem nos children para extrair informações adicionais
+    let imageNode = null;
+    if (node.children && node.children.length > 0) {
+      const container = node.children.find((child: any) => child.type === 'container' && child.kind === 'figure');
+      if (container && container.children) {
+        imageNode = container.children.find((child: any) => child.type === 'image');
+      }
+    }
+    
+    console.log('[DEBUG FIGURE] ImageNode encontrado:', imageNode);
+    
+    // Usar informações do imageNode se disponível, senão usar options
+    const figureProps = {
+      src: imageSrc,
+      alt: imageNode?.alt || options.alt || '',
+      width: imageNode?.width || options.width,
+      height: imageNode?.height || options.height,
+      align: (imageNode?.align || options.align || 'center') as 'left' | 'center' | 'right',
+      courseSlug
+    };
+    
+    console.log('[DEBUG FIGURE] Props finais para Figure:', figureProps);
+    
+    return <Figure key={key} {...figureProps} />;
   }
 
   // --- NOVO: Tratar mystDirective como code-block ---
@@ -406,7 +440,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
         <Challenge key={key} title={node.args}>
           {typeof node.value === 'string'
             ? node.value
-            : node.children?.map((child: any, i: number) => renderNode(child, i))}
+            : node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
         </Challenge>
       );
     }
@@ -418,7 +452,7 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
         <Comp key={key} title={node.args}>
           {typeof node.value === 'string'
             ? node.value
-            : node.children?.map((child: any, i: number) => renderNode(child, i))}
+            : node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
         </Comp>
       );
     }
@@ -428,14 +462,14 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
       <AdmonitionBase key={key} type="note" title={rawName}>
         {typeof node.value === 'string'
           ? node.value
-          : node.children?.map((child: any, i: number) => renderNode(child, i))}
+          : node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
       </AdmonitionBase>
     );
   }
 
   // Recursão para nós com children
   if (Array.isArray(node.children)) {
-    return node.children.map((child: any, i: number) => renderNode(child, i));
+    return node.children.map((child: any, i: number) => renderNode(child, i, courseSlug));
   }
 
   // Fallback para tipos desconhecidos
@@ -447,19 +481,21 @@ export type MystRendererProps = {
   content: string;
   theme?: string;
   className?: string;
+  /** Slug do curso para resolução de caminhos de imagem */
+  courseSlug?: string;
 };
 
 export const MystRenderer: React.FC<MystRendererProps> = ({ 
   content, 
   theme = "syntropy-dark", 
-  className = "" 
+  className = "",
+  courseSlug
 }) => {
   try {
     // RESET DO CONTADOR DE EQUAÇÕES A CADA RENDERIZAÇÃO
     resetEquationCounter();
     
     const tree = mystParse(content);
-    console.log('Árvore MyST parseada:', JSON.stringify(tree, null, 2)); // Debug
     
     return (
       <div 
@@ -467,8 +503,8 @@ export const MystRenderer: React.FC<MystRendererProps> = ({
         data-theme={theme}
       >
         {Array.isArray(tree.children) 
-          ? tree.children.map((child: any, i: number) => renderNode(child, i))
-          : renderNode(tree)
+          ? tree.children.map((child: any, i: number) => renderNode(child, i, courseSlug))
+          : renderNode(tree, 0, courseSlug)
         }
       </div>
     );
