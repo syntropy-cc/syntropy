@@ -212,101 +212,71 @@ html {
     transform: translateY(0);
   }
 }
+/* Adicione estes estilos ao seu arquivo global.css, styles/globals.css ou app/globals.css */
 
-/* Personalização das cores do KaTeX para o tema escuro */
-.katex {
-  font-size: 1.1em;
-}
+/* Importação da fonte do KaTeX */
+@import url('https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css');
 
-/* Equações em bloco */
+/* Força as cores do KaTeX para o tema escuro em blocos */
 .katex-display {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .katex-display .katex {
-  color: #e5e7eb; /* gray-200 */
+  color: #e5e7eb !important;
+  font-size: 1.25rem !important;
 }
 
-/* Equações inline */
+.katex-display .katex * {
+  color: inherit !important;
+}
+
+/* Força as cores do KaTeX para equações inline */
 .katex:not(.katex-display) {
-  color: #93c5fd; /* blue-300 */
+  color: #d1d5db !important;
 }
 
-/* Frações */
+.katex:not(.katex-display) * {
+  color: inherit !important;
+}
+
+/* Remove qualquer background padrão do KaTeX */
+.katex-html {
+  background: transparent !important;
+}
+
+/* Garante que frações e outros elementos sejam visíveis */
 .katex .frac-line {
-  background-color: #9ca3af; /* gray-400 */
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
 }
 
-/* Símbolos especiais e operadores */
-.katex .mrel,
-.katex .mop,
-.katex .mbin {
-  color: #fbbf24; /* amber-400 */
-}
-
-/* Delimitadores (parênteses, colchetes, etc) */
-.katex .mopen,
-.katex .mclose {
-  color: #a78bfa; /* purple-400 */
-}
-
-/* Texto em modo matemático */
-.katex .mord.text {
-  color: #d1d5db; /* gray-300 */
-}
-
-/* Matrizes e arrays */
-.katex .arraycolsep {
-  width: 0.5em;
-}
-
-.katex .col-align-l {
-  text-align: left;
-}
-
-.katex .col-align-c {
-  text-align: center;
-}
-
-.katex .col-align-r {
-  text-align: right;
-}
-
-/* Sublinhados e sobrescritos */
-.katex .msupsub {
-  color: #fde68a; /* yellow-200 */
-}
-
-/* Raízes */
+/* Raízes quadradas */
 .katex .sqrt .sqrt-line {
-  background-color: #9ca3af; /* gray-400 */
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
 }
 
-/* Setas e símbolos de relação */
-.katex .mrel {
-  color: #34d399; /* emerald-400 */
+/* Delimitadores grandes */
+.katex .delimsizing.mult .vlist-t,
+.katex .delimsizing.mult .vlist-r {
+  color: #e5e7eb !important;
 }
 
-/* Animação suave ao carregar */
-.katex {
-  animation: fadeIn 0.3s ease-in-out;
+/* Símbolos e operadores */
+.katex .mop,
+.katex .mbin,
+.katex .mrel,
+.katex .mopen,
+.katex .mclose,
+.katex .mpunct,
+.katex .minner,
+.katex .mord {
+  color: inherit !important;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Melhorar legibilidade em telas pequenas */
-@media (max-width: 640px) {
-  .katex-display .katex {
-    font-size: 0.9em;
-  }
+/* Debug: torna todos os elementos KaTeX visíveis */
+.katex span {
+  color: inherit !important;
 }

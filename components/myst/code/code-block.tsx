@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-javascript";
@@ -81,13 +81,37 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   }, [mystDirective, children, propLanguage]);
 
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const codeRef = useRef<HTMLPreElement>(null);
   const lines = typeof code === 'string' ? code.split("\n") : [];
 
-  const html = useMemo(
-    () => Prism.highlight(code, Prism.languages[language] || Prism.languages.text, language),
-    [code, language]
-  );
+  // Aguarda o componente estar montado e estilos prontos
+  useEffect(() => {
+    // Pequeno delay para garantir que os CSS foram processados
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  const html = useMemo(() => {
+    if (!mounted) {
+      // Retorna uma versão com classes básicas mas sem highlight
+      return `<span class="token plain">${code}</span>`;
+    }
+    
+    try {
+      return Prism.highlight(
+        code, 
+        Prism.languages[language] || Prism.languages.text, 
+        language
+      );
+    } catch (error) {
+      console.warn(`Erro ao destacar código para linguagem ${language}:`, error);
+      return `<span class="token plain">${code}</span>`;
+    }
+  }, [code, language, mounted]);
 
   const handleCopy = () => {
     if (!copyable) return;
@@ -132,14 +156,17 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
       <pre
         ref={codeRef}
-        className="code-content scrollbar-thin scrollbar-thumb-[#334155] scrollbar-track-transparent text-sm font-mono px-6 pt-4 pb-6 min-h-[56px]"
+        className={`code-content scrollbar-thin scrollbar-thumb-[#334155] scrollbar-track-transparent text-sm font-mono px-6 pt-4 pb-6 min-h-[56px]`}
         tabIndex={0}
         aria-label="Código fonte"
       >
-        <code className={`language-${language} whitespace-pre`} dangerouslySetInnerHTML={{ __html: html }} />
+        <code 
+          className={`language-${language} whitespace-pre`} 
+          dangerouslySetInnerHTML={{ __html: html }} 
+        />
       </pre>
     </div>
   );
 };
 
-export default CodeBlock; 
+export default CodeBlock;

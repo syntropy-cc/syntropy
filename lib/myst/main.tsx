@@ -9,7 +9,7 @@ import Important from '@/components/myst/admonitions/important';
 import Caution from '@/components/myst/admonitions/caution';
 import Attention from '@/components/myst/admonitions/attention';
 import Challenge from '@/components/myst/admonitions/challenge';
-import MathBlock from '@/components/myst/math/math-block';
+import MathBlock, { resetEquationCounter } from '@/components/myst/math/math-block';
 import MathLine from '@/components/myst/math/math-line';
 
 // Componentes de admonition básicos (implementação funcional)
@@ -96,11 +96,33 @@ function normalizeAdmonitionName(name: string): string {
   return n;
 }
 
+// Função para extrair label de bloco matemático MyST
+function extractMathLabel(content: string): { label: string | null; equation: string } {
+  if (!content) return { label: null, equation: content };
+  
+  const lines = content.split('\n');
+  let label: string | null = null;
+  
+  // Procura por :label: eq:Nome
+  const labelLine = lines.find(line => line.trim().startsWith(':label:'));
+  if (labelLine) {
+    const match = labelLine.match(/:label:\s*eq:(.+)$/);
+    if (match) {
+      label = match[1].trim();
+    }
+  }
+  
+  // Remove linhas de configuração (:label:, etc)
+  const equation = lines
+    .filter(line => !line.trim().startsWith(':'))
+    .join('\n')
+    .trim();
+  
+  return { label, equation };
+}
+
 function renderNode(node: any, index: number = 0): React.ReactNode {
   if (!node) return null;
-
-  // Log para depuração do tipo de nó e conteúdo
-  console.log('[MystRenderer] renderNode:', node.type, node);
 
   const key = `node-${index}-${node.type || 'unknown'}`;
 
@@ -210,15 +232,13 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     );
   }
 
-  // Math (bloco)
+  // Math (bloco) - VERSÃO MELHORADA
   if (node.type === 'math') {
-    // Suporte a label: node.label ou node.options?.label
-    const label = node.label || (node.options && node.options.label) || undefined;
-    return (
-      <MathBlock key={key} label={label}>
-        {node.value}
-      </MathBlock>
-    );
+    console.log('[DEBUG] Math node SIMPLES encontrado:', JSON.stringify(node, null, 2));
+    
+    // IMPORTANTE: Não renderizar aqui se é um child de mystDirective
+    // Verificar se este nó é filho de um mystDirective
+    return null; // Será tratado pelo mystDirective pai
   }
   
   // Math (inline)
@@ -327,6 +347,39 @@ function renderNode(node: any, index: number = 0): React.ReactNode {
     return <hr key={key} className="my-8 border-gray-300 dark:border-gray-600" />;
   }
 
+  // --- TRATAMENTO ESPECIAL PARA BLOCOS DE MATEMÁTICA MyST ---
+  if (node.type === 'mystDirective' && node.name === 'math') {
+    console.log('[DEBUG] Math mystDirective encontrado:', JSON.stringify(node, null, 2));
+    
+    // Extrair o label do args
+    let label: string | null = null;
+    let mathContent = '';
+    
+    // O label está em node.args como ":label: eq:Nome"
+    if (node.args && typeof node.args === 'string') {
+      const labelMatch = node.args.match(/:label:\s*eq:(.+)$/);
+      if (labelMatch) {
+        label = labelMatch[1].trim();
+      }
+    }
+    
+    // O conteúdo matemático está em node.value
+    if (node.value && typeof node.value === 'string') {
+      mathContent = node.value.trim();
+    } else if (node.children && node.children.length > 0 && node.children[0].type === 'math') {
+      // Fallback: pega do primeiro child se for do tipo math
+      mathContent = node.children[0].value || '';
+    }
+    
+    console.log('[DEBUG] Math content extraído do mystDirective:', { label, mathContent });
+    
+    return (
+      <MathBlock key={key} label={label || undefined}>
+        {mathContent}
+      </MathBlock>
+    );
+  }
+
   // --- NOVO: Tratar mystDirective como code-block ---
   if (node.type === 'mystDirective') {
     const rawName = node.name?.toLowerCase();
@@ -402,6 +455,9 @@ export const MystRenderer: React.FC<MystRendererProps> = ({
   className = "" 
 }) => {
   try {
+    // RESET DO CONTADOR DE EQUAÇÕES A CADA RENDERIZAÇÃO
+    resetEquationCounter();
+    
     const tree = mystParse(content);
     console.log('Árvore MyST parseada:', JSON.stringify(tree, null, 2)); // Debug
     
