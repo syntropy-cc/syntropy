@@ -4,6 +4,7 @@ import { ChapterSidebar } from "./ChapterSidebar";
 import { ChapterTopbar } from "./ChapterTopbar";
 import ChapterContent from "./ChapterContent";
 import { ChapterIDE } from "./ChapterIDE";
+import { SidebarProvider } from "./SidebarProvider";
 import { notFound } from "next/navigation";
 
 export default async function ChapterPage({
@@ -44,26 +45,31 @@ export default async function ChapterPage({
   const progressPct = ((idx + 1) / course.chapters.length) * 100;
 
   return (
-    <div className="flex flex-col h-screen">
-      <ChapterTopbar course={course} progressPct={progressPct} />
+    <SidebarProvider>
+      <div className="flex flex-col h-screen">
+        <ChapterTopbar course={course} progressPct={progressPct} />
 
-      <div className="flex flex-1 overflow-hidden">
-        <ChapterSidebar course={course} chapterSlug={chapterSlug} />
+        <div className="flex flex-1 overflow-hidden">
+          <ChapterSidebar course={course} chapterSlug={chapterSlug} />
 
-        <main className="flex-1 flex overflow-hidden">
-          <ChapterContent
-            chapter={chapter}
-            idx={idx}
-            course={course}
-            prevChapter={prevChapter}
-            nextChapter={nextChapter}
-            chapterCount={course.chapters.length}
-            mdSource={mdSource}
-          />
+          <main className="flex-1 flex overflow-hidden">
+            <ChapterContent
+              chapter={chapter}
+              idx={idx}
+              course={course}
+              prevChapter={prevChapter}
+              nextChapter={nextChapter}
+              chapterCount={course.chapters.length}
+              mdSource={mdSource}
+            />
 
-          <ChapterIDE chapterTitle={chapter.title} />
-        </main>
+            {/* ChapterIDE oculto em telas pequenas (mobile) */}
+            <div className="hidden xl:block">
+              <ChapterIDE chapterTitle={chapter.title} />
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
