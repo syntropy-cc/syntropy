@@ -377,16 +377,16 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
 
   // --- TRATAMENTO PARA FIGURE MyST ---
   if (node.type === 'mystDirective' && node.name === 'figure') {
-    // Extrair informações da figura
-    const imageSrc = node.args || '';
-    const options = node.options || {};
-    
     console.log('[DEBUG FIGURE] Processando figure mystDirective:', {
-      imageSrc,
-      options,
+      imageSrc: node.args,
+      options: node.options,
       courseSlug,
       node: JSON.stringify(node, null, 2)
     });
+    
+    // Extrair informações da figura
+    const imageSrc = node.args || '';
+    const options = node.options || {};
     
     // Procurar por nó de imagem nos children para extrair informações adicionais
     let imageNode = null;
@@ -413,11 +413,14 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     
     return <Figure key={key} {...figureProps} />;
   }
-
-  // --- NOVO: Tratar mystDirective como code-block ---
   if (node.type === 'mystDirective') {
     const rawName = node.name?.toLowerCase();
     const name = normalizeAdmonitionName(rawName);
+
+    // DEBUG: Log específico para figure
+    if (rawName === 'figure') {
+      console.log('[DEBUG FIGURE] Nó figure encontrado:', JSON.stringify(node, null, 2));
+    }
 
     // Bloco de código
     if (name === 'code' || name === 'code-block') {
@@ -491,6 +494,14 @@ export const MystRenderer: React.FC<MystRendererProps> = ({
   className = "",
   courseSlug
 }) => {
+  console.log('[DEBUG MYST] MystRenderer iniciado com props:', { 
+    courseSlug, 
+    theme, 
+    contentLength: content.length,
+    hasContent: !!content,
+    courseSlugType: typeof courseSlug
+  });
+  
   try {
     // RESET DO CONTADOR DE EQUAÇÕES A CADA RENDERIZAÇÃO
     resetEquationCounter();

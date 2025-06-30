@@ -22,8 +22,7 @@ export interface FigureProps {
 
 /**
  * Resolve o caminho da imagem baseado no curso atual
- * Se courseSlug for fornecido, resolve para /content/courses/[courseSlug]/images/
- * Caso contrário, assume que o caminho já está correto ou usa uma URL absoluta
+ * Mapeia para a pasta /public/courses/ para que o Next.js sirva automaticamente
  */
 function resolveImagePath(src: string, courseSlug?: string): string {
   console.log('[DEBUG FIGURE] Resolvendo caminho da imagem:', { src, courseSlug });
@@ -34,24 +33,25 @@ function resolveImagePath(src: string, courseSlug?: string): string {
     return src;
   }
   
-  // Se começa com /images/ e temos courseSlug, resolve para o diretório do curso
+  // NOVA LÓGICA: Mapear para /public/courses/[courseSlug]/images/
   if (src.startsWith('/images/') && courseSlug) {
-    const resolvedPath = `/content/courses/${courseSlug}${src}`;
-    console.log('[DEBUG FIGURE] Resolvido caminho /images/ com courseSlug:', resolvedPath);
+    const imageName = src.replace('/images/', '');
+    const resolvedPath = `/courses/${courseSlug}/images/${imageName}`;
+    console.log('[DEBUG FIGURE] Resolvido para /public/courses:', resolvedPath);
     return resolvedPath;
   }
   
-  // Se começa com /content/, já está no formato correto
-  if (src.startsWith('/content/')) {
-    console.log('[DEBUG FIGURE] Caminho /content/ já está correto:', src);
+  // Se já começa com /courses/, assume que está correto
+  if (src.startsWith('/courses/')) {
+    console.log('[DEBUG FIGURE] Caminho /courses/ já está correto:', src);
     return src;
   }
   
   // Fallback: assume que é um caminho relativo da pasta images do curso
   if (courseSlug) {
     const imageName = src.replace(/^\/+/, ''); // Remove barras iniciais
-    const resolvedPath = `/content/courses/${courseSlug}/images/${imageName}`;
-    console.log('[DEBUG FIGURE] Fallback para caminho relativo:', resolvedPath);
+    const resolvedPath = `/courses/${courseSlug}/images/${imageName}`;
+    console.log('[DEBUG FIGURE] Fallback para /public/courses:', resolvedPath);
     return resolvedPath;
   }
   
@@ -72,6 +72,48 @@ function parseSize(size: string | number | undefined): number | undefined {
 }
 
 /**
+ * Calcula dimensões responsivas baseadas no tamanho especificado
+ */
+function getResponsiveDimensions(width?: string | number, height?: string | number) {
+  const parsedWidth = parseSize(width);
+  const parsedHeight = parseSize(height);
+  
+  // Valores padrão otimizados - usa largura total disponível
+  const defaultWidth = 800;  // Largura padrão mais generosa para ocupar o conteúdo
+  const defaultHeight = 500; // Altura proporcional
+  
+  // Se apenas largura foi especificada, calcular altura proporcionalmente (16:10)
+  if (parsedWidth && !parsedHeight) {
+    return {
+      width: parsedWidth,
+      height: Math.round(parsedWidth * 0.625) // Proporção 16:10 (mais widescreen)
+    };
+  }
+  
+  // Se apenas altura foi especificada, calcular largura proporcionalmente
+  if (parsedHeight && !parsedWidth) {
+    return {
+      width: Math.round(parsedHeight * 1.6), // Proporção 16:10
+      height: parsedHeight
+    };
+  }
+  
+  // Se ambos foram especificados, usar valores especificados
+  if (parsedWidth && parsedHeight) {
+    return {
+      width: parsedWidth,
+      height: parsedHeight
+    };
+  }
+  
+  // Valores padrão se nada foi especificado
+  return {
+    width: defaultWidth,
+    height: defaultHeight
+  };
+}
+
+/**
  * Componente Figure para renderizar imagens com estilização do Syntropy
  */
 const Figure: React.FC<FigureProps> = ({
@@ -87,11 +129,10 @@ const Figure: React.FC<FigureProps> = ({
   console.log('[DEBUG FIGURE] Props recebidas:', { src, alt, width, height, align, courseSlug });
   
   const resolvedSrc = resolveImagePath(src, courseSlug);
-  const parsedWidth = parseSize(width);
-  const parsedHeight = parseSize(height);
+  const dimensions = getResponsiveDimensions(width, height);
 
   console.log('[DEBUG FIGURE] Caminho final resolvido:', resolvedSrc);
-  console.log('[DEBUG FIGURE] Dimensões parseadas:', { parsedWidth, parsedHeight });
+  console.log('[DEBUG FIGURE] Dimensões calculadas:', dimensions);
 
   // Classes de alinhamento
   const alignmentClasses = {
@@ -100,40 +141,46 @@ const Figure: React.FC<FigureProps> = ({
     right: 'justify-end'
   };
 
-  // Classes do container baseadas na estética do Syntropy
-  const containerClasses = `
-    flex ${alignmentClasses[align]} w-full my-8
-  `.trim();
+  // Classes do container - ocupa largura total do conteúdo
+  const containerClasses = `flex ${alignmentClasses[align]} w-full my-8`;
 
-  const figureClasses = `
-    relative max-w-full
-    bg-gradient-to-br from-slate-800/50 to-slate-900/50
-    border border-slate-700/50
-    rounded-xl p-4
-    shadow-lg shadow-black/20
+  // Moldura mais fina e responsiva - só aparece se a imagem for grande o suficiente
+  const shouldShowFrame = dimensions.width >= 400; // Só mostra moldura para imagens >= 400px
+  
+  const figureClasses = shouldShowFrame ? `
+    relative w-full
+    bg-gradient-to-br from-slate-800/30 to-slate-900/30
+    border border-slate-700/30
+    rounded-lg p-2 sm:p-3
+    shadow-md shadow-black/10
     backdrop-blur-sm
+  `.trim() : `
+    relative w-full
   `.trim();
 
-  const imageWrapperClasses = `
+  const imageWrapperClasses = shouldShowFrame ? `
+    relative overflow-hidden rounded-md
+    bg-slate-800/20 border border-slate-600/20
+  `.trim() : `
     relative overflow-hidden rounded-lg
-    bg-slate-800/30 border border-slate-600/30
   `.trim();
 
   return (
     <div className={containerClasses}>
-      <figure className={figureClasses} style={{ maxWidth: parsedWidth ? `${parsedWidth}px` : 'fit-content' }}>
+      <figure className={figureClasses}>
         <div className={imageWrapperClasses}>
-          {/* Usando Next.js Image para otimização */}
+          {/* Imagem ocupa toda a largura disponível */}
           <Image
             src={resolvedSrc}
             alt={alt}
-            width={parsedWidth || 400}
-            height={parsedHeight || 300}
-            className="object-cover w-full h-auto transition-transform duration-300 hover:scale-105"
+            width={dimensions.width}
+            height={dimensions.height}
+            className="w-full h-auto object-contain transition-transform duration-300 hover:scale-[1.02]"
             style={{
-              width: parsedWidth ? `${parsedWidth}px` : 'auto',
-              height: parsedHeight ? `${parsedHeight}px` : 'auto'
+              maxWidth: '100%',
+              height: 'auto'
             }}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 85vw"
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             onError={(e) => {

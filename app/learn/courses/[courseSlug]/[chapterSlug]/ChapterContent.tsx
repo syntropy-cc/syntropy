@@ -47,8 +47,11 @@ export default function ChapterContent({
         )}
       </div>
 
-      {/* conteúdo MyST */}
-      <MystRenderer content={mdSource} />
+      {/* conteúdo MyST - AGORA COM courseSlug */}
+      <MystRenderer 
+        content={mdSource} 
+        courseSlug={course.slug}
+      />
 
       {/* navegação */}
       <div className="border-t pt-8 flex justify-between">

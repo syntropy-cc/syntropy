@@ -1,127 +1,196 @@
-// app/lib/courses.ts
-import type { CourseSummary, CourseProgress } from "@/types/course"
-import { unstable_cache } from "next/cache"
-import { createServerSupabaseClient } from "./supabase-server"
-import fs from "fs/promises"
-import path from "path"
+// lib/courses.ts - Versão para /public/courses
+import { cache } from "react";
+import fs from "fs/promises";
+import path from "path";
+import matter from "gray-matter";
 
-/* ------------------------------------------------------------------ */
-/* Helpers                                                             */
-/* ------------------------------------------------------------------ */
-
-/** Caminho absoluto para a pasta de cursos. */
-const COURSES_DIR = path.join(process.cwd(), "content", "courses")
-
-/** Lê o diretório content/courses e devolve uma lista de *slugs* (nome das sub-pastas) */
-async function discoverCourseSlugs(): Promise<string[]> {
-  const dirents = await fs.readdir(COURSES_DIR, { withFileTypes: true })
-  return dirents.filter((d) => d.isDirectory()).map((d) => d.name)
+export interface CourseSummary {
+  slug: string;
+  title: string;
+  description?: string;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  duration?: number;
+  cover?: string;
+  author?: {
+    name: string;
+    bio?: string;
+  };
+  tags?: string[];
+  outcomes?: Array<{
+    title: string;
+    description: string;
+  }>;
+  chapters: Array<{
+    id?: string;
+    slug: string;
+    title: string;
+    description?: string;
+    duration?: number;
+    completed?: boolean;
+    sections?: string[];
+    project?: string;
+  }>;
 }
 
-/* ------------------------------------------------------------------ */
-/* API pública                                                         */
-/* ------------------------------------------------------------------ */
+/** Caminho absoluto para a pasta de cursos em /public */
+const COURSES_DIR = path.join(process.cwd(), "public", "courses");
 
 /**
- * Carrega o módulo `index.ts` de um curso.  
- * Esse arquivo deve fazer import estático da capa (`course-cover.png`)
- * de modo que o Next gere a URL otimizada automaticamente.
+ * Carrega um curso a partir do summary.json em /public/courses/[courseSlug]/
  */
-export const getCourseSummary = unstable_cache(
-  async (courseSlug: string): Promise<CourseSummary> => {
+export const getCourseSummary = cache(
+  async (courseSlug: string): Promise<CourseSummary | null> => {
     try {
-      const courseModule = await import(
-        /* webpackInclude: /index\.ts$/ */
-        /* webpackMode: "lazy" */
-        `@/content/courses/${courseSlug}/index.ts`
-      )
-      // o módulo padrão exporta o objeto que satisfaz CourseSummary
-      return courseModule.default as CourseSummary
-    } catch {
-      throw new Error(`Course not found or invalid: ${courseSlug}`)
+      console.log('[DEBUG COURSES] Tentando carregar curso:', courseSlug);
+      
+      const summaryPath = path.join(COURSES_DIR, courseSlug, "summary.json");
+      
+      // Verificar se o arquivo existe
+      try {
+        await fs.access(summaryPath);
+      } catch {
+        console.error(`[DEBUG COURSES] Arquivo summary.json não encontrado: ${summaryPath}`);
+        return null;
+      }
+      
+      // Ler o arquivo summary.json
+      const summaryContent = await fs.readFile(summaryPath, 'utf8');
+      const summaryData = JSON.parse(summaryContent);
+      
+      console.log('[DEBUG COURSES] Curso carregado com sucesso:', summaryData.title);
+      
+      // Garantir que o slug está correto e a capa aponta para /public
+      const courseSummary: CourseSummary = {
+        ...summaryData,
+        slug: courseSlug,
+        // Ajustar o caminho da capa para apontar para /public
+        cover: summaryData.cover ? `/courses/${courseSlug}/${summaryData.cover}` : undefined,
+      };
+      
+      return courseSummary;
+    } catch (error) {
+      console.error(`[DEBUG COURSES] Erro ao carregar curso ${courseSlug}:`, error);
+      return null;
     }
-  },
-  ["course-summary"],
-  { revalidate: 3600 },
-)
+  }
+);
 
 /**
- * Descobre automaticamente todos os cursos lendo o disco
- * e carregando seu respectivo `index.ts`.
+ * Lista todos os cursos disponíveis lendo /public/courses/
  */
-export const getAllCourses = unstable_cache(
-  async (): Promise<CourseSummary[]> => {
-    const slugs = await discoverCourseSlugs()
-
-    const summaries = await Promise.all(
-      slugs.map(async (slug) => {
-        try {
-          return await getCourseSummary(slug)
-        } catch {
-          // ignora cursos com arquivo ausente ou inválido
-          return null
-        }
-      }),
-    )
-
-    return summaries.filter(Boolean) as CourseSummary[]
-  },
-  ["all-courses"],
-  { revalidate: 3600 },
-)
-
-/* ------------------------------------------------------------------ */
-/* MDX capítulo                                                        */
-/* ------------------------------------------------------------------ */
-
-export const getChapterMdx = async (courseSlug: string, chapterSlug: string) => {
+export const getAllCourses = cache(async (): Promise<CourseSummary[]> => {
   try {
-    const chapterModule = await import(
-      /* webpackInclude: /\.mdx$/ */
-      `@/content/courses/${courseSlug}/${chapterSlug}.mdx`
-    )
-    return chapterModule
-  } catch {
-    throw new Error(`Chapter not found: ${courseSlug}/${chapterSlug}`)
+    // Ler todas as pastas em /public/courses/
+    const courseDirs = await fs.readdir(COURSES_DIR, { withFileTypes: true });
+    const courseSlugList = courseDirs
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+    
+    console.log('[DEBUG COURSES] Cursos encontrados:', courseSlugList);
+    
+    const courses: CourseSummary[] = [];
+    
+    for (const courseSlug of courseSlugList) {
+      const course = await getCourseSummary(courseSlug);
+      if (course) {
+        courses.push(course);
+      }
+    }
+    
+    return courses;
+  } catch (error) {
+    console.error('[DEBUG COURSES] Erro ao listar cursos:', error);
+    return [];
   }
+});
+
+/**
+ * Carrega o conteúdo markdown de um capítulo de /public/courses/
+ */
+export const getChapterContent = cache(
+  async (courseSlug: string, chapterSlug: string): Promise<string | null> => {
+    try {
+      const filePath = path.join(COURSES_DIR, courseSlug, `${chapterSlug}.md`);
+      
+      console.log('[DEBUG COURSES] Tentando carregar markdown:', filePath);
+      
+      // Verificar se o arquivo existe
+      try {
+        await fs.access(filePath);
+      } catch {
+        console.error(`[DEBUG COURSES] Arquivo markdown não encontrado: ${filePath}`);
+        return null;
+      }
+      
+      const content = await fs.readFile(filePath, 'utf8');
+      
+      // Remove frontmatter se existir
+      const { content: markdownContent } = matter(content);
+      
+      console.log('[DEBUG COURSES] Markdown carregado com sucesso, tamanho:', markdownContent.length);
+      
+      return markdownContent;
+    } catch (error) {
+      console.error(`[DEBUG COURSES] Erro ao carregar markdown ${courseSlug}/${chapterSlug}:`, error);
+      return null;
+    }
+  }
+);
+
+// Manter as funções de progresso do usuário (Supabase) inalteradas
+export interface CourseProgress {
+  course_id: string;
+  user_id: string;
+  current_chapter: string;
+  last_accessed_at: string;
 }
-
-/* ------------------------------------------------------------------ */
-/* Progresso do usuário (Supabase)                                     */
-/* ------------------------------------------------------------------ */
-
-import { createClient } from "./supabase" // (mantido, caso use em outro lugar)
 
 export const getCourseProgress = async (
   courseId: string,
   userId: string,
 ): Promise<CourseProgress | null> => {
-  const supabase = await createServerSupabaseClient()
+  // Implementação Supabase permanece igual
+  try {
+    const { createServerSupabaseClient } = await import('./supabase-server');
+    const supabase = await createServerSupabaseClient();
+    
+    if (!supabase) return null;
 
-  const { data, error } = await supabase
-    .from("course_progress")
-    .select("*")
-    .eq("course_id", courseId)
-    .eq("user_id", userId)
-    .single()
+    const { data, error } = await supabase
+      .from("course_progress")
+      .select("*")
+      .eq("course_id", courseId)
+      .eq("user_id", userId)
+      .single();
 
-  if (error && error.code !== "PGRST116") throw error
-  return data
-}
+    if (error && error.code !== "PGRST116") throw error;
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar progresso do curso:', error);
+    return null;
+  }
+};
 
 export const updateCourseProgress = async (
   courseId: string,
   userId: string,
   chapterId: string,
 ): Promise<void> => {
-  const supabase = await createServerSupabaseClient()
+  try {
+    const { createServerSupabaseClient } = await import('./supabase-server');
+    const supabase = await createServerSupabaseClient();
+    
+    if (!supabase) return;
 
-  const { error } = await supabase.from("course_progress").upsert({
-    course_id: courseId,
-    user_id: userId,
-    current_chapter: chapterId,
-    last_accessed_at: new Date().toISOString(),
-  })
+    const { error } = await supabase.from("course_progress").upsert({
+      course_id: courseId,
+      user_id: userId,
+      current_chapter: chapterId,
+      last_accessed_at: new Date().toISOString(),
+    });
 
-  if (error) throw error
-}
+    if (error) throw error;
+  } catch (error) {
+    console.error('Erro ao atualizar progresso do curso:', error);
+  }
+};

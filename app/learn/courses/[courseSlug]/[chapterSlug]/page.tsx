@@ -1,25 +1,10 @@
 // app/learn/courses/[courseSlug]/[chapterSlug]/page.tsx
-import path from "path";
-import { readFile } from "fs/promises";
-import matter from "gray-matter";
-import { getCourseSummary } from "@/lib/courses";
+import { getCourseSummary, getChapterContent } from "@/lib/courses";
 import { ChapterSidebar } from "./ChapterSidebar";
 import { ChapterTopbar } from "./ChapterTopbar";
 import ChapterContent from "./ChapterContent";
 import { ChapterIDE } from "./ChapterIDE";
 import { notFound } from "next/navigation";
-
-async function loadChapterMD(course: string, chapter: string) {
-  try {
-    const raw = await readFile(
-      path.join(process.cwd(), "content/courses", course, `${chapter}.md`),
-      "utf8"
-    );
-    return matter(raw).content;
-  } catch {
-    return null;
-  }
-}
 
 export default async function ChapterPage({
   params,
@@ -28,20 +13,33 @@ export default async function ChapterPage({
 }) {
   const { courseSlug, chapterSlug } = params;
 
+  console.log('[DEBUG PAGE] Carregando página do capítulo:', { courseSlug, chapterSlug });
+
   const course = await getCourseSummary(courseSlug);
-  if (!course) notFound();
+  if (!course) {
+    console.error('[DEBUG PAGE] Curso não encontrado:', courseSlug);
+    notFound();
+  }
 
   const idx = course.chapters.findIndex((c) => c.slug === chapterSlug);
-  if (idx === -1) notFound();
+  if (idx === -1) {
+    console.error('[DEBUG PAGE] Capítulo não encontrado:', chapterSlug);
+    notFound();
+  }
 
   const chapter = course.chapters[idx];
   const prevChapter = idx > 0 ? course.chapters[idx - 1] : null;
   const nextChapter =
     idx < course.chapters.length - 1 ? course.chapters[idx + 1] : null;
 
-  // Carregar o conteúdo do markdown do capítulo
-  const mdSource = await loadChapterMD(courseSlug, chapterSlug);
-  if (!mdSource) notFound();
+  // Carregar o conteúdo do markdown do capítulo usando a nova função
+  const mdSource = await getChapterContent(courseSlug, chapterSlug);
+  if (!mdSource) {
+    console.error('[DEBUG PAGE] Conteúdo markdown não encontrado:', { courseSlug, chapterSlug });
+    notFound();
+  }
+
+  console.log('[DEBUG PAGE] Tudo carregado com sucesso, renderizando página');
 
   const progressPct = ((idx + 1) / course.chapters.length) * 100;
 
