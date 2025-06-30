@@ -11,6 +11,7 @@
   "level": "beginner",
   "duration": 20,
   "tags": ["Python", "Programming", "Scripting", "Backend"],
+  "cover": "images/course-cover.png",
   "outcomes": [
     {
       "title": "Automatize tarefas chatas",

@@ -1,4 +1,4 @@
-// lib/courses.ts - Versão para /public/courses
+// lib/courses.ts - Versão simplificada para /public/courses
 import { cache } from "react";
 import fs from "fs/promises";
 import path from "path";
@@ -41,15 +41,13 @@ const COURSES_DIR = path.join(process.cwd(), "public", "courses");
 export const getCourseSummary = cache(
   async (courseSlug: string): Promise<CourseSummary | null> => {
     try {
-      console.log('[DEBUG COURSES] Tentando carregar curso:', courseSlug);
-      
       const summaryPath = path.join(COURSES_DIR, courseSlug, "summary.json");
       
       // Verificar se o arquivo existe
       try {
         await fs.access(summaryPath);
       } catch {
-        console.error(`[DEBUG COURSES] Arquivo summary.json não encontrado: ${summaryPath}`);
+        console.error(`[COURSES] summary.json não encontrado: ${summaryPath}`);
         return null;
       }
       
@@ -57,19 +55,24 @@ export const getCourseSummary = cache(
       const summaryContent = await fs.readFile(summaryPath, 'utf8');
       const summaryData = JSON.parse(summaryContent);
       
-      console.log('[DEBUG COURSES] Curso carregado com sucesso:', summaryData.title);
+      // Construir o caminho da capa
+      let coverPath: string | undefined;
+      if (summaryData.cover) {
+        // Se a capa já começar com '/', usar como está, senão construir o caminho
+        coverPath = summaryData.cover.startsWith('/') 
+          ? summaryData.cover 
+          : `/courses/${courseSlug}/${summaryData.cover}`;
+      }
       
-      // Garantir que o slug está correto e a capa aponta para /public
       const courseSummary: CourseSummary = {
         ...summaryData,
         slug: courseSlug,
-        // Ajustar o caminho da capa para apontar para /public
-        cover: summaryData.cover ? `/courses/${courseSlug}/${summaryData.cover}` : undefined,
+        cover: coverPath,
       };
       
       return courseSummary;
     } catch (error) {
-      console.error(`[DEBUG COURSES] Erro ao carregar curso ${courseSlug}:`, error);
+      console.error(`[COURSES] Erro ao carregar curso ${courseSlug}:`, error);
       return null;
     }
   }
@@ -80,13 +83,19 @@ export const getCourseSummary = cache(
  */
 export const getAllCourses = cache(async (): Promise<CourseSummary[]> => {
   try {
+    // Verificar se o diretório existe
+    try {
+      await fs.access(COURSES_DIR);
+    } catch {
+      console.error('[COURSES] Diretório não encontrado:', COURSES_DIR);
+      return [];
+    }
+    
     // Ler todas as pastas em /public/courses/
     const courseDirs = await fs.readdir(COURSES_DIR, { withFileTypes: true });
     const courseSlugList = courseDirs
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name);
-    
-    console.log('[DEBUG COURSES] Cursos encontrados:', courseSlugList);
     
     const courses: CourseSummary[] = [];
     
@@ -99,7 +108,7 @@ export const getAllCourses = cache(async (): Promise<CourseSummary[]> => {
     
     return courses;
   } catch (error) {
-    console.error('[DEBUG COURSES] Erro ao listar cursos:', error);
+    console.error('[COURSES] Erro ao listar cursos:', error);
     return [];
   }
 });
@@ -112,13 +121,11 @@ export const getChapterContent = cache(
     try {
       const filePath = path.join(COURSES_DIR, courseSlug, `${chapterSlug}.md`);
       
-      console.log('[DEBUG COURSES] Tentando carregar markdown:', filePath);
-      
       // Verificar se o arquivo existe
       try {
         await fs.access(filePath);
       } catch {
-        console.error(`[DEBUG COURSES] Arquivo markdown não encontrado: ${filePath}`);
+        console.error(`[COURSES] Markdown não encontrado: ${filePath}`);
         return null;
       }
       
@@ -127,17 +134,15 @@ export const getChapterContent = cache(
       // Remove frontmatter se existir
       const { content: markdownContent } = matter(content);
       
-      console.log('[DEBUG COURSES] Markdown carregado com sucesso, tamanho:', markdownContent.length);
-      
       return markdownContent;
     } catch (error) {
-      console.error(`[DEBUG COURSES] Erro ao carregar markdown ${courseSlug}/${chapterSlug}:`, error);
+      console.error(`[COURSES] Erro ao carregar markdown ${courseSlug}/${chapterSlug}:`, error);
       return null;
     }
   }
 );
 
-// Manter as funções de progresso do usuário (Supabase) inalteradas
+// Funções de progresso do usuário (Supabase) permanecem inalteradas
 export interface CourseProgress {
   course_id: string;
   user_id: string;
@@ -149,7 +154,6 @@ export const getCourseProgress = async (
   courseId: string,
   userId: string,
 ): Promise<CourseProgress | null> => {
-  // Implementação Supabase permanece igual
   try {
     const { createServerSupabaseClient } = await import('./supabase-server');
     const supabase = await createServerSupabaseClient();
