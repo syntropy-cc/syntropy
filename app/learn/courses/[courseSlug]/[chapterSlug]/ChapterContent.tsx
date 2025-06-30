@@ -39,12 +39,7 @@ export default function ChapterContent({
             </span>
           )}
         </div>
-        <h1 className="text-3xl font-bold mb-2">{chapter.title}</h1>
-        {chapter.description && (
-          <p className="text-lg text-muted-foreground">
-            {chapter.description}
-          </p>
-        )}
+        
       </div>
 
       {/* conteúdo MyST - AGORA COM courseSlug */}
