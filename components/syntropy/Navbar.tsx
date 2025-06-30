@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils"
 import { UserMenu } from "@/components/auth/UserMenu"
 
 const navigation = [
-  { name: "Aprender", href: "/learn", icon: BookOpen },
-  { name: "Projetos", href: "/projects", icon: Code },
+  { name: "Learn", href: "/learn", icon: BookOpen },
+  { name: "Projects", href: "/projects", icon: Code },
   { name: "Labs", href: "/labs", icon: FlaskConical },
 ]
 

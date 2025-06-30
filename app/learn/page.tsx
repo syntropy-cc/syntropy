@@ -16,28 +16,28 @@ function JupyterBookContent() {
     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 h-full">
       <div className="flex items-center gap-3 mb-6">
         <Laptop className="h-8 w-8 text-blue-400" />
-        <h3 className="text-2xl font-semibold text-white">Aprenda conceitos</h3>
+        <h3 className="text-2xl font-semibold text-white">Aprenda construindo</h3>
       </div>
 
       <div className="space-y-6 text-white/80">
         <div className="space-y-4">
-          <h4 className="text-lg font-medium text-white">📚 Conteúdo Interativo</h4>
+          <h4 className="text-lg font-medium text-white">🚀 Projetos práticos desde o primeiro dia</h4>
           <p className="leading-relaxed">
-            Explore conceitos fundamentais através de explicações claras, exemplos práticos e exercícios guiados.
+          Cada conceito é ensinado através de projetos reais que você constrói do zero. Teoria integrada à prática para aprendizado que fica.
           </p>
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-lg font-medium text-white">🎯 Aprendizado Estruturado</h4>
+          <h4 className="text-lg font-medium text-white">🔗 Trilhas conectadas e progressivas</h4>
           <p className="leading-relaxed">
-            Siga uma trilha de aprendizado cuidadosamente planejada, do básico ao avançado.
+          Percursos de aprendizado cuidadosamente planejados onde cada projeto prepara você para o próximo desafio, do básico ao profissional.
           </p>
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-lg font-medium text-white">💡 Teoria na Prática</h4>
+          <h4 className="text-lg font-medium text-white">💡 Conceitos aplicados imediatamente</h4>
           <p className="leading-relaxed">
-            Cada conceito é acompanhado de exemplos práticos que você pode testar imediatamente.
+          Aprenda construindo. Cada teoria vem acompanhada de implementação prática que você pode testar e modificar na hora.
           </p>
         </div>
       </div>
@@ -51,12 +51,13 @@ function IDESection() {
     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 h-full">
       <div className="flex items-center gap-3 mb-6">
         <Code className="h-8 w-8 text-blue-400" />
-        <h3 className="text-2xl font-semibold text-white">Codifique na IDE</h3>
+        <h3 className="text-2xl font-semibold text-white">Ambiente de desenvolvimento</h3>
       </div>
 
       <div className="space-y-4 mb-6">
         <p className="text-white/80 leading-relaxed">
-          Pratique imediatamente o que aprendeu em nossa IDE integrada. Sem instalações, sem configurações.
+        Comece a codificar em segundos
+        IDE completa no navegador com todas as ferramentas que você precisa. Zero configuração, foco total no aprendizado e construção de projetos.
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -241,9 +242,10 @@ export default function LearnLandingPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-8">
-              <span className="text-blue-400">Aprenda.</span> <span className="text-white">Codifique.</span>{" "}
-              <span className="text-blue-400">Publique.</span>
+            <h1 className="text-5xl md:text-6xl font-bold mb-8 mt-8">
+            <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+            Aprenda. Construa. Transforme.
+              </span>
             </h1>
           </motion.div>
 
@@ -253,7 +255,7 @@ export default function LearnLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            IDE pronta, trilhas práticas e comunidade open source em um só lugar para acelerar seu aprendizado.
+            Trilhas práticas, ambiente online completo e comunidade colaborativa. Construa seu portfólio enquanto colabora com a comunidade open-source.
           </motion.p>
 
           <motion.div
@@ -263,7 +265,7 @@ export default function LearnLandingPage() {
             transition={{ delay: 1, duration: 0.8 }}
           >
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-              <Link href="/auth?mode=signup">Criar conta grátis em 2 min</Link>
+              <Link href="/auth?mode=signup">Criar conta grátis</Link>
             </Button>
             <Button
               asChild
@@ -271,7 +273,7 @@ export default function LearnLandingPage() {
               size="lg"
               className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
             >
-              <Link href="/learn/courses">Explorar cursos</Link>
+              <Link href="/learn/courses">Iniciar aprendizado</Link>
             </Button>
           </motion.div>
 
@@ -307,7 +309,7 @@ export default function LearnLandingPage() {
       <AnimatedSection className="bg-white/5 pt-32">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Como funciona</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Sua jornada de aprendizado</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
@@ -315,20 +317,20 @@ export default function LearnLandingPage() {
               {
                 number: "1",
                 icon: Target,
-                title: "Escolha uma trilha",
+                title: "Encontre sua trilha ideal",
                 description: "Selecione o curso alinhado aos seus objetivos.",
               },
               {
                 number: "2",
                 icon: Code,
                 title: "Estude e codifique na IDE embutida",
-                description: "Consuma o conteúdo interativo e programe sem instalar nada.",
+                description: "Construa projetos práticos em ambiente online completo.",
               },
               {
                 number: "3",
                 icon: Share,
                 title: "Publique no portfólio & receba feedback",
-                description: "Deploy 1-clique + comentários da comunidade no seu portfólio.",
+                description: "Portfólio automático com feedback da comunidade.",
               },
             ].map((step, index) => {
               const Icon = step.icon
@@ -361,30 +363,30 @@ export default function LearnLandingPage() {
       <AnimatedSection>
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Por que escolher o Syntropy?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">O que torna o Syntropy único</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {[
               {
                 icon: Zap,
-                title: "Plug-and-play",
-                description: "Comece em segundos sem instalar nada",
+                title: "Pronto para usa",
+                description: "Ambiente completo no navegador, sem instalações",
               },
               {
                 icon: Upload,
                 title: "Projeto → Portfólio",
-                description: "Deploy em 1 clique para seu portfólio",
+                description: "Cada projeto vira conquista profissional verificável",
               },
               {
                 icon: Users,
-                title: "Conexão Syntropy Projects",
-                description: "Colabore open source com a comunidade",
+                title: "Ecossistema integrado",
+                description: "Do aprendizado ao open source real",
               },
               {
                 icon: Award,
-                title: "Gamificação & currículo",
-                description: "Badges e status que importam",
+                title: "Contribuições que contam",
+                description: "Sistema de reconhecimento focado em impacto real",
               },
             ].map((feature, index) => {
               const Icon = feature.icon
@@ -493,7 +495,7 @@ export default function LearnLandingPage() {
         </div>
       </AnimatedSection>
 
-      {/* Portfolio Section */}
+      {/* Portfolio Section 
       <AnimatedSection>
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
@@ -528,9 +530,9 @@ export default function LearnLandingPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> */}
 
-      {/* Learning vs Teaching Section */}
+      {/* Learning vs Teaching Section 
       <AnimatedSection className="bg-white/5">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -563,7 +565,7 @@ export default function LearnLandingPage() {
             </Card>
           </div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> */}
 
       {/* FAQ Section */}
       <AnimatedSection>

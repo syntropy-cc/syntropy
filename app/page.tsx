@@ -252,7 +252,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            O ecossistema open-source que conecta aprendizado, colaboração e inovação em um só lugar.
+            O ecossistema open source que une aprendizado prático, desenvolvimento colaborativo e pesquisa científica em uma plataforma integrada
           </motion.p>
 
           {/* Three Pillars */}
@@ -264,7 +264,7 @@ export default function HomePage() {
           >
             {[
               { icon: BookOpen, title: "Aprenda", sectionId: "aprenda" },
-              { icon: Users, title: "Contribua", sectionId: "contribua" },
+              { icon: Users, title: "Desenvolva", sectionId: "desenvolva" },
               { icon: FlaskConical, title: "Pesquise", sectionId: "pesquise" },
             ].map(({ icon: Icon, title, sectionId }) => (
               <motion.button
@@ -302,14 +302,12 @@ export default function HomePage() {
               <Laptop3D />
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Aprenda na prática</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Aprenda construindo projetos reais</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                Domine programação com trilhas interativas e projetos reais dentro de um IDE 100% on-line. Escreva,
-                teste e publique código direto do navegador — sem instalar nada. Cada conquista alimenta um currículo
-                vivo que impulsiona sua carreira em comunidade.
+              Desenvolva habilidades através de trilhas interativas e projetos práticos em um ambiente de desenvolvimento 100% online. Construa seu portfólio enquanto aprende, publique projetos open source e conecte-se com uma comunidade colaborativa global.
               </p>
               <div className="space-y-4 mb-8">
-                {["Projetos reais", "Comunidade ativa", "Currículo vivo"].map((item, index) => (
+                {["Trilhas baseadas em projetos", "Aprenda fazendo, sem instalações", "Portifólio Integrado"].map((item, index) => (
                   <motion.div
                     key={item}
                     className="flex items-center gap-3"
@@ -323,7 +321,7 @@ export default function HomePage() {
                 ))}
               </div>
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/learn">Explorar cursos</Link>
+                <Link href="/learn">Conhecer Syntropy Learn</Link>
               </Button>
             </div>
           </div>
@@ -331,18 +329,16 @@ export default function HomePage() {
       </AnimatedSection>
 
       {/* Build Section */}
-      <AnimatedSection id="contribua" className="bg-white/5">
+      <AnimatedSection id="desenvolva" className="bg-white/5">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Construa junto</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Colabore em projetos open source</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                Participe de projetos open-source em equipe: edite código no navegador, siga um fluxo de contribuição
-                passo a passo e ganhe reconhecimento por cada entrega. Transforme ideias em soluções reais com a
-                comunidade.
+              Descubra projetos open source alinhados ao seu perfil e contribua com facilidade. Ambiente colaborativo completo, ferramentas integradas e sistema de financiamento transparente, tudo para transformar suas ideias em soluções reais que impactam a comunidade.
               </p>
               <div className="space-y-4 mb-8">
-                {["Edição colaborativa on-line", "Contribuição guiada", "Recompensas & reconhecimento"].map(
+                {["Descoberta inteligente de projetos", "Ferramentas colaborativas integradas", "Sistema de financiamento transparente"].map(
                   (item, index) => (
                     <motion.div
                       key={item}
@@ -358,7 +354,7 @@ export default function HomePage() {
                 )}
               </div>
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/projects">Explorar projetos</Link>
+                <Link href="/projects">Conhecer Syntropy Projects</Link>
               </Button>
             </div>
             <div className="flex justify-center">
@@ -376,14 +372,12 @@ export default function HomePage() {
               <LabEquipment />
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Pesquise em comunidade</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ciência aberta e colaborativa</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                Crie ou participe de laboratórios temáticos para explorar tecnologias emergentes, registrar métodos e
-                dados de forma reprodutível e colaborar com pesquisadores do mundo todo. Submeta descobertas à revisão
-                aberta da comunidade e publique artigos completos com um clique.
+              Revolucione a pesquisa científica. Participe de laboratórios temáticos descentralizados, colabore com pesquisadores globalmente e publique descobertas com revisão por pares transparente. Transforme a ciência em um processo aberto, reprodutível e acessível a todos.
               </p>
               <div className="space-y-4 mb-8">
-                {["Laboratórios temáticos", "Revisão aberta por pares", "Publicação integrada"].map((item, index) => (
+                {["Laboratórios descentralizados", "Revisão por pares transparente", "Publicação científica aberta"].map((item, index) => (
                   <motion.div
                     key={item}
                     className="flex items-center gap-3"
@@ -397,7 +391,7 @@ export default function HomePage() {
                 ))}
               </div>
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/labs">Conhecer Labs</Link>
+                <Link href="/labs">Conhecer Syntropy Labs</Link>
               </Button>
             </div>
           </div>
@@ -411,16 +405,14 @@ export default function HomePage() {
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Seu currículo vivo no ecossistema Syntropy</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                Cada curso concluído, projeto desenvolvido e experimento em labs se integra automaticamente ao seu
-                portfólio dinâmico. Aprenda, construa, pesquise e veja seu currículo evoluir em tempo real dentro do
-                ecossistema Syntropy.
+              Transforme cada ação no ecossistema Syntropy em conquista profissional. Cursos, projetos, contribuições open source e pesquisas científicas se integram automaticamente ao seu portfólio dinâmico. Comprove suas habilidades com evidências reais de impacto.
               </p>
               <div className="space-y-4 mb-8">
                 {[
                   "Cursos e certificações verificáveis",
-                  "Projetos com deploy automático",
-                  "Contribuições em labs experimentais",
-                  "Histórico completo de atividades",
+                  "Projetos com métricas de impacto",
+                  "Contribuições científicas documentadas",
+                  "Histórico completo de colaborações",
                 ].map((item, index) => (
                   <motion.div
                     key={item}
@@ -435,7 +427,7 @@ export default function HomePage() {
                 ))}
               </div>
               <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/auth?mode=signup">Criar meu portfólio</Link>
+                <Link href="/auth?mode=signup">Começar meu portfólio</Link>
               </Button>
             </div>
             <div className="flex justify-center">
@@ -456,10 +448,10 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Junte-se a uma comunidade que acredita no poder da colaboração e do conhecimento aberto.
+            Faça parte do ecossistema que conecta aprendizado prático, desenvolvimento colaborativo e pesquisa científica descentralizada.
             </p>
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-              Criar minha conta
+            <Link href="/auth?mode=signup">Começar minha jornada</Link>
             </Button>
           </div>
         </div>
