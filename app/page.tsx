@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform, useInView } from "framer-motion"
+import { useRef, useEffect, useState } from "react"
+import { motion, useScroll, useTransform, useInView, useAnimation, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Users, FlaskConical, Check } from "lucide-react"
+import { BookOpen, Users, FlaskConical, Check, Award, Briefcase, GraduationCap, Rocket, GitBranch, Handshake, DollarSign } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/hooks/use-auth"
 
 // Portfolio Preview Component
 function PortfolioPreview() {
@@ -195,6 +196,806 @@ function LabEquipment() {
   )
 }
 
+// Card principal Portfolio
+function PortfolioCard() {
+  return (
+    <Link href="/portfolio" tabIndex={-1} aria-label="Ir para Portfólio" className="block focus:outline-none">
+      <motion.div
+        className="relative overflow-visible"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #2563EB33, 0 1.5px 0 #fff2" }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        style={{
+          background: "rgba(255,255,255,0.08)",
+          backdropFilter: "blur(40px) saturate(150%)",
+          border: "1.5px solid rgba(255,255,255,0.10)",
+          borderRadius: 16,
+          boxShadow:
+            "0 8px 32px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+          maxWidth: 400,
+          width: "100%",
+          padding: 40,
+          zIndex: 1,
+        }}
+        tabIndex={0}
+        role="link"
+        aria-label="Ir para Portfólio"
+      >
+        {/* Background mesh e partículas */}
+        <div
+          className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 20%, #2563EB22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+            zIndex: 0,
+          }}
+        />
+        <CodeParticles />
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <motion.div
+            className="relative w-14 h-14 flex items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+              boxShadow: "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
+              border: "3px solid #fff3",
+              perspective: 100,
+            }}
+            initial={{ boxShadow: "0 0 24px 6px #2563EB55" }}
+            animate={{
+              boxShadow: [
+                "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
+                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+              ],
+              scale: [1, 1.08]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileHover={{ scale: 1.12 }}
+          >
+            <Briefcase className="h-8 w-8 text-white drop-shadow" />
+          </motion.div>
+          <div>
+            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+              Seu Portfólio
+            </h3>
+            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
+              Registro dinâmico
+            </span>
+          </div>
+        </div>
+        {/* Descrição breve */}
+        <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
+          Seu portfólio dinâmico: conquistas, projetos e pesquisas integrados automaticamente para comprovar suas habilidades com evidências reais no ecossistema Syntropy.
+        </div>
+        {/* Atividades */}
+        <div className="space-y-4 mb-6 relative z-10">
+          <div className="bg-slate-700/50 rounded-lg p-4 flex items-center gap-4">
+            <Award className="h-6 w-6 text-yellow-400" />
+            <div>
+              <h4 className="text-white font-medium">Cursos & Certificações</h4>
+              <p className="text-slate-400 text-sm">8 cursos, 3 certificados</p>
+            </div>
+          </div>
+          <div className="bg-slate-700/50 rounded-lg p-4 flex items-center gap-4">
+            <Briefcase className="h-6 w-6 text-blue-400" />
+            <div>
+              <h4 className="text-white font-medium">Projetos Concluídos</h4>
+              <p className="text-slate-400 text-sm">5 projetos, 12 colaborações</p>
+            </div>
+          </div>
+          <div className="bg-slate-700/50 rounded-lg p-4 flex items-center gap-4">
+            <GraduationCap className="h-6 w-6 text-purple-400" />
+            <div>
+              <h4 className="text-white font-medium">Atividades Científicas</h4>
+              <p className="text-slate-400 text-sm">2 artigos, 1 laboratório</p>
+            </div>
+          </div>
+        </div>
+        {/* Barra divisória */}
+        <div
+          className="w-full h-[2px] my-4 rounded"
+          style={{
+            background: "linear-gradient(90deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+            opacity: 0.25,
+            boxShadow: "0 1px 8px #2563EB33",
+          }}
+        />
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3 text-center mt-4 relative z-10">
+          <div>
+            <div className="text-blue-400 font-bold text-base">15</div>
+            <div className="text-slate-400 text-xs">Conquistas</div>
+          </div>
+          <div>
+            <div className="text-green-400 font-bold text-base">120</div>
+            <div className="text-slate-400 text-xs">Contribuições</div>
+          </div>
+          <div>
+            <div className="text-yellow-400 font-bold text-base">7</div>
+            <div className="text-slate-400 text-xs">Certificados</div>
+          </div>
+        </div>
+        {/* Sombra interna para profundidade */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
+          style={{
+            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #2563EB22",
+            zIndex: 2,
+          }}
+        />
+      </motion.div>
+    </Link>
+  )
+}
+
+// Gradiente para ícones e textos
+const gradient = "linear-gradient(90deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)"
+
+// SVGs customizados
+function TrailIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path
+        d="M6 26C6 19 12 13 19 13H26"
+        stroke="url(#trail)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <circle cx="6" cy="26" r="3" fill="url(#trail)" />
+      <circle cx="26" cy="13" r="3" fill="url(#trail)" />
+      <defs>
+        <linearGradient id="trail" x1="6" y1="26" x2="26" y2="13" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#00AFFF" />
+          <stop offset="0.8" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+function MentorshipIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <circle cx="10" cy="14" r="4" stroke="url(#mentorship)" strokeWidth="2.5" />
+      <circle cx="22" cy="14" r="4" stroke="url(#mentorship)" strokeWidth="2.5" />
+      <path d="M6 24c2-4 8-4 10 0" stroke="url(#mentorship)" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M16 24c2-4 8-4 10 0" stroke="url(#mentorship)" strokeWidth="2.5" strokeLinecap="round" />
+      <defs>
+        <linearGradient id="mentorship" x1="6" y1="24" x2="26" y2="10" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#00AFFF" />
+          <stop offset="0.8" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+function ModularIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="4" y="4" width="10" height="10" rx="3" stroke="url(#modular)" strokeWidth="2.5" />
+      <rect x="18" y="4" width="10" height="10" rx="3" stroke="url(#modular)" strokeWidth="2.5" />
+      <rect x="11" y="18" width="10" height="10" rx="3" stroke="url(#modular)" strokeWidth="2.5" />
+      <defs>
+        <linearGradient id="modular" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#00AFFF" />
+          <stop offset="0.8" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+// Partículas de código flutuantes
+function CodeParticles() {
+  const particles = [
+    { x: "10%", y: "15%", text: "</>", size: "text-xs" },
+    { x: "80%", y: "25%", text: "{}", size: "text-base" },
+    { x: "20%", y: "80%", text: "[]", size: "text-sm" },
+    { x: "70%", y: "70%", text: "</>", size: "text-lg" },
+    { x: "50%", y: "50%", text: "{}", size: "text-xs" },
+  ]
+  return (
+    <AnimatePresence>
+      {particles.map((p, i) => (
+        <motion.span
+          key={i}
+          className={`absolute pointer-events-none select-none font-mono ${p.size} text-white/30`}
+          style={{ left: p.x, top: p.y, zIndex: 0 }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: [0, -5, 0] }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 3 + i, repeat: Infinity, repeatType: "reverse", delay: i * 0.5 }}
+        >
+          {p.text}
+        </motion.span>
+      ))}
+    </AnimatePresence>
+  )
+}
+
+// Badge LE com glow animado
+function BadgeLE() {
+  return (
+    <motion.div
+      className="relative w-14 h-14 flex items-center justify-center rounded-full"
+      style={{
+        background: "linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)",
+        boxShadow: "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+        border: "3px solid #fff3",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: "0 0 24px 6px #00AFFF55" }}
+      animate={{
+        boxShadow: [
+          "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+          "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+        ],
+        scale: [1, 1.08]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+      whileHover={{ scale: 1.12 }}
+    >
+      <span
+        className="font-extrabold text-2xl text-white drop-shadow"
+        style={{
+          textShadow: "0 2px 8px #00AFFF88, 0 0 2px #fff",
+          fontFamily: "inherit",
+        }}
+      >
+        LE
+      </span>
+    </motion.div>
+  )
+}
+
+// Métricas animadas
+interface MetricProps {
+  value: number;
+  label: string;
+  delay?: number;
+}
+function Metric({ value, label, delay = 0 }: MetricProps) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    let start = 0
+    const end = value
+    const duration = 1.2
+    let startTime: number | undefined
+    function animateCount(ts: number) {
+      if (!startTime) startTime = ts
+      const progress = Math.min((ts - startTime) / (duration * 1000), 1)
+      setDisplay(Math.floor(progress * (end - start) + start))
+      if (progress < 1) requestAnimationFrame(animateCount)
+      else setDisplay(end)
+    }
+    requestAnimationFrame(animateCount)
+  }, [value])
+  return (
+    <motion.div
+      className="flex flex-col items-center"
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay, duration: 0.7, type: "spring" }}
+    >
+      <span
+        className="font-mono font-extrabold text-4xl md:text-5xl"
+        style={{
+          background: gradient,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          filter: "drop-shadow(0 2px 8px #00AFFF44)",
+        }}
+      >
+        {display}
+      </span>
+      <span className="text-xs text-white/60 mt-1">{label}</span>
+      {/* Sparkline fake */}
+      <svg width="40" height="12" className="mt-1" style={{ opacity: 0.5 }}>
+        <polyline
+          points="0,10 8,6 16,8 24,4 32,7 40,2"
+          fill="none"
+          stroke="url(#spark)"
+          strokeWidth="2"
+        />
+        <defs>
+          <linearGradient id="spark" x1="0" y1="0" x2="40" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#00AFFF" />
+            <stop offset="0.8" stopColor="#33DDFF" />
+            <stop offset="1" stopColor="#B266FF" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </motion.div>
+  )
+}
+
+// Linha divisória com gradiente
+function GradientDivider() {
+  return (
+    <div
+      className="w-full h-[2px] my-4 rounded"
+      style={{
+        background: "linear-gradient(90deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)",
+        opacity: 0.25,
+        boxShadow: "0 1px 8px #00AFFF33",
+      }}
+    />
+  )
+}
+
+// Gradiente predominante roxo com azul de apoio
+
+// SVG customizados para features
+function CloudDevIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <ellipse cx="16" cy="20" rx="10" ry="6" fill="url(#clouddev)" />
+      <ellipse cx="16" cy="16" rx="6" ry="4" fill="url(#clouddev)" opacity="0.7" />
+      <defs>
+        <linearGradient id="clouddev" x1="6" y1="20" x2="26" y2="12" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#7F3FFF" />
+          <stop offset="0.7" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+// Novo ícone para Financiamento Transparente
+function FundingFlowIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M8 18c0 4 4 6 8 6 4 0 8-2 8-6" stroke="url(#fundingflow)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M24 14c0-4-4-6-8-6-2.5 0-5 .7-6.5 2.2" stroke="url(#fundingflow)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M7 10l2.5 1.5M7 10l1.5 2.5" stroke="url(#fundingflow)" strokeWidth="2" strokeLinecap="round" />
+      <path d="M25 22l-2.5-1.5M25 22l-1.5-2.5" stroke="url(#fundingflow)" strokeWidth="2" strokeLinecap="round" />
+      <defs>
+        <linearGradient id="fundingflow" x1="6" y1="8" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#7F3FFF" />
+          <stop offset="0.7" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+function MatchIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <circle cx="10" cy="16" r="5" stroke="url(#match)" strokeWidth="2.5" />
+      <circle cx="22" cy="16" r="5" stroke="url(#match)" strokeWidth="2.5" />
+      <path d="M15 16h2" stroke="url(#match)" strokeWidth="2.5" strokeLinecap="round" />
+      <defs>
+        <linearGradient id="match" x1="10" y1="16" x2="22" y2="16" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#7F3FFF" />
+          <stop offset="0.7" stopColor="#33DDFF" />
+          <stop offset="1" stopColor="#B266FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
+
+// Badge Projects
+function BadgePJ() {
+  return (
+    <motion.div
+      className="relative w-14 h-14 flex items-center justify-center rounded-full"
+      style={{
+        background: "linear-gradient(135deg, #7F3FFF 0%, #33DDFF 80%, #B266FF 100%)",
+        boxShadow: "0 0 24px 6px #7F3FFF55, 0 0 0 2px #fff2",
+        border: "3px solid #fff3",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: "0 0 24px 6px #7F3FFF55" }}
+      animate={{
+        boxShadow: [
+          "0 0 24px 6px #7F3FFF55, 0 0 0 2px #fff2",
+          "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+        ],
+        scale: [1, 1.08]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+      whileHover={{ scale: 1.12 }}
+    >
+      <span
+        className="font-extrabold text-2xl text-white drop-shadow"
+        style={{
+          textShadow: "0 2px 8px #7F3FFF88, 0 0 2px #fff",
+          fontFamily: "inherit",
+        }}
+      >
+        PJ
+      </span>
+    </motion.div>
+  )
+}
+
+// Barra divisória roxa-azul
+function ProjectsDivider() {
+  return (
+    <div
+      className="w-full h-[2px] my-4 rounded"
+      style={{
+        background: "linear-gradient(90deg, #7F3FFF 0%, #33DDFF 80%, #B266FF 100%)",
+        opacity: 0.25,
+        boxShadow: "0 1px 8px #7F3FFF33",
+      }}
+    />
+  )
+}
+
+// Card principal Syntropy Projects
+function SyntropyProjectsCard() {
+  return (
+    <Link href="/projects" tabIndex={-1} aria-label="Ir para Syntropy Projects" className="block focus:outline-none">
+      <motion.div
+        className="relative overflow-visible"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #6D28D933, 0 1.5px 0 #fff2" }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        style={{
+          background: "rgba(255,255,255,0.10)",
+          backdropFilter: "blur(40px) saturate(150%)",
+          border: "1.5px solid rgba(109,40,217,0.20)",
+          borderRadius: 16,
+          boxShadow:
+            "0 8px 32px rgba(109,40,217,0.18), inset 0 1px 0 rgba(255,255,255,0.10)",
+          maxWidth: 400,
+          width: "100%",
+          padding: 40,
+          zIndex: 1,
+        }}
+        tabIndex={0}
+        role="link"
+        aria-label="Ir para Syntropy Projects"
+      >
+        {/* Background mesh e partículas */}
+        <div
+          className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 20%, #6D28D922 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #2563EB22 0%, transparent 70%)",
+            zIndex: 0,
+          }}
+        />
+        <CodeParticles />
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <motion.div
+            className="relative w-14 h-14 flex items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #6D28D9 0%, #2563EB 80%, #B266FF 100%)",
+              boxShadow: "0 0 24px 6px #6D28D955, 0 0 0 2px #fff2",
+              border: "3px solid #fff3",
+              perspective: 100,
+            }}
+            initial={{ boxShadow: "0 0 24px 6px #6D28D955" }}
+            animate={{
+              boxShadow: [
+                "0 0 24px 6px #6D28D955, 0 0 0 2px #fff2",
+                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+              ],
+              scale: [1, 1.08]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileHover={{ scale: 1.12 }}
+          >
+            <Users className="h-8 w-8 text-white drop-shadow" />
+          </motion.div>
+          <div>
+            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+              Syntropy Projects
+            </h3>
+            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
+              Plataforma de Desenvolvimento
+            </span>
+          </div>
+        </div>
+        {/* Descrição breve */}
+        <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
+        Desenvolva, colabore e financie projetos open source com suporte completo e matchmaking inteligente.
+        </div>
+        {/* Barra divisória */}
+        <div
+          className="w-full h-[2px] my-4 rounded"
+          style={{
+            background: "linear-gradient(90deg, #6D28D9 0%, #2563EB 80%, #B266FF 100%)",
+            opacity: 0.25,
+            boxShadow: "0 1px 8px #6D28D933",
+          }}
+        />
+        {/* Features abaixo da barra */}
+        <div className="space-y-7 mt-8 relative z-10">
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <CloudDevIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Ambiente Completo</span>
+              <span className="text-white/70 text-sm">Dev em nuvem, versionamento e deploy</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <MatchIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Matchmaking de Projetos</span>
+              <span className="text-white/70 text-sm">Descubra projetos, faça a diferença</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <FundingFlowIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Financiamento Transparente</span>
+              <span className="text-white/70 text-sm">Capte recursos e acompanhe o impacto</span>
+            </div>
+          </div>
+        </div>
+        {/* Sombra interna para profundidade */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
+          style={{
+            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #6D28D922",
+            zIndex: 2,
+          }}
+        />
+      </motion.div>
+    </Link>
+  )
+}
+
+// Card principal Syntropy Learn
+function SyntropyLearnCard() {
+  return (
+    <Link href="/learn" tabIndex={-1} aria-label="Ir para Syntropy Learn" className="block focus:outline-none">
+      <motion.div
+        className="relative overflow-visible"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #00AFFF33, 0 1.5px 0 #fff2" }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        style={{
+          background: "rgba(255,255,255,0.08)",
+          backdropFilter: "blur(40px) saturate(150%)",
+          border: "1.5px solid rgba(255,255,255,0.10)",
+          borderRadius: 16,
+          boxShadow:
+            "0 8px 32px rgba(0,102,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+          maxWidth: 400,
+          width: "100%",
+          padding: 40,
+          zIndex: 1,
+        }}
+        tabIndex={0}
+        role="link"
+        aria-label="Ir para Syntropy Learn"
+      >
+        {/* Background mesh e partículas */}
+        <div
+          className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 20%, #00AFFF22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+            zIndex: 0,
+          }}
+        />
+        <CodeParticles />
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <motion.div
+            className="relative w-14 h-14 flex items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)",
+              boxShadow: "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+              border: "3px solid #fff3",
+              perspective: 100,
+            }}
+            initial={{ boxShadow: "0 0 24px 6px #00AFFF55" }}
+            animate={{
+              boxShadow: [
+                "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+              ],
+              scale: [1, 1.08]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileHover={{ scale: 1.12 }}
+          >
+            <BookOpen className="h-8 w-8 text-white drop-shadow" />
+          </motion.div>
+          <div>
+            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+              Syntropy Learn
+            </h3>
+            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
+              Plataforma de Aprendizado
+            </span>
+          </div>
+        </div>
+        {/* Descrição breve */}
+        <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
+          Plataforma de aprendizado prático, trilhas modulares e mentoria colaborativa para você evoluir construindo projetos reais.
+        </div>
+        {/* Barra divisória */}
+        <GradientDivider />
+        {/* Features abaixo da barra */}
+        <div className="space-y-7 mt-8 relative z-10">
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <TrailIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Trilhas Interconectadas</span>
+              <span className="text-white/70 text-sm">Progresso contínuo e modular</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <MentorshipIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Mentoria & Comunidade</span>
+              <span className="text-white/70 text-sm">Aprenda colaborando e ensinando</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <ModularIcon />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Formato Modular</span>
+              <span className="text-white/70 text-sm">Cursos compactos, foco prático</span>
+            </div>
+          </div>
+        </div>
+        {/* Sombra interna para profundidade */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
+          style={{
+            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #00AFFF22",
+            zIndex: 2,
+          }}
+        />
+      </motion.div>
+    </Link>
+  )
+}
+
+// Card principal Syntropy Labs
+function SyntropyLabsCard() {
+  return (
+    <Link href="/labs" tabIndex={-1} aria-label="Ir para Syntropy Labs" className="block focus:outline-none">
+      <motion.div
+        className="relative overflow-visible"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #A21CAF33, 0 1.5px 0 #fff2" }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        style={{
+          background: "rgba(255,255,255,0.12)",
+          backdropFilter: "blur(40px) saturate(150%)",
+          border: "1.5px solid rgba(162,28,175,0.25)",
+          borderRadius: 16,
+          boxShadow:
+            "0 8px 32px rgba(162,28,175,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          maxWidth: 400,
+          width: "100%",
+          padding: 40,
+          zIndex: 1,
+        }}
+        tabIndex={0}
+        role="link"
+        aria-label="Ir para Syntropy Labs"
+      >
+        {/* Background mesh e partículas */}
+        <div
+          className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 20%, #A21CAF33 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #6D28D922 0%, transparent 70%)",
+            zIndex: 0,
+          }}
+        />
+        <CodeParticles />
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <motion.div
+            className="relative w-14 h-14 flex items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)",
+              boxShadow: "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
+              border: "3px solid #fff3",
+              perspective: 100,
+            }}
+            initial={{ boxShadow: "0 0 24px 6px #A21CAF55" }}
+            animate={{
+              boxShadow: [
+                "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
+                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+              ],
+              scale: [1, 1.08]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileHover={{ scale: 1.12 }}
+          >
+            <FlaskConical className="h-8 w-8 text-white drop-shadow" />
+          </motion.div>
+          <div>
+            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+              Syntropy Labs
+            </h3>
+            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
+              Plataforma de Ciência Descentralizada
+            </span>
+          </div>
+        </div>
+        {/* Descrição breve */}
+        <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
+        Laboratórios temáticos, colaboração global e gestão aberta para acelerar a ciência.
+        </div>
+        {/* Barra divisória */}
+        <div
+          className="w-full h-[2px] my-4 rounded"
+          style={{
+            background: "linear-gradient(90deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)",
+            opacity: 0.25,
+            boxShadow: "0 1px 8px #A21CAF33",
+          }}
+        />
+        {/* Features abaixo da barra */}
+        <div className="space-y-7 mt-8 relative z-10">
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <FlaskConical className="h-7 w-7 text-blue-300" />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Labs Temáticos</span>
+              <span className="text-white/70 text-sm">Projetos e equipes interdisciplinares</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <GitBranch className="h-7 w-7 text-purple-300" />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Gestão Científica</span>
+              <span className="text-white/70 text-sm">Kanban, diários e versionamento</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+            <span className="w-10 h-10 flex items-center justify-center">
+              <Award className="h-7 w-7 text-yellow-300" />
+            </span>
+            <div>
+              <span className="text-white font-semibold text-lg block">Publicação Aberta</span>
+              <span className="text-white/70 text-sm">Peer review transparente</span>
+            </div>
+          </div>
+        </div>
+        {/* Sombra interna para profundidade */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
+          style={{
+            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #A21CAF33",
+            zIndex: 2,
+          }}
+        />
+      </motion.div>
+    </Link>
+  )
+}
+
 // Section Component with Scroll Animations
 function AnimatedSection({
   id,
@@ -222,10 +1023,148 @@ function AnimatedSection({
   )
 }
 
+// Ícone Aprenda (badge animado, azul)
+function PillarLearnIcon() {
+  return (
+    <motion.div
+      className="relative w-20 h-20 flex items-center justify-center rounded-full"
+      style={{
+        background: "linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)",
+        boxShadow: "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+        border: "3px solid #fff3",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: "0 0 24px 6px #00AFFF55" }}
+      animate={{
+        boxShadow: [
+          "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
+          "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+        ],
+        scale: [1, 1.08]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+      whileHover={{ scale: 1.12 }}
+    >
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect x="6" y="8" width="28" height="20" rx="4" fill="url(#learn-bg)" />
+        <path d="M12 16h16M12 20h16M12 24h10" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <defs>
+          <linearGradient id="learn-bg" x1="6" y1="8" x2="34" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#00AFFF" />
+            <stop offset="0.8" stopColor="#33DDFF" />
+            <stop offset="1" stopColor="#B266FF" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </motion.div>
+  )
+}
+
+// Ícone Desenvolva (badge animado, roxo)
+function PillarDevelopIcon() {
+  return (
+    <motion.div
+      className="relative w-20 h-20 flex items-center justify-center rounded-full"
+      style={{
+        background: "linear-gradient(135deg, #7F3FFF 0%, #33DDFF 80%, #B266FF 100%)",
+        boxShadow: "0 0 24px 6px #7F3FFF55, 0 0 0 2px #fff2",
+        border: "3px solid #fff3",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: "0 0 24px 6px #7F3FFF55" }}
+      animate={{
+        boxShadow: [
+          "0 0 24px 6px #7F3FFF55, 0 0 0 2px #fff2",
+          "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+        ],
+        scale: [1, 1.08]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+      whileHover={{ scale: 1.12 }}
+    >
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="14" fill="url(#dev-bg)" />
+        <path d="M14 22l6-6 6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <defs>
+          <linearGradient id="dev-bg" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#7F3FFF" />
+            <stop offset="0.8" stopColor="#33DDFF" />
+            <stop offset="1" stopColor="#B266FF" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </motion.div>
+  )
+}
+
+// Ícone Pesquise (badge animado, magenta)
+function PillarResearchIcon() {
+  return (
+    <motion.div
+      className="relative w-20 h-20 flex items-center justify-center rounded-full"
+      style={{
+        background: "linear-gradient(135deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)",
+        boxShadow: "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
+        border: "3px solid #fff3",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: "0 0 24px 6px #A21CAF55" }}
+      animate={{
+        boxShadow: [
+          "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
+          "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+        ],
+        scale: [1, 1.08]
+      }}
+      transition={{ duration: 2, repeat: Infinity }}
+      whileHover={{ scale: 1.12 }}
+    >
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <ellipse cx="20" cy="18" rx="10" ry="8" fill="url(#research-bg)" />
+        <circle cx="20" cy="18" r="5" fill="#fff" fillOpacity="0.2"/>
+        <path d="M28 28l-4-4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+        <defs>
+          <linearGradient id="research-bg" x1="10" y1="10" x2="30" y2="26" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#A21CAF" />
+            <stop offset="0.8" stopColor="#6D28D9" />
+            <stop offset="1" stopColor="#B266FF" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </motion.div>
+  )
+}
+
+function PillarIconAnimated({ children, color, shadow }: { children: React.ReactNode, color: string, shadow: string }) {
+  return (
+    <motion.div
+      className="relative w-20 h-20 flex items-center justify-center rounded-full"
+      style={{
+        background: color,
+        border: "2.5px solid #fff2",
+        perspective: 100,
+      }}
+      initial={{ boxShadow: `0 0 12px 2px ${shadow}55` }}
+      animate={{
+        boxShadow: [
+          `0 0 12px 2px ${shadow}55, 0 0 0 1.5px #fff2`,
+          `0 0 20px 6px ${shadow}33, 0 0 0 1.5px #fff2`
+        ],
+        scale: [1, 1.04]
+      }}
+      transition={{ duration: 2.5, repeat: Infinity }}
+      whileHover={{ scale: 1.09 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 export default function HomePage() {
   const { scrollYProgress } = useScroll()
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const { user, loading } = useAuth()
 
   return (
     <div className="bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white overflow-hidden">
@@ -263,10 +1202,43 @@ export default function HomePage() {
             transition={{ delay: 1.2, duration: 0.8 }}
           >
             {[
-              { icon: BookOpen, title: "Aprenda", sectionId: "aprenda" },
-              { icon: Users, title: "Desenvolva", sectionId: "desenvolva" },
-              { icon: FlaskConical, title: "Pesquise", sectionId: "pesquise" },
-            ].map(({ icon: Icon, title, sectionId }) => (
+              {
+                icon: (
+                  <PillarIconAnimated
+                    color="linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)"
+                    shadow="#00AFFF"
+                  >
+                    <BookOpen className="h-12 w-12 text-blue-100" strokeWidth={1.5} />
+                  </PillarIconAnimated>
+                ),
+                title: "Aprenda",
+                sectionId: "aprenda",
+              },
+              {
+                icon: (
+                  <PillarIconAnimated
+                    color="linear-gradient(135deg, #7F3FFF 0%, #33DDFF 80%, #B266FF 100%)"
+                    shadow="#7F3FFF"
+                  >
+                    <Users className="h-12 w-12 text-purple-100" strokeWidth={1.5} />
+                  </PillarIconAnimated>
+                ),
+                title: "Desenvolva",
+                sectionId: "desenvolva",
+              },
+              {
+                icon: (
+                  <PillarIconAnimated
+                    color="linear-gradient(135deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)"
+                    shadow="#A21CAF"
+                  >
+                    <FlaskConical className="h-12 w-12 text-pink-100" strokeWidth={1.5} />
+                  </PillarIconAnimated>
+                ),
+                title: "Pesquise",
+                sectionId: "pesquise",
+              },
+            ].map(({ icon, title, sectionId }) => (
               <motion.button
                 key={title}
                 onClick={() => {
@@ -279,12 +1251,7 @@ export default function HomePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-6 border border-white/20 group-hover:border-blue-400/50 group-hover:bg-white/15 transition-all">
-                  <Icon
-                    className="h-12 w-12 text-blue-400 group-hover:text-blue-300 transition-colors"
-                    strokeWidth={1.5}
-                  />
-                </div>
+                <div className="mb-6">{icon}</div>
                 <h3 className="text-xl font-semibold text-white group-hover:text-blue-300 transition-colors">
                   {title}
                 </h3>
@@ -299,30 +1266,32 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div className="flex justify-center">
-              <Laptop3D />
+              <SyntropyLearnCard />
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Aprenda construindo projetos reais</h2>
-              <p className="text-xl text-white/80 mb-8 leading-relaxed">
-              Desenvolva habilidades através de trilhas interativas e projetos práticos em um ambiente de desenvolvimento 100% online. Construa seu portfólio enquanto aprende, publique projetos open source e conecte-se com uma comunidade colaborativa global.
-              </p>
-              <div className="space-y-4 mb-8">
-                {["Trilhas baseadas em projetos", "Aprenda fazendo, sem instalações", "Portifólio Integrado"].map((item, index) => (
-                  <motion.div
-                    key={item}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                  >
-                    <Check className="h-5 w-5 text-blue-400" />
-                    <span className="text-white/80">{item}</span>
-                  </motion.div>
-                ))}
+              <div className="hidden md:block">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Aprenda construindo projetos reais</h2>
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                  Desenvolva habilidades através de trilhas interativas e projetos práticos em um ambiente de desenvolvimento 100% online. Construa seu portfólio enquanto aprende, publique projetos open source e conecte-se com uma comunidade colaborativa global.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {["Trilhas baseadas em projetos", "Aprenda fazendo, sem instalações", "Portifólio Integrado"].map((item, index) => (
+                    <motion.div
+                      key={item}
+                      className="flex items-center gap-3"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                    >
+                      <Check className="h-5 w-5 text-blue-400" />
+                      <span className="text-white/80">{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/learn">Conhecer Syntropy Learn</Link>
+                </Button>
               </div>
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/learn">Conhecer Syntropy Learn</Link>
-              </Button>
             </div>
           </div>
         </div>
@@ -333,32 +1302,34 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Colabore em projetos open source</h2>
-              <p className="text-xl text-white/80 mb-8 leading-relaxed">
-              Descubra projetos open source alinhados ao seu perfil e contribua com facilidade. Ambiente colaborativo completo, ferramentas integradas e sistema de financiamento transparente, tudo para transformar suas ideias em soluções reais que impactam a comunidade.
-              </p>
-              <div className="space-y-4 mb-8">
-                {["Descoberta inteligente de projetos", "Ferramentas colaborativas integradas", "Sistema de financiamento transparente"].map(
-                  (item, index) => (
-                    <motion.div
-                      key={item}
-                      className="flex items-center gap-3"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 + index * 0.1 }}
-                    >
-                      <Check className="h-5 w-5 text-blue-400" />
-                      <span className="text-white/80">{item}</span>
-                    </motion.div>
-                  ),
-                )}
+              <div className="hidden md:block">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Colabore em projetos open source</h2>
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                  Descubra projetos open source alinhados ao seu perfil e contribua com facilidade. Ambiente colaborativo completo, ferramentas integradas e sistema de financiamento transparente, tudo para transformar suas ideias em soluções reais que impactam a comunidade.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {["Descoberta inteligente de projetos", "Ferramentas colaborativas integradas", "Sistema de financiamento transparente"].map(
+                    (item, index) => (
+                      <motion.div
+                        key={item}
+                        className="flex items-center gap-3"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 + index * 0.1 }}
+                      >
+                        <Check className="h-5 w-5 text-blue-400" />
+                        <span className="text-white/80">{item}</span>
+                      </motion.div>
+                    ),
+                  )}
+                </div>
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/projects">Conhecer Syntropy Projects</Link>
+                </Button>
               </div>
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/projects">Conhecer Syntropy Projects</Link>
-              </Button>
             </div>
             <div className="flex justify-center">
-              <CollaborationElements />
+              <SyntropyProjectsCard />
             </div>
           </div>
         </div>
@@ -369,30 +1340,32 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div className="flex justify-center">
-              <LabEquipment />
+              <SyntropyLabsCard />
             </div>
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ciência aberta e colaborativa</h2>
-              <p className="text-xl text-white/80 mb-8 leading-relaxed">
-              Revolucione a pesquisa científica. Participe de laboratórios temáticos descentralizados, colabore com pesquisadores globalmente e publique descobertas com revisão por pares transparente. Transforme a ciência em um processo aberto, reprodutível e acessível a todos.
-              </p>
-              <div className="space-y-4 mb-8">
-                {["Laboratórios descentralizados", "Revisão por pares transparente", "Publicação científica aberta"].map((item, index) => (
-                  <motion.div
-                    key={item}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                  >
-                    <Check className="h-5 w-5 text-blue-400" />
-                    <span className="text-white/80">{item}</span>
-                  </motion.div>
-                ))}
+              <div className="hidden md:block">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ciência aberta e colaborativa</h2>
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                  Revolucione a pesquisa científica. Participe de laboratórios temáticos descentralizados, colabore com pesquisadores globalmente e publique descobertas com revisão por pares transparente. Transforme a ciência em um processo aberto, reprodutível e acessível a todos.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {["Laboratórios descentralizados", "Revisão por pares transparente", "Publicação científica aberta"].map((item, index) => (
+                    <motion.div
+                      key={item}
+                      className="flex items-center gap-3"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                    >
+                      <Check className="h-5 w-5 text-blue-400" />
+                      <span className="text-white/80">{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/labs">Conhecer Syntropy Labs</Link>
+                </Button>
               </div>
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/labs">Conhecer Syntropy Labs</Link>
-              </Button>
             </div>
           </div>
         </div>
@@ -403,59 +1376,63 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Seu currículo vivo no ecossistema Syntropy</h2>
-              <p className="text-xl text-white/80 mb-8 leading-relaxed">
-              Transforme cada ação no ecossistema Syntropy em conquista profissional. Cursos, projetos, contribuições open source e pesquisas científicas se integram automaticamente ao seu portfólio dinâmico. Comprove suas habilidades com evidências reais de impacto.
-              </p>
-              <div className="space-y-4 mb-8">
-                {[
-                  "Cursos e certificações verificáveis",
-                  "Projetos com métricas de impacto",
-                  "Contribuições científicas documentadas",
-                  "Histórico completo de colaborações",
-                ].map((item, index) => (
-                  <motion.div
-                    key={item}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 + index * 0.1 }}
-                  >
-                    <Check className="h-5 w-5 text-blue-400" />
-                    <span className="text-white/80">{item}</span>
-                  </motion.div>
-                ))}
+              <div className="hidden md:block">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6">Seu currículo vivo no ecossistema Syntropy</h2>
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                  Transforme cada ação no ecossistema Syntropy em conquista profissional. Cursos, projetos, contribuições open source e pesquisas científicas se integram automaticamente ao seu portfólio dinâmico. Comprove suas habilidades com evidências reais de impacto.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {[
+                    "Cursos e certificações verificáveis",
+                    "Projetos com métricas de impacto",
+                    "Contribuições científicas documentadas",
+                    "Histórico completo de colaborações",
+                  ].map((item, index) => (
+                    <motion.div
+                      key={item}
+                      className="flex items-center gap-3"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                    >
+                      <Check className="h-5 w-5 text-blue-400" />
+                      <span className="text-white/80">{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/portfolio">Começar meu portfólio</Link>
+                </Button>
               </div>
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                <Link href="/auth?mode=signup">Começar meu portfólio</Link>
-              </Button>
             </div>
             <div className="flex justify-center">
-              <PortfolioPreview />
+              <PortfolioCard />
             </div>
           </div>
         </div>
       </AnimatedSection>
 
       {/* CTA Section */}
-      <AnimatedSection id="cta" className="bg-white/5">
-        <div className="container mx-auto">
-          <div className="text-center max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Pronto para fazer parte da{" "}
-              <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-                revolução open-source?
-              </span>
-            </h2>
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-            Faça parte do ecossistema que conecta aprendizado prático, desenvolvimento colaborativo e pesquisa científica descentralizada.
-            </p>
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-            <Link href="/auth?mode=signup">Começar minha jornada</Link>
-            </Button>
+      {(!loading && !user) && (
+        <AnimatedSection id="cta" className="bg-white/5">
+          <div className="container mx-auto">
+            <div className="text-center max-w-4xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Pronto para fazer parte da{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+                  revolução open-source?
+                </span>
+              </h2>
+              <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Faça parte do ecossistema que conecta aprendizado prático, desenvolvimento colaborativo e pesquisa científica descentralizada.
+              </p>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
+                <Link href="/auth?mode=signup">Começar minha jornada</Link>
+              </Button>
+            </div>
           </div>
-        </div>
-      </AnimatedSection>
+        </AnimatedSection>
+      )}
     </div>
   )
 }
