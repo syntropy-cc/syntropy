@@ -1,4 +1,4 @@
-import { createClient, isSupabaseConfigured } from "@/lib/supabase"
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/supabase"
 import type { Provider } from "@supabase/supabase-js"
 
 export async function signInWithOAuth(provider: Provider) {
