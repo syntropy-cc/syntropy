@@ -5,7 +5,7 @@ import type React from "react"
 import { useRef, useEffect, useState } from "react"
 import { motion, useScroll, useTransform, useInView, useAnimation, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Users, FlaskConical, Check, Award, Briefcase, GraduationCap, Rocket, GitBranch, Handshake, DollarSign } from "lucide-react"
+import { BookOpen, Users, FlaskConical, Check, Award, Briefcase, GraduationCap, Rocket, GitBranch, Handshake, DollarSign, Lightbulb, FileText, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/hooks/use-auth"
@@ -1160,6 +1160,127 @@ function PillarIconAnimated({ children, color, shadow }: { children: React.React
   )
 }
 
+// Card principal Contribua
+function ContributeCard() {
+  return (
+    <Link href="/contribute" tabIndex={-1} aria-label="Ir para página de contribuição" className="block focus:outline-none">
+      <motion.div
+        className="relative overflow-visible"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #2563EB33, 0 1.5px 0 #fff2" }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        style={{
+          background: "rgba(255,255,255,0.10)",
+          backdropFilter: "blur(40px) saturate(150%)",
+          border: "1.5px solid rgba(37,99,235,0.18)",
+          borderRadius: 16,
+          boxShadow:
+            "0 8px 32px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+          maxWidth: 400,
+          width: "100%",
+          padding: 40,
+          zIndex: 1,
+        }}
+        tabIndex={0}
+        role="link"
+        aria-label="Ir para página de contribuição"
+      >
+        {/* Background mesh e partículas */}
+        <div
+          className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
+          style={{
+            background:
+              "radial-gradient(ellipse at 60% 20%, #2563EB22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+            zIndex: 0,
+          }}
+        />
+        {/* Ícone customizado de contribuição */}
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <motion.div
+            className="relative w-14 h-14 flex items-center justify-center rounded-full"
+            style={{
+              background: "linear-gradient(135deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+              boxShadow: "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
+              border: "3px solid #fff3",
+              perspective: 100,
+            }}
+            initial={{ boxShadow: "0 0 24px 6px #2563EB55" }}
+            animate={{
+              boxShadow: [
+                "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
+                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
+              ],
+              scale: [1, 1.08]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            whileHover={{ scale: 1.12 }}
+          >
+            {/* SVG customizado para contribuição */}
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="14" fill="url(#contrib-bg)" />
+              <path d="M10 18c0 3 3 5 6 5s6-2 6-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M22 14c0-3-3-5-6-5-2 0-4 .5-5.2 1.6" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <circle cx="12" cy="16" r="2" fill="#33DDFF" />
+              <circle cx="20" cy="16" r="2" fill="#B266FF" />
+              <defs>
+                <linearGradient id="contrib-bg" x1="6" y1="8" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#2563EB" />
+                  <stop offset="0.7" stopColor="#33DDFF" />
+                  <stop offset="1" stopColor="#B266FF" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </motion.div>
+          <div>
+            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+              Contribua no GitHub
+            </h3>
+            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
+              Faça parte da comunidade
+            </span>
+          </div>
+        </div>
+        {/* Descrição breve */}
+        <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
+          Código aberto, comunidade vibrante e espaço para todos crescerem juntos. Compartilhe ideias, envie PRs e colabore para transformar o Syntropy!
+        </div>
+        {/* Barra divisória */}
+        <div
+          className="w-full h-[2px] my-4 rounded"
+          style={{
+            background: "linear-gradient(90deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+            opacity: 0.25,
+            boxShadow: "0 1px 8px #2563EB33",
+          }}
+        />
+        {/* Bullets de formas de contribuir */}
+        <div className="space-y-4 mt-8 relative z-10">
+          {[
+            { icon: <Lightbulb className="h-6 w-6 text-blue-400" />, text: "Sugerir melhorias e novas features" },
+            { icon: <Check className="h-6 w-6 text-green-400" />, text: "Corrigir bugs e problemas" },
+            { icon: <FileText className="h-6 w-6 text-purple-400" />, text: "Melhorar a documentação" },
+            { icon: <MessageCircle className="h-6 w-6 text-yellow-400" />, text: "Participar das discussões" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
+              <span className="w-8 h-8 flex items-center justify-center">{item.icon}</span>
+              <span className="text-white/80 text-base">{item.text}</span>
+            </div>
+          ))}
+        </div>
+        {/* Sombra interna para profundidade */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
+          style={{
+            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #2563EB22",
+            zIndex: 2,
+          }}
+        />
+      </motion.div>
+    </Link>
+  )
+}
+
 export default function HomePage() {
   const { scrollYProgress } = useScroll()
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100])
@@ -1433,6 +1554,38 @@ export default function HomePage() {
           </div>
         </AnimatedSection>
       )}
+
+      {/* Contribute Section */}
+      <AnimatedSection id="contribute" className="bg-gradient-to-r from-blue-900/30 via-slate-900 to-pink-900/20">
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-12 max-w-5xl mx-auto py-12">
+            <motion.div
+              className="flex-1 text-center md:text-left hidden md:block"
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Construa o futuro com a gente!
+              </h2>
+              <p className="text-xl text-white/80 mb-8 max-w-xl">
+                O Syntropy é feito por pessoas como você. Contribua com código, ideias ou documentação e faça parte de uma comunidade que valoriza colaboração, inovação e impacto real. Toda contribuição conta!
+              </p>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 text-xl">
+                <Link href="/contribute">Quero contribuir</Link>
+              </Button>
+            </motion.div>
+            <motion.div
+              className="flex-1 flex justify-center"
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <ContributeCard />
+            </motion.div>
+          </div>
+        </div>
+      </AnimatedSection>
     </div>
   )
 }

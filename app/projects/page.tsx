@@ -268,8 +268,9 @@ export default function ProjectsLandingPage() {
             transition={{ duration: 1, ease: "easeOut" }}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-8">
-              <span className="text-blue-400">Construa.</span> <span className="text-white">Colabore.</span>{" "}
-              <span className="text-blue-400">Evolua.</span>
+              <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+            Crie. Clabore. Evolua.
+              </span>
             </h1>
           </motion.div>
 

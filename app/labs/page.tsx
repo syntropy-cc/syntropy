@@ -260,8 +260,9 @@ export default function LabsLandingPage() {
             transition={{ duration: 1, ease: "easeOut" }}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-8">
-              <span className="text-blue-400">Pesquise.</span> <span className="text-white">Colabore.</span>{" "}
-              <span className="text-blue-400">Publique.</span>
+              <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+            Pesquise. Inove. Publique.
+              </span>
             </h1>
           </motion.div>
 
@@ -545,7 +546,7 @@ export default function LabsLandingPage() {
         </div>
       </AnimatedSection>
 
-      {/* Research vs Teaching Section */}
+      {/* Research vs Teaching Section
       <AnimatedSection className="bg-white/5">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -578,7 +579,7 @@ export default function LabsLandingPage() {
             </Card>
           </div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> */}
 
       {/* FAQ Section */}
       <AnimatedSection>
