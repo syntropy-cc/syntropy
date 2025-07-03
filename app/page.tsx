@@ -195,24 +195,32 @@ function LabEquipment() {
     </div>
   )
 }
-
-// Card principal Portfolio
+// Card principal – Portfolio  •  Paleta "Portfolio" (#FF6B00)
 function PortfolioCard() {
   return (
-    <Link href="/portfolio" tabIndex={-1} aria-label="Ir para Portfólio" className="block focus:outline-none">
+    <Link
+      href="/portfolio"
+      tabIndex={-1}
+      aria-label="Ir para Portfólio"
+      className="block focus:outline-none"
+    >
       <motion.div
         className="relative overflow-visible"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #2563EB33, 0 1.5px 0 #fff2" }}
+        whileHover={{
+          y: -8,
+          boxShadow: "0 8px 48px 0 #FF6B0033, 0 1.5px 0 #ffffff22",
+        }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         style={{
+          /* ——— container glass ——— */
           background: "rgba(255,255,255,0.08)",
           backdropFilter: "blur(40px) saturate(150%)",
-          border: "1.5px solid rgba(255,255,255,0.10)",
+          border: "1.5px solid rgba(255,107,0,0.10)",
           borderRadius: 16,
           boxShadow:
-            "0 8px 32px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+            "0 8px 32px rgba(255,107,0,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
           maxWidth: 400,
           width: "100%",
           padding: 40,
@@ -222,53 +230,43 @@ function PortfolioCard() {
         role="link"
         aria-label="Ir para Portfólio"
       >
-        {/* Background mesh e partículas */}
+        {/* ——— Background mesh & partículas ——— */}
         <div
           className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
           style={{
             background:
-              "radial-gradient(ellipse at 60% 20%, #2563EB22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+              "radial-gradient(ellipse at 60% 20%, #FFB36B22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #BF410022 0%, transparent 70%)",
             zIndex: 0,
           }}
         />
         <CodeParticles />
-        {/* Header */}
+
+        {/* ——— Header ——— */}
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <motion.div
-            className="relative w-14 h-14 flex items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(135deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
-              boxShadow: "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
-              border: "3px solid #fff3",
-              perspective: 100,
-            }}
-            initial={{ boxShadow: "0 0 24px 6px #2563EB55" }}
-            animate={{
-              boxShadow: [
-                "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
-                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
-              ],
-              scale: [1, 1.08]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            whileHover={{ scale: 1.12 }}
+          {/* —— Somente a cor foi alterada —— */}
+          <PillarIconAnimated
+            color="radial-gradient(circle at 30% 30%, #FFB36B 0%, #FF6B00 55%, #BF4100 100%)"
+            shadow="#FF6B0099"
           >
-            <Briefcase className="h-8 w-8 text-white drop-shadow" />
-          </motion.div>
+            <Briefcase className="h-12 w-12 text-white" strokeWidth={1.5} />
+          </PillarIconAnimated>
+
           <div>
-            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+            <h3 className="text-white font-bold text-2xl leading-tight">
               Seu Portfólio
             </h3>
-            <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
-              Registro dinâmico
-            </span>
+            <span className="text-white/80 text-sm">Registro dinâmico</span>
           </div>
         </div>
-        {/* Descrição breve */}
+
+        {/* ——— Descrição breve ——— */}
         <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
-          Seu portfólio dinâmico: conquistas, projetos e pesquisas integrados automaticamente para comprovar suas habilidades com evidências reais no ecossistema Syntropy.
+          Seu portfólio dinâmico: conquistas, projetos e pesquisas integrados
+          automaticamente para comprovar suas habilidades com evidências reais
+          no ecossistema Syntropy.
         </div>
-        {/* Atividades */}
+
+        {/* ——— Atividades ——— */}
         <div className="space-y-4 mb-6 relative z-10">
           <div className="bg-slate-700/50 rounded-lg p-4 flex items-center gap-4">
             <Award className="h-6 w-6 text-yellow-400" />
@@ -281,7 +279,9 @@ function PortfolioCard() {
             <Briefcase className="h-6 w-6 text-blue-400" />
             <div>
               <h4 className="text-white font-medium">Projetos Concluídos</h4>
-              <p className="text-slate-400 text-sm">5 projetos, 12 colaborações</p>
+              <p className="text-slate-400 text-sm">
+                5 projetos, 12 colaborações
+              </p>
             </div>
           </div>
           <div className="bg-slate-700/50 rounded-lg p-4 flex items-center gap-4">
@@ -292,16 +292,19 @@ function PortfolioCard() {
             </div>
           </div>
         </div>
-        {/* Barra divisória */}
+
+        {/* ——— Barra divisória ——— */}
         <div
           className="w-full h-[2px] my-4 rounded"
           style={{
-            background: "linear-gradient(90deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+            background:
+              "linear-gradient(90deg, #FFB36B 0%, #FF6B00 55%, #BF4100 100%)",
             opacity: 0.25,
-            boxShadow: "0 1px 8px #2563EB33",
+            boxShadow: "0 1px 8px #FF6B0033",
           }}
         />
-        {/* Stats */}
+
+        {/* ——— Stats ——— */}
         <div className="grid grid-cols-3 gap-3 text-center mt-4 relative z-10">
           <div>
             <div className="text-blue-400 font-bold text-base">15</div>
@@ -316,18 +319,21 @@ function PortfolioCard() {
             <div className="text-slate-400 text-xs">Certificados</div>
           </div>
         </div>
-        {/* Sombra interna para profundidade */}
+
+        {/* ——— Inner shadow p/ profundidade ——— */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
           style={{
-            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #2563EB22",
+            boxShadow:
+              "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #BF410022",
             zIndex: 2,
           }}
         />
       </motion.div>
     </Link>
-  )
+  );
 }
+
 
 // Gradiente para ícones e textos
 const gradient = "linear-gradient(90deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)"
@@ -631,23 +637,32 @@ function ProjectsDivider() {
   )
 }
 
-// Card principal Syntropy Projects
+// Card principal – Syntropy Projects  •  Paleta "Desenvolva" atualizada
 function SyntropyProjectsCard() {
   return (
-    <Link href="/projects" tabIndex={-1} aria-label="Ir para Syntropy Projects" className="block focus:outline-none">
+    <Link
+      href="/projects"
+      tabIndex={-1}
+      aria-label="Ir para Syntropy Projects"
+      className="block focus:outline-none"
+    >
       <motion.div
         className="relative overflow-visible"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #6D28D933, 0 1.5px 0 #fff2" }}
+        whileHover={{
+          y: -8,
+          boxShadow: "0 8px 48px 0 #6B00FF33, 0 1.5px 0 #ffffff22",
+        }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         style={{
+          /* ——— container glass ——— */
           background: "rgba(255,255,255,0.10)",
           backdropFilter: "blur(40px) saturate(150%)",
-          border: "1.5px solid rgba(109,40,217,0.20)",
+          border: "1.5px solid rgba(107,0,255,0.20)",
           borderRadius: 16,
           boxShadow:
-            "0 8px 32px rgba(109,40,217,0.18), inset 0 1px 0 rgba(255,255,255,0.10)",
+            "0 8px 32px rgba(107,0,255,0.18), inset 0 1px 0 rgba(255,255,255,0.10)",
           maxWidth: 400,
           width: "100%",
           padding: 40,
@@ -657,41 +672,28 @@ function SyntropyProjectsCard() {
         role="link"
         aria-label="Ir para Syntropy Projects"
       >
-        {/* Background mesh e partículas */}
+        {/* ——— Background mesh & partículas ——— */}
         <div
           className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
           style={{
             background:
-              "radial-gradient(ellipse at 60% 20%, #6D28D922 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #2563EB22 0%, transparent 70%)",
+              "radial-gradient(ellipse at 60% 20%, #C28DFF22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #3E009E22 0%, transparent 70%)",
             zIndex: 0,
           }}
         />
         <CodeParticles />
-        {/* Header */}
+
+        {/* ——— Header ——— */}
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <motion.div
-            className="relative w-14 h-14 flex items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(135deg, #6D28D9 0%, #2563EB 80%, #B266FF 100%)",
-              boxShadow: "0 0 24px 6px #6D28D955, 0 0 0 2px #fff2",
-              border: "3px solid #fff3",
-              perspective: 100,
-            }}
-            initial={{ boxShadow: "0 0 24px 6px #6D28D955" }}
-            animate={{
-              boxShadow: [
-                "0 0 24px 6px #6D28D955, 0 0 0 2px #fff2",
-                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
-              ],
-              scale: [1, 1.08]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            whileHover={{ scale: 1.12 }}
-          >
-            <Users className="h-8 w-8 text-white drop-shadow" />
-          </motion.div>
+          <PillarIconAnimated color="radial-gradient(circle at 30% 30%, #C28DFF 0%, #6B00FF 55%, #3E009E 100%)" shadow="#6B00FF99">
+            <Users className="h-12 w-12 text-purple-100" strokeWidth={1.5} />
+          </PillarIconAnimated>
+
           <div>
-            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+            <h3
+              className="text-white font-bold text-2xl leading-tight"
+              style={{ fontFamily: "inherit" }}
+            >
               Syntropy Projects
             </h3>
             <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
@@ -699,79 +701,110 @@ function SyntropyProjectsCard() {
             </span>
           </div>
         </div>
-        {/* Descrição breve */}
+
+        {/* ——— Descrição breve ——— */}
         <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
-        Desenvolva, colabore e financie projetos open source com suporte completo e matchmaking inteligente.
+          Desenvolva, colabore e financie projetos open source com suporte
+          completo e matchmaking inteligente.
         </div>
-        {/* Barra divisória */}
+
+        {/* ——— Barra divisória ——— */}
         <div
           className="w-full h-[2px] my-4 rounded"
           style={{
-            background: "linear-gradient(90deg, #6D28D9 0%, #2563EB 80%, #B266FF 100%)",
+            background:
+              "linear-gradient(90deg, #C28DFF 0%, #6B00FF 55%, #3E009E 100%)",
             opacity: 0.25,
-            boxShadow: "0 1px 8px #6D28D933",
+            boxShadow: "0 1px 8px #6B00FF33",
           }}
         />
-        {/* Features abaixo da barra */}
+
+        {/* ——— Features ——— */}
         <div className="space-y-7 mt-8 relative z-10">
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <CloudDevIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Ambiente Completo</span>
-              <span className="text-white/70 text-sm">Dev em nuvem, versionamento e deploy</span>
+              <span className="text-white font-semibold text-lg block">
+                Ambiente Completo
+              </span>
+              <span className="text-white/70 text-sm">
+                Dev em nuvem, versionamento e deploy
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <MatchIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Matchmaking de Projetos</span>
-              <span className="text-white/70 text-sm">Descubra projetos, faça a diferença</span>
+              <span className="text-white font-semibold text-lg block">
+                Matchmaking de Projetos
+              </span>
+              <span className="text-white/70 text-sm">
+                Descubra projetos, faça a diferença
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <FundingFlowIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Financiamento Transparente</span>
-              <span className="text-white/70 text-sm">Capte recursos e acompanhe o impacto</span>
+              <span className="text-white font-semibold text-lg block">
+                Financiamento Transparente
+              </span>
+              <span className="text-white/70 text-sm">
+                Capte recursos e acompanhe o impacto
+              </span>
             </div>
           </div>
         </div>
-        {/* Sombra interna para profundidade */}
+
+        {/* ——— Inner shadow p/ profundidade ——— */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
           style={{
-            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #6D28D922",
+            boxShadow:
+              "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #3E009E22",
             zIndex: 2,
           }}
         />
       </motion.div>
     </Link>
-  )
+  );
 }
 
-// Card principal Syntropy Learn
+// Card principal – Syntropy Learn  •  Paleta "Aprenda" atualizada
 function SyntropyLearnCard() {
   return (
-    <Link href="/learn" tabIndex={-1} aria-label="Ir para Syntropy Learn" className="block focus:outline-none">
+    <Link
+      href="/learn"
+      tabIndex={-1}
+      aria-label="Ir para Syntropy Learn"
+      className="block focus:outline-none"
+    >
       <motion.div
         className="relative overflow-visible"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #00AFFF33, 0 1.5px 0 #fff2" }}
+        whileHover={{
+          y: -8,
+          boxShadow: "0 8px 48px 0 #0075FF33, 0 1.5px 0 #ffffff22",
+        }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         style={{
+          /* ——— container glass ——— */
           background: "rgba(255,255,255,0.08)",
           backdropFilter: "blur(40px) saturate(150%)",
-          border: "1.5px solid rgba(255,255,255,0.10)",
+          border: "1.5px solid rgba(0,117,255,0.10)",
           borderRadius: 16,
           boxShadow:
-            "0 8px 32px rgba(0,102,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+            "0 8px 32px rgba(0,117,255,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
           maxWidth: 400,
           width: "100%",
           padding: 40,
@@ -781,41 +814,28 @@ function SyntropyLearnCard() {
         role="link"
         aria-label="Ir para Syntropy Learn"
       >
-        {/* Background mesh e partículas */}
+        {/* ——— Background mesh & partículas ——— */}
         <div
           className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
           style={{
             background:
-              "radial-gradient(ellipse at 60% 20%, #00AFFF22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+              "radial-gradient(ellipse at 60% 20%, #4DA8FF22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #003DD622 0%, transparent 70%)",
             zIndex: 0,
           }}
         />
         <CodeParticles />
-        {/* Header */}
+
+        {/* ——— Header ——— */}
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <motion.div
-            className="relative w-14 h-14 flex items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)",
-              boxShadow: "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
-              border: "3px solid #fff3",
-              perspective: 100,
-            }}
-            initial={{ boxShadow: "0 0 24px 6px #00AFFF55" }}
-            animate={{
-              boxShadow: [
-                "0 0 24px 6px #00AFFF55, 0 0 0 2px #fff2",
-                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
-              ],
-              scale: [1, 1.08]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            whileHover={{ scale: 1.12 }}
-          >
-            <BookOpen className="h-8 w-8 text-white drop-shadow" />
-          </motion.div>
+          <PillarIconAnimated color="radial-gradient(circle at 30% 30%, #4DA8FF 0%, #0060FF 60%, #003DD6 100%)" shadow="#0075FFAA">
+            <BookOpen className="h-12 w-12 text-blue-100" strokeWidth={1.5} />
+          </PillarIconAnimated>
+
           <div>
-            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+            <h3
+              className="text-white font-bold text-2xl leading-tight"
+              style={{ fontFamily: "inherit" }}
+            >
               Syntropy Learn
             </h3>
             <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
@@ -823,72 +843,111 @@ function SyntropyLearnCard() {
             </span>
           </div>
         </div>
-        {/* Descrição breve */}
+
+        {/* ——— Descrição breve ——— */}
         <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
-          Plataforma de aprendizado prático, trilhas modulares e mentoria colaborativa para você evoluir construindo projetos reais.
+          Plataforma de aprendizado prático, trilhas modulares e mentoria
+          colaborativa para você evoluir construindo projetos reais.
         </div>
-        {/* Barra divisória */}
-        <GradientDivider />
-        {/* Features abaixo da barra */}
+
+        {/* ——— Barra divisória ——— */}
+        <div
+          className="w-full h-[2px] my-4 rounded"
+          style={{
+            background:
+              "linear-gradient(90deg, #4DA8FF 0%, #0060FF 60%, #003DD6 100%)",
+            opacity: 0.25,
+            boxShadow: "0 1px 8px #0075FF33",
+          }}
+        />
+
+        {/* ——— Features ——— */}
         <div className="space-y-7 mt-8 relative z-10">
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <TrailIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Trilhas Interconectadas</span>
-              <span className="text-white/70 text-sm">Progresso contínuo e modular</span>
+              <span className="text-white font-semibold text-lg block">
+                Trilhas Interconectadas
+              </span>
+              <span className="text-white/70 text-sm">
+                Progresso contínuo e modular
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <MentorshipIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Mentoria & Comunidade</span>
-              <span className="text-white/70 text-sm">Aprenda colaborando e ensinando</span>
+              <span className="text-white font-semibold text-lg block">
+                Mentoria & Comunidade
+              </span>
+              <span className="text-white/70 text-sm">
+                Aprenda colaborando e ensinando
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <ModularIcon />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Formato Modular</span>
-              <span className="text-white/70 text-sm">Cursos compactos, foco prático</span>
+              <span className="text-white font-semibold text-lg block">
+                Formato Modular
+              </span>
+              <span className="text-white/70 text-sm">
+                Cursos compactos, foco prático
+              </span>
             </div>
           </div>
         </div>
-        {/* Sombra interna para profundidade */}
+
+        {/* ——— Inner shadow p/ profundidade ——— */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
           style={{
-            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #00AFFF22",
+            boxShadow:
+              "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #003DD622",
             zIndex: 2,
           }}
         />
       </motion.div>
     </Link>
-  )
+  );
 }
 
-// Card principal Syntropy Labs
+
+// Card principal – Syntropy Labs  •  Paleta "Pesquise" atualizada
 function SyntropyLabsCard() {
   return (
-    <Link href="/labs" tabIndex={-1} aria-label="Ir para Syntropy Labs" className="block focus:outline-none">
+    <Link
+      href="/labs"
+      tabIndex={-1}
+      aria-label="Ir para Syntropy Labs"
+      className="block focus:outline-none"
+    >
       <motion.div
         className="relative overflow-visible"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #A21CAF33, 0 1.5px 0 #fff2" }}
+        whileHover={{
+          y: -8,
+          boxShadow: "0 8px 48px 0 #9D00FF33, 0 1.5px 0 #ffffff22",
+        }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         style={{
+          /* ——— container glass ——— */
           background: "rgba(255,255,255,0.12)",
           backdropFilter: "blur(40px) saturate(150%)",
-          border: "1.5px solid rgba(162,28,175,0.25)",
+          border: "1.5px solid rgba(157,0,255,0.25)",
           borderRadius: 16,
           boxShadow:
-            "0 8px 32px rgba(162,28,175,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+            "0 8px 32px rgba(157,0,255,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
           maxWidth: 400,
           width: "100%",
           padding: 40,
@@ -898,103 +957,113 @@ function SyntropyLabsCard() {
         role="link"
         aria-label="Ir para Syntropy Labs"
       >
-        {/* Background mesh e partículas */}
+        {/* ——— Background mesh & partículas ——— */}
         <div
           className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
           style={{
             background:
-              "radial-gradient(ellipse at 60% 20%, #A21CAF33 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #6D28D922 0%, transparent 70%)",
+              "radial-gradient(ellipse at 60% 20%, #F065FF22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #5A00A822 0%, transparent 70%)",
             zIndex: 0,
           }}
         />
         <CodeParticles />
-        {/* Header */}
+
+        {/* ——— Header ——— */}
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <motion.div
-            className="relative w-14 h-14 flex items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(135deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)",
-              boxShadow: "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
-              border: "3px solid #fff3",
-              perspective: 100,
-            }}
-            initial={{ boxShadow: "0 0 24px 6px #A21CAF55" }}
-            animate={{
-              boxShadow: [
-                "0 0 24px 6px #A21CAF55, 0 0 0 2px #fff2",
-                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
-              ],
-              scale: [1, 1.08]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            whileHover={{ scale: 1.12 }}
-          >
-            <FlaskConical className="h-8 w-8 text-white drop-shadow" />
-          </motion.div>
+          <PillarIconAnimated color="radial-gradient(circle at 30% 30%, #F065FF 0%, #9D00FF 60%, #5A00A8 100%)" shadow="#9D00FF99">
+            <FlaskConical className="h-12 w-12 text-pink-100" strokeWidth={1.5} />
+          </PillarIconAnimated>
+
           <div>
-            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
+            <h3
+              className="text-white font-bold text-2xl leading-tight"
+              style={{ fontFamily: "inherit" }}
+            >
               Syntropy Labs
             </h3>
             <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
-              Plataforma de Ciência Descentralizada
+              Ciência Descentralizada
             </span>
           </div>
         </div>
-        {/* Descrição breve */}
+
+        {/* ——— Descrição breve ——— */}
         <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
-        Laboratórios temáticos, colaboração global e gestão aberta para acelerar a ciência.
+          Laboratórios temáticos, colaboração global e gestão aberta para
+          acelerar a ciência.
         </div>
-        {/* Barra divisória */}
+
+        {/* ——— Barra divisória ——— */}
         <div
           className="w-full h-[2px] my-4 rounded"
           style={{
-            background: "linear-gradient(90deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)",
+            background:
+              "linear-gradient(90deg, #F065FF 0%, #9D00FF 60%, #5A00A8 100%)",
             opacity: 0.25,
-            boxShadow: "0 1px 8px #A21CAF33",
+            boxShadow: "0 1px 8px #9D00FF33",
           }}
         />
-        {/* Features abaixo da barra */}
+
+        {/* ——— Features ——— */}
         <div className="space-y-7 mt-8 relative z-10">
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <FlaskConical className="h-7 w-7 text-blue-300" />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Labs Temáticos</span>
-              <span className="text-white/70 text-sm">Projetos e equipes interdisciplinares</span>
+              <span className="text-white font-semibold text-lg block">
+                Labs Temáticos
+              </span>
+              <span className="text-white/70 text-sm">
+                Projetos e equipes interdisciplinares
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <GitBranch className="h-7 w-7 text-purple-300" />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Gestão Científica</span>
-              <span className="text-white/70 text-sm">Kanban, diários e versionamento</span>
+              <span className="text-white font-semibold text-lg block">
+                Gestão Científica
+              </span>
+              <span className="text-white/70 text-sm">
+                Kanban, diários e versionamento
+              </span>
             </div>
           </div>
+          {/* item */}
           <div className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
             <span className="w-10 h-10 flex items-center justify-center">
               <Award className="h-7 w-7 text-yellow-300" />
             </span>
             <div>
-              <span className="text-white font-semibold text-lg block">Publicação Aberta</span>
-              <span className="text-white/70 text-sm">Peer review transparente</span>
+              <span className="text-white font-semibold text-lg block">
+                Publicação Aberta
+              </span>
+              <span className="text-white/70 text-sm">
+                Peer review transparente
+              </span>
             </div>
           </div>
         </div>
-        {/* Sombra interna para profundidade */}
+
+        {/* ——— Inner shadow p/ profundidade ——— */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
           style={{
-            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #A21CAF33",
+            boxShadow:
+              "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #5A00A822",
             zIndex: 2,
           }}
         />
       </motion.div>
     </Link>
-  )
+  );
 }
+
 
 // Section Component with Scroll Animations
 function AnimatedSection({
@@ -1160,23 +1229,32 @@ function PillarIconAnimated({ children, color, shadow }: { children: React.React
   )
 }
 
-// Card principal Contribua
+// Card principal – Contribua  •  Paleta "Verde-Contribuição"
 function ContributeCard() {
   return (
-    <Link href="/contribute" tabIndex={-1} aria-label="Ir para página de contribuição" className="block focus:outline-none">
+    <Link
+      href="/contribute"
+      tabIndex={-1}
+      aria-label="Ir para página de contribuição"
+      className="block focus:outline-none"
+    >
       <motion.div
         className="relative overflow-visible"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        whileHover={{ y: -8, boxShadow: "0 8px 48px 0 #2563EB33, 0 1.5px 0 #fff2" }}
+        whileHover={{
+          y: -8,
+          boxShadow: "0 8px 48px 0 #00C85333, 0 1.5px 0 #ffffff22",
+        }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         style={{
+          /* ——— container glass ——— */
           background: "rgba(255,255,255,0.10)",
           backdropFilter: "blur(40px) saturate(150%)",
-          border: "1.5px solid rgba(37,99,235,0.18)",
+          border: "1.5px solid rgba(0,200,83,0.18)",
           borderRadius: 16,
           boxShadow:
-            "0 8px 32px rgba(37,99,235,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
+            "0 8px 32px rgba(0,200,83,0.10), inset 0 1px 0 rgba(255,255,255,0.10)",
           maxWidth: 400,
           width: "100%",
           padding: 40,
@@ -1186,99 +1264,104 @@ function ContributeCard() {
         role="link"
         aria-label="Ir para página de contribuição"
       >
-        {/* Background mesh e partículas */}
+        {/* ——— Background mesh & partículas ——— */}
         <div
           className="absolute inset-0 rounded-[16px] pointer-events-none h-full w-full min-h-full min-w-full"
           style={{
             background:
-              "radial-gradient(ellipse at 60% 20%, #2563EB22 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #B266FF22 0%, transparent 70%)",
+              "radial-gradient(ellipse at 60% 20%, #96FFA622 0%, transparent 70%), radial-gradient(ellipse at 20% 80%, #006C2C22 0%, transparent 70%)",
             zIndex: 0,
           }}
         />
-        {/* Ícone customizado de contribuição */}
+        {/* Ícone Contribuição */}
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <motion.div
-            className="relative w-14 h-14 flex items-center justify-center rounded-full"
-            style={{
-              background: "linear-gradient(135deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
-              boxShadow: "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
-              border: "3px solid #fff3",
-              perspective: 100,
-            }}
-            initial={{ boxShadow: "0 0 24px 6px #2563EB55" }}
-            animate={{
-              boxShadow: [
-                "0 0 24px 6px #2563EB55, 0 0 0 2px #fff2",
-                "0 0 36px 12px #B266FF55, 0 0 0 2px #fff2"
-              ],
-              scale: [1, 1.08]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            whileHover={{ scale: 1.12 }}
-          >
-            {/* SVG customizado para contribuição */}
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="14" fill="url(#contrib-bg)" />
-              <path d="M10 18c0 3 3 5 6 5s6-2 6-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <path d="M22 14c0-3-3-5-6-5-2 0-4 .5-5.2 1.6" stroke="#fff" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <circle cx="12" cy="16" r="2" fill="#33DDFF" />
-              <circle cx="20" cy="16" r="2" fill="#B266FF" />
-              <defs>
-                <linearGradient id="contrib-bg" x1="6" y1="8" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#2563EB" />
-                  <stop offset="0.7" stopColor="#33DDFF" />
-                  <stop offset="1" stopColor="#B266FF" />
-                </linearGradient>
-              </defs>
+          <PillarIconAnimated color="radial-gradient(circle at 30% 30%, #96FFA6 0%, #00C853 55%, #006C2C 100%)" shadow="#00C85399">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <circle cx="28" cy="28" r="26" fill="#00C853" fillOpacity="0.15" />
+              <circle cx="17.5" cy="36" r="6.5" stroke="#96FFA6" strokeWidth="2.5" fill="none"/>
+              <circle cx="38.5" cy="36" r="6.5" stroke="#96FFA6" strokeWidth="2.5" fill="none"/>
+              <circle cx="28" cy="19" r="6.5" stroke="#96FFA6" strokeWidth="2.5" fill="none"/>
+              <path d="M22 40c3.2 2.2 12.8 2.2 16 0" stroke="#96FFA6" strokeWidth="2" fill="none"/>
+              <path d="M23.5 24c-3.2 2.2-6.5 6.5-6.5 9.5" stroke="#96FFA6" strokeWidth="2" fill="none"/>
+              <path d="M32.5 24c3.2 2.2 6.5 6.5 6.5 9.5" stroke="#96FFA6" strokeWidth="2" fill="none"/>
             </svg>
-          </motion.div>
+          </PillarIconAnimated>
+
           <div>
-            <h3 className="text-white font-bold text-2xl leading-tight" style={{ fontFamily: "inherit" }}>
-              Contribua no GitHub
+            <h3
+              className="text-white font-bold text-2xl leading-tight"
+              style={{ fontFamily: "inherit" }}
+            >
+              Contribua
             </h3>
             <span className="text-white/80 text-sm" style={{ fontWeight: 400 }}>
               Faça parte da comunidade
             </span>
           </div>
         </div>
-        {/* Descrição breve */}
+
+        {/* ——— Descrição breve ——— */}
         <div className="mb-6 text-white/80 text-sm leading-relaxed relative z-10">
-          Código aberto, comunidade vibrante e espaço para todos crescerem juntos. Compartilhe ideias, envie PRs e colabore para transformar o Syntropy!
+          Código aberto, comunidade vibrante e espaço para todos crescerem
+          juntos. Compartilhe ideias, envie PRs e colabore para transformar o
+          Syntropy!
         </div>
-        {/* Barra divisória */}
+
+        {/* ——— Barra divisória ——— */}
         <div
           className="w-full h-[2px] my-4 rounded"
           style={{
-            background: "linear-gradient(90deg, #2563EB 0%, #33DDFF 80%, #B266FF 100%)",
+            background:
+              "linear-gradient(90deg, #96FFA6 0%, #00C853 55%, #006C2C 100%)",
             opacity: 0.25,
-            boxShadow: "0 1px 8px #2563EB33",
+            boxShadow: "0 1px 8px #00C85333",
           }}
         />
-        {/* Bullets de formas de contribuir */}
+
+        {/* ——— Bullets ——— */}
         <div className="space-y-4 mt-8 relative z-10">
           {[
-            { icon: <Lightbulb className="h-6 w-6 text-blue-400" />, text: "Sugerir melhorias e novas features" },
-            { icon: <Check className="h-6 w-6 text-green-400" />, text: "Corrigir bugs e problemas" },
-            { icon: <FileText className="h-6 w-6 text-purple-400" />, text: "Melhorar a documentação" },
-            { icon: <MessageCircle className="h-6 w-6 text-yellow-400" />, text: "Participar das discussões" },
+            {
+              icon: <Lightbulb className="h-6 w-6 text-emerald-300" />,
+              text: "Sugerir melhorias e novas features",
+            },
+            {
+              icon: <Check className="h-6 w-6 text-green-400" />,
+              text: "Corrigir bugs e problemas",
+            },
+            {
+              icon: <FileText className="h-6 w-6 text-lime-300" />,
+              text: "Melhorar a documentação",
+            },
+            {
+              icon: <MessageCircle className="h-6 w-6 text-yellow-400" />,
+              text: "Participar das discussões",
+            },
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105">
-              <span className="w-8 h-8 flex items-center justify-center">{item.icon}</span>
+            <div
+              key={i}
+              className="flex items-center gap-3 group cursor-pointer transition-all hover:scale-105"
+            >
+              <span className="w-8 h-8 flex items-center justify-center">
+                {item.icon}
+              </span>
               <span className="text-white/80 text-base">{item.text}</span>
             </div>
           ))}
         </div>
-        {/* Sombra interna para profundidade */}
+
+        {/* ——— Inner shadow p/ profundidade ——— */}
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] h-full w-full min-h-full min-w-full"
           style={{
-            boxShadow: "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #2563EB22",
+            boxShadow:
+              "inset 0 2px 24px 0 #0008, inset 0 -2px 24px 0 #006C2C22",
             zIndex: 2,
           }}
         />
       </motion.div>
     </Link>
-  )
+  );
 }
 
 export default function HomePage() {
@@ -1326,8 +1409,8 @@ export default function HomePage() {
               {
                 icon: (
                   <PillarIconAnimated
-                    color="linear-gradient(135deg, #00AFFF 0%, #33DDFF 80%, #B266FF 100%)"
-                    shadow="#00AFFF"
+                    color="radial-gradient(circle at 30% 30%, #4DA8FF 0%, #0060FF 60%, #003DD6 100%)"
+                    shadow="#0075FFAA"
                   >
                     <BookOpen className="h-12 w-12 text-blue-100" strokeWidth={1.5} />
                   </PillarIconAnimated>
@@ -1338,8 +1421,8 @@ export default function HomePage() {
               {
                 icon: (
                   <PillarIconAnimated
-                    color="linear-gradient(135deg, #7F3FFF 0%, #33DDFF 80%, #B266FF 100%)"
-                    shadow="#7F3FFF"
+                    color="radial-gradient(circle at 30% 30%, #C28DFF 0%, #6B00FF 55%, #3E009E 100%)"
+                    shadow="#6B00FF99"
                   >
                     <Users className="h-12 w-12 text-purple-100" strokeWidth={1.5} />
                   </PillarIconAnimated>
@@ -1350,8 +1433,8 @@ export default function HomePage() {
               {
                 icon: (
                   <PillarIconAnimated
-                    color="linear-gradient(135deg, #A21CAF 0%, #6D28D9 80%, #B266FF 100%)"
-                    shadow="#A21CAF"
+                    color="radial-gradient(circle at 30% 30%, #F065FF 0%, #9D00FF 60%, #5A00A8 100%)"
+                    shadow="#9D00FF99"
                   >
                     <FlaskConical className="h-12 w-12 text-pink-100" strokeWidth={1.5} />
                   </PillarIconAnimated>
@@ -1558,7 +1641,7 @@ export default function HomePage() {
       {/* Contribute Section */}
       <AnimatedSection id="contribute" className="bg-gradient-to-r from-blue-900/30 via-slate-900 to-pink-900/20">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12 max-w-5xl mx-auto py-12">
+          <div className="flex flex-col md:flex-row-reverse items-center justify-center gap-12 max-w-5xl mx-auto py-12">
             <motion.div
               className="flex-1 text-center md:text-left hidden md:block"
               initial={{ opacity: 0, x: -40 }}
