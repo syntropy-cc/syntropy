@@ -1,0 +1,63 @@
+services:
+  db:
+    image: supabase/postgres:15.8.1.106
+    container_name: syntropy-db
+    restart: unless-stopped
+    env_file:
+      - ./supabase/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  supabase:
+    image: supabase/supabase-dev:latest
+    container_name: syntropy-supabase
+    restart: unless-stopped
+    env_file:
+      - ./supabase/.env
+    volumes:
+      - ./supabase:/supabase
+    ports:
+      - "54321:8000" # API / Kong (HTTP)
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8000'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nextjs:
+    build: .
+    container_name: syntropy-nextjs
+    env_file:
+      - ./.env.prod
+    depends_on:
+      supabase:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - appnet
+    environment:
+      SUPABASE_INTERNAL_URL: http://supabase:8000
+      DB_HOST: db
+      DB_PORT: 5432
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  db_data:
