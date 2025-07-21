@@ -1,0 +1,7 @@
+sode_modules
+.supabase
+supabase
+.git
+.env.development
+.env.local
+.env.test
