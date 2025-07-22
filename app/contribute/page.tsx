@@ -28,7 +28,7 @@ export default function ContributePage() {
             O Syntropy é feito por pessoas como você. Contribua com código, ideias, documentação ou simplesmente participando da comunidade. Toda contribuição conta!
           </p>
           <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 text-xl">
-            <Link href="https://github.com/syntropy-dev/syntropy" target="_blank" rel="noopener noreferrer">
+            <Link href="https://github.com/syntropy-cc/syntropy" target="_blank" rel="noopener noreferrer">
               Contribuir no GitHub
             </Link>
           </Button>
@@ -152,7 +152,7 @@ export default function ContributePage() {
             Faça parte do Syntropy e ajude a construir um futuro mais aberto, colaborativo e inovador.
           </p>
           <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-            <Link href="https://github.com/syntropy-dev/syntropy" target="_blank" rel="noopener noreferrer">
+            <Link href="https://github.com/syntropy-cc/syntropy" target="_blank" rel="noopener noreferrer">
               Contribuir agora
             </Link>
           </Button>
