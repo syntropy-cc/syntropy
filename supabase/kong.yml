@@ -1,0 +1,13 @@
+_format_version: "1.1"
+
+services:
+  - name: auth
+    url: http://localhost:9999
+    routes:
+      - name: auth-route
+        hosts:
+          - api.syntropy.cc        # host público
+          - localhost              # útil em dev
+        paths:
+          - /auth/v1
+        strip_path: false

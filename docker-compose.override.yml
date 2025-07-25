@@ -1,0 +1,41 @@
+services:
+  auth:
+    environment:
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL}
+
+  rest:
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+
+  realtime:
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      APP_NAME: ${APP_NAME}
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: postgres
+      DB_SSL: "false"
+      SECURE_CHANNELS: "true"
+      JWT_SECRET: ${JWT_SECRET}
+
+  kong:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Remover vector temporariamente
+  vector:
+    profiles:
+      - monitoring
+
+  nextjs:
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: https://api.syntropy.cc
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
+#    extra_hosts:
+#      - "supabase:172.20.0.7"  # IP do Kong

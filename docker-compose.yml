@@ -1,63 +1,264 @@
+version: '3.8'
+
 services:
+  # PostgreSQL Database
   db:
     image: supabase/postgres:15.8.1.106
     container_name: syntropy-db
     restart: unless-stopped
-    env_file:
-      - ./supabase/.env
-    volumes:
-      - db_data:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./configs/init-db.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
     networks:
-      - appnet
+      - syntropy-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  supabase:
-    image: supabase/supabase-dev:latest
-    container_name: syntropy-supabase
+  # Kong API Gateway
+  kong:
+    image: kong:3.4
+    container_name: syntropy-kong
     restart: unless-stopped
-    env_file:
-      - ./supabase/.env
-    volumes:
-      - ./supabase:/supabase
     ports:
-      - "54321:8000" # API / Kong (HTTP)
+      - "54321:8000"    # HTTP
+      - "54320:8001"    # Admin API (apenas para debug, remover em produção)
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_LOG_LEVEL: info
+    volumes:
+      - ./configs/kong/kong.yml:/usr/local/kong/declarative/kong.yml:ro
+    depends_on:
+      - auth
+      - rest
+      - realtime
+      - storage
+    networks:
+      - syntropy-network
+
+  # GoTrue Authentication
+  auth:
+    image: supabase/gotrue:v2.151.0
+    container_name: syntropy-auth
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9999:9999"  # Apenas para debug
+    environment:
+      # API Config
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+
+      # Database
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres?search_path=auth
+
+      # JWT
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+
+      # URLs
+      GOTRUE_SITE_URL: https://syntropy.cc
+      GOTRUE_EXTERNAL_URL: https://api.syntropy.cc
+      GOTRUE_URI_ALLOW_LIST: https://syntropy.cc,https://*.syntropy.cc
+
+      # OAuth - Google
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: true
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: https://api.syntropy.cc/auth/v1/callback
+
+      # OAuth - GitHub
+      GOTRUE_EXTERNAL_GITHUB_ENABLED: true
+      GOTRUE_EXTERNAL_GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GOTRUE_EXTERNAL_GITHUB_SECRET: ${GITHUB_CLIENT_SECRET}
+      GOTRUE_EXTERNAL_GITHUB_REDIRECT_URI: https://api.syntropy.cc/auth/v1/callback
+
+      # Email
+      GOTRUE_MAILER_AUTOCONFIRM: ${MAILER_AUTOCONFIRM:-false}
+      GOTRUE_SMTP_HOST: ${SMTP_HOST:-}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT:-587}
+      GOTRUE_SMTP_USER: ${SMTP_USER:-}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS:-}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-admin@syntropy.cc}
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/v1/verify
+
+      # Security
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_RATE_LIMIT_HEADER: X-Forwarded-For
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: true
+      GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - appnet
+      - syntropy-network
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8000'"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  nextjs:
-    build: .
-    container_name: syntropy-nextjs
-    env_file:
-      - ./.env.prod
-    depends_on:
-      supabase:
-        condition: service_healthy
+  # PostgREST - REST API
+  rest:
+    image: postgrest/postgrest:v12.0.2
+    container_name: syntropy-rest
+    restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
-    networks:
-      - appnet
+      - "127.0.0.1:3001:3000"  # Apenas para debug
     environment:
-      SUPABASE_INTERNAL_URL: http://supabase:8000
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_JWT_SECRET_IS_BASE64: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - syntropy-network
+
+  # Realtime - WebSockets
+  realtime:
+    image: supabase/realtime:v2.28.32
+    container_name: syntropy-realtime
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"  # Apenas para debug
+    environment:
+      PORT: 4000
       DB_HOST: db
       DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: postgres
+      DB_SSL: "false"
+      SLOT_NAME: realtime_slot
+      TEMPORARY_SLOT: "true"
+      MAX_REPLICATION_LAG_MB: 1000
+      SECURE_CHANNELS: "true"
+      JWT_SECRET: ${JWT_SECRET}
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SUBSCRIPTIONS_POOL_SIZE: 20
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - syntropy-network
+    command: >
+      sh -c "/app/bin/migrate && /app/bin/realtime eval 'Realtime.Release.seeds(Realtime.Repo)' && /app/bin/server"
+
+  # Storage API
+  storage:
+    image: supabase/storage-api:v0.46.4
+    container_name: syntropy-storage
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5000:5000"  # Apenas para debug
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGOPTIONS: -c search_path=storage,public
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:8080
+    volumes:
+      - storage_data:/var/lib/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    networks:
+      - syntropy-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Image Proxy (para Storage)
+  imgproxy:
+    image: darthsim/imgproxy:v3.8.0
+    container_name: syntropy-imgproxy
+    restart: unless-stopped
+    environment:
+      IMGPROXY_BIND: ":8080"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+    volumes:
+      - storage_data:/var/lib/storage:ro
+    networks:
+      - syntropy-network
+
+  # Next.js Application
+  nextjs:
+    build:
+      context: ${NEXTJS_BUILD_CONTEXT:-.}
+      dockerfile: Dockerfile
+    container_name: syntropy-nextjs
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SUPABASE_URL: https://api.syntropy.cc
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres
+    depends_on:
+      - kong
+    networks:
+      - syntropy-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Vector - Logs Aggregator (Opcional)
+  vector:
+    image: timberio/vector:0.34.0-alpine
+    container_name: syntropy-vector
+    restart: unless-stopped
+    volumes:
+      - ./configs/vector.yml:/etc/vector/vector.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+    networks:
+      - syntropy-network
+    command: ["--config", "/etc/vector/vector.yml"]
 
 networks:
-  appnet:
+  syntropy-network:
     driver: bridge
 
 volumes:
   db_data:
+  storage_data:
