@@ -1,34 +1,24 @@
--- Criar schemas
-CREATE SCHEMA IF NOT EXISTS auth;
-CREATE SCHEMA IF NOT EXISTS storage;
-CREATE SCHEMA IF NOT EXISTS realtime;
-
--- Criar roles
+-- Roles padrão
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN
-    CREATE ROLE anon NOLOGIN NOINHERIT;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'supabase_admin') THEN
+    CREATE ROLE supabase_admin;
   END IF;
-  
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN
-    CREATE ROLE authenticated NOLOGIN NOINHERIT;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticator') THEN
+    CREATE ROLE authenticator LOGIN PASSWORD :'ZeZE9n0atfssZsje';
   END IF;
-  
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN
-    CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+    CREATE ROLE service_role LOGIN PASSWORD :'ZeZE9n0atfssZsje';
   END IF;
-  
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticator') THEN
-    CREATE ROLE authenticator NOINHERIT LOGIN PASSWORD 'your-authenticator-password';
-  END IF;
-END$$;
+END $$;
 
--- Dar permissões
-GRANT anon, authenticated, service_role TO authenticator;
-GRANT USAGE ON SCHEMA public TO anon, authenticated;
-GRANT ALL ON SCHEMA public TO postgres, service_role;
+GRANT supabase_admin TO postgres;
+GRANT authenticator TO supabase_admin;
+GRANT service_role TO supabase_admin;
 
--- Extensões necessárias
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "pgjwt";
+-- Schema padrão e extensão pgcrypto p/ uuid_generate_v4()
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA public;
+
+-- Schema auth (GoTrue migra se não existir)
+CREATE SCHEMA IF NOT EXISTS auth;
+COMMENT ON SCHEMA auth IS 'Supabase auth schema';

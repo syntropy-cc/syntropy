@@ -15,7 +15,7 @@ services:
     url: http://rest:3000
     routes:
       - name: rest-v1-all
-        strip_path: false
+        strip_path: true
         paths: [ /rest/v1/ ]
 
   # Realtime
@@ -31,7 +31,7 @@ services:
     url: http://storage:5000
     routes:
       - name: storage-v1-all
-        strip_path: false
+        strip_path: true
         paths: [ /storage/v1/ ]
 
   # Health‑check especial para o próprio Kong
