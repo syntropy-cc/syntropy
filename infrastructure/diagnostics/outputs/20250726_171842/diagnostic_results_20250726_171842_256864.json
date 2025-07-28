@@ -1,0 +1,36 @@
+{
+    "execution_id": "20250726_171842_256864",
+    "timestamp": "2025-07-26T20:18:42.838Z",
+    "version": "3.0.0",
+    "execution_mode": "local",
+    "environment": {
+        "workspace": "/home/jescott/syntropy-cc/syntropy-server",
+        "log_directory": "/home/jescott/syntropy-cc/syntropy-server/diagnose/20250726_171842",
+        "env_file": ".env",
+        "api_host": "api.syntropy.cc",
+        "app_host": "syntropy.cc",
+        "remote_execution": false,
+        "remote_host": "null",
+        "remote_user": "null",
+        "remote_directory": "null"
+    },
+    "system_info": {
+        "os": "Linux",
+        "kernel": "6.6.87.2-microsoft-standard-WSL2",
+        "architecture": "x86_64",
+        "hostname": "PCJOSESCOTT",
+        "user": "jescott",
+        "shell": "/bin/bash",
+        "execution_timestamp": "20250726_171842"
+    },
+    "tests": {},
+    "summary": {
+        "total_tests": 0,
+        "passed": 0,
+        "warnings": 0,
+        "failed": 0,
+        "critical": 0,
+        "skipped": 0,
+        "execution_time": 0
+    }
+}

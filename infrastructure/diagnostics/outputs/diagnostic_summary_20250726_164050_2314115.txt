@@ -1,0 +1,36 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    SYNTROPY PLATFORM DIAGNOSTIC SUMMARY                     ║
+║                              2025-07-26 19:40:55 UTC                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+EXECUTION DETAILS:
+├─ Execution ID: 20250726_164050_2314115
+├─ Total Execution Time: 5s
+├─ Environment File: .env.test
+├─ API Host: api.syntropy.cc
+└─ App Host: syntropy.cc
+
+SYSTEM INFORMATION:
+├─ Operating System: Linux 6.8.0-64-generic
+├─ Architecture: x86_64
+├─ Hostname: syntropy-server
+├─ User: syntropy
+├─ Docker Version: Docker version 28.3.2, build 578ccf6
+└─ Docker Compose Version: Docker Compose version v2.38.2
+
+TEST RESULTS SUMMARY:
+├─ Total Tests: 
+├─ Passed: 
+├─ Failed: 
+├─ Warnings: 
+└─ Critical: 
+
+RECOMMENDATIONS:
+✅ SUCCESS: All critical systems are operational
+
+FILES GENERATED:
+├─ Detailed Results: /home/syntropy/apps/syntropy/diagnose/diagnostic_results_20250726_164050_2314115.json
+├─ Summary Report: /home/syntropy/apps/syntropy/diagnose/diagnostic_summary_20250726_164050_2314115.txt
+└─ Diagnostic Log: /home/syntropy/apps/syntropy/diagnose/diagnostic.log
+
+For detailed analysis, review the JSON results file with your preferred JSON viewer or LLM.
