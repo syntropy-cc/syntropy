@@ -13,19 +13,18 @@ source "$CORE_DIR/json_handler.sh" || exit 1
 source "$CORE_DIR/output_handler.sh" || exit 1
 
 # Importa módulos de diagnóstico
-source "./docker_diagnostic.sh" || exit 1
-source "./container_diagnostic.sh" || exit 1
+source "$(dirname "$0")/docker_diagnostic.sh" || exit 1
 
 # Carrega configuração da camada
-CONFIG_FILE="$SCRIPT_DIR/config.json"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly CONFIG_FILE="$SCRIPT_DIR/config.json"
+readonly LAYER_NAME="infrastructure"
 
-# Configura diretórios base
-LOG_BASE_DIR="${HOME}/diagnose/logs"
+# Inicializa logger
+# Configura logger para usar o mesmo diretório base dos diagnósticos
+LOG_BASE_DIR="${HOME}/.syntropy/diagnostics/logs"
 mkdir -p "$LOG_BASE_DIR"
-
-# Inicializa handlers
-init_output_handler "infrastructure" || exit 1
-init_logger "$LAYER_NAME" "$TIMESTAMP" "$LOG_BASE_DIR" || exit 1
+init_logger "$LAYER_NAME" "$(date +%Y%m%d_%H%M%S)" "$LOG_BASE_DIR"
 
 validate_environment() {
     log_info "Validating environment for $LAYER_NAME layer"
