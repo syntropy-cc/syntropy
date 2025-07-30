@@ -359,13 +359,13 @@ main() {
     
     local summary_content
     summary_content=$(generate_summary_content "$docker_status" "$container_status" "$resource_status" "$lifecycle_status" "$duration")
-    generate_summary_md "Infrastructure Layer Diagnostics" "$summary_content" || log_error "Failed to generate summary.md"
+    generate_summary_md "Infrastructure Layer Diagnostics" "$summary_content" || log_error "Failed to generate infrastructure_summary.md"
     
     local results_json
     results_json=$(generate_infrastructure_results_json "$docker_status" "$container_status" "$resource_status" "$lifecycle_status" "$duration")
-    generate_results_json "$results_json" || log_error "Failed to generate results.json"
+    generate_results_json "$results_json" || log_error "Failed to generate infrastructure_diagnostic.json"
     
-    copy_detailed_log "$(get_logs_dir)/infrastructure.log" || log_error "Failed to copy detailed.log"
+    copy_detailed_log "$(get_logs_dir)/infrastructure_${TIMESTAMP}.log" || log_error "Failed to copy infrastructure_detailed.log"
     
     # Limpa outputs antigos
     cleanup_old_outputs 7

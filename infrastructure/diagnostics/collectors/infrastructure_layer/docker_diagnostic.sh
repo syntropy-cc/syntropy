@@ -21,7 +21,7 @@ MIN_DOCKER_VERSION="20.0.0"
 check_docker_daemon() {
     log_debug "Checking Docker daemon accessibility"
     
-    if ! execute_with_timeout "$DOCKER_INFO_TIMEOUT" "docker info" "Docker daemon check"; then
+    if ! execute_with_timeout "$DOCKER_INFO_TIMEOUT" "docker info >/dev/null 2>&1" "Docker daemon check"; then
         log_error "Docker daemon is not accessible (timeout: ${DOCKER_INFO_TIMEOUT}s)"
         return 1
     fi

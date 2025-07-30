@@ -64,35 +64,35 @@ test_output_handler() {
     
     # Testa generate_summary_md
     if generate_summary_md "Test Report" "This is a test content"; then
-        echo "   ✓ summary.md gerado com sucesso"
+        echo "   ✓ infrastructure_summary.md gerado com sucesso"
     else
-        echo "   ✗ Falha ao gerar summary.md"
+        echo "   ✗ Falha ao gerar infrastructure_summary.md"
         return 1
     fi
     
     # Testa generate_results_json
     local test_json='{"test": "data", "status": "success"}'
     if generate_results_json "$test_json"; then
-        echo "   ✓ results.json gerado com sucesso"
+        echo "   ✓ infrastructure_diagnostic.json gerado com sucesso"
     else
-        echo "   ✗ Falha ao gerar results.json"
+        echo "   ✗ Falha ao gerar infrastructure_diagnostic.json"
         return 1
     fi
     
     # Testa copy_detailed_log
     echo "Test log content" > "$(get_logs_dir)/test.log"
     if copy_detailed_log "$(get_logs_dir)/test.log"; then
-        echo "   ✓ detailed.log copiado com sucesso"
+        echo "   ✓ infrastructure_detailed.log copiado com sucesso"
     else
-        echo "   ✗ Falha ao copiar detailed.log"
+        echo "   ✗ Falha ao copiar infrastructure_detailed.log"
         return 1
     fi
     
     echo "5. Verificando arquivos gerados..."
     local files_created=0
-    [[ -f "$OUTPUT_DIR/summary.md" ]] && ((files_created++))
-    [[ -f "$OUTPUT_DIR/results.json" ]] && ((files_created++))
-    [[ -f "$OUTPUT_DIR/detailed.log" ]] && ((files_created++))
+    [[ -f "$OUTPUT_DIR/${LAYER_NAME}_summary.md" ]] && ((files_created++))
+    [[ -f "$OUTPUT_DIR/${LAYER_NAME}_diagnostic.json" ]] && ((files_created++))
+    [[ -f "$OUTPUT_DIR/${LAYER_NAME}_detailed.log" ]] && ((files_created++))
     
     echo "   ✓ $files_created arquivos criados no diretório de output"
     
