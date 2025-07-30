@@ -33,16 +33,25 @@ init_logger() {
     LOG_FILE="${base_dir}/${context}_${timestamp}.log"
     
     # Ensure log directory exists
-    mkdir -p "$(dirname "$LOG_FILE")"
+    if ! mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null; then
+        echo "Failed to create log directory: $(dirname "$LOG_FILE")" >&2
+        return 1
+    fi
     
     # Initialize log file with header
-    cat > "$LOG_FILE" << EOF
+    if ! cat > "$LOG_FILE" << EOF
 ==========================================================================
 Diagnostic Log - $context
 Started: $(date +"$LOG_TIMESTAMP_FORMAT")
 ==========================================================================
 
 EOF
+    then
+        echo "Failed to create log file: $LOG_FILE" >&2
+        return 1
+    fi
+    
+    return 0
 }
 
 set_log_level() {
