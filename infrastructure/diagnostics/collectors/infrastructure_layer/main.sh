@@ -15,6 +15,8 @@ source "$CORE_DIR/output_handler.sh" || exit 1
 # Importa módulos de diagnóstico
 source "./docker_diagnostic.sh" || exit 1
 source "./container_diagnostic.sh" || exit 1
+source "./resource_monitoring.sh" || exit 1
+source "./container_lifecycle.sh" || exit 1
 
 # Carrega configuração da camada
 CONFIG_FILE="$SCRIPT_DIR/config.json"
@@ -86,23 +88,6 @@ generate_outputs() {
     summary_content+="-- RECOMMENDATIONS --\n"
     summary_content+="$(generate_recommendations "$docker_status" "$container_status" "$resource_status")"
 
--- DOCKER ENVIRONMENT --
-$(echo "$docker_status" | jq -r '.docker_daemon | "• Docker Daemon: \(.status)"')
-$(echo "$docker_status" | jq -r '.docker_compose | "• Docker Compose: \(.available)"')
-
--- CONTAINER STATUS --
-$(echo "$container_status" | jq -r '"• Running: \(.running_count)/\(.total_count) containers"')
-$(echo "$container_status" | jq -r '"• Health Checks: \(.status)"')
-
--- SYSTEM RESOURCES --
-$(echo "$resource_status" | jq -r '.cpu | "• CPU Usage: \(.usage)% (\(.status))"')
-$(echo "$resource_status" | jq -r '.memory | "• Memory Usage: \(.usage_percent)% (\(.status))"')
-$(echo "$resource_status" | jq -r '.disk[0] | "• Disk Usage: \(.usage_percent)% (\(.status))"')
-
--- RECOMMENDATIONS --
-$(generate_recommendations "$docker_status" "$container_status" "$resource_status")
-EOF
-
     # Gera results.json
     # Gera results.json usando output handler
     local results_json
@@ -129,7 +114,7 @@ EOF
         envsubst)
 
     # Exporta outputs usando output handler
-    generate_summary_txt "Infrastructure Layer Diagnostics" "$summary_content" || log_error "Failed to generate summary.txt"
+    generate_summary_md "Infrastructure Layer Diagnostics" "$summary_content" || log_error "Failed to generate summary.md"
     generate_results_json "$results_json" || log_error "Failed to generate results.json"
     copy_detailed_log "$(dirname "$0")/../../logs/infrastructure.log" || log_error "Failed to copy detailed.log"
     
