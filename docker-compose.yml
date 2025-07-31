@@ -101,6 +101,13 @@ services:
       GOTRUE_RATE_LIMIT_HEADER: X-Forwarded-For
       GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: true
       GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
+      
+      # Cookie e CORS
+      GOTRUE_COOKIE_DOMAIN: ".syntropy.cc"
+      GOTRUE_COOKIE_SECURE: "true" 
+      GOTRUE_COOKIE_SAME_SITE: "lax"
+      GOTRUE_CORS_ALLOWED_ORIGINS: "https://syntropy.cc,https://api.syntropy.cc"
+      GOTRUE_LOG_LEVEL: "debug"  # Para debug temporário
     depends_on:
       db:
         condition: service_healthy
