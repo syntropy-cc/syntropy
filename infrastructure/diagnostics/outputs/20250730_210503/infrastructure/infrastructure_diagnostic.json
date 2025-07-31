@@ -1,0 +1,73 @@
+{
+  "layer": "infrastructure",
+  "timestamp": "2025-07-31T00:05:40Z",
+  "duration_ms": 66,
+  "status": "CRITICAL",
+  "components": {
+    "docker": {
+      "docker_daemon": {
+        "status": "HEALTHY",
+        "accessible": true,
+        "version": "28.2.2",
+        "meets_requirements": true,
+        "api_response_time_ms": 183
+      },
+      "docker_compose": {
+        "available": true,
+        "version": "v2:2.36.2",
+        "status": "HEALTHY"
+      },
+      "system_info": {
+        "containers_running": 12,
+        "images_count": 17,
+        "volumes_count": 4,
+        "networks_count": 5
+      },
+      "metadata": {
+        "timestamp": "2025-07-31T00:05:05Z",
+        "min_required_version": "20.0.0",
+        "timeout_seconds": 15
+      }
+    },
+    "containers": {
+      "status": "CRITICAL",
+      "running_count": 0,
+      "total_count": 8,
+      "containers": {},
+      "unhealthy_containers": []
+    },
+    "resources": {
+      "status": "UNKNOWN",
+      "cpu": {
+        "usage": 0,
+        "status": "UNKNOWN"
+      },
+      "memory": {
+        "usage_percent": 0,
+        "status": "UNKNOWN"
+      },
+      "disk": [
+        {
+          "usage_percent": 0,
+          "status": "UNKNOWN"
+        }
+      ],
+      "network": {
+        "rx_bytes": 0,
+        "tx_bytes": 0
+      },
+      "timestamp": "2025-07-31T00:05:20Z"
+    },
+    "lifecycle": {
+      "lifecycle_checks": [],
+      "timestamp": "2025-07-31T00:05:22Z"
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "WARNING",
+      "message": "Some containers are not running",
+      "action": "restart_containers"
+    }
+  ]
+}

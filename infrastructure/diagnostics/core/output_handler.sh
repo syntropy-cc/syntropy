@@ -116,13 +116,47 @@ generate_results_json() {
 
     ensure_output_permissions "$output_file" || return 1
 
-    if ! echo "$content" | jq '.' > "$output_file" 2>/dev/null; then
-        log_warning "Failed to generate JSON"
+    # Valida se o conteúdo não está vazio
+    if [[ -z "$content" ]]; then
+        log_error "Empty content provided for JSON generation"
         return 1
     fi
 
-    log_debug "Generated ${LAYER_NAME}_diagnostic.json at: $output_file"
-    return 0
+    # Tenta validar e formatar o JSON
+    local validated_json
+    if validated_json=$(echo "$content" | jq '.' 2>/dev/null); then
+        # Escreve o JSON validado no arquivo
+        if echo "$validated_json" > "$output_file" 2>/dev/null; then
+            log_debug "Generated ${LAYER_NAME}_diagnostic.json at: $output_file"
+            return 0
+        else
+            log_error "Failed to write JSON to file: $output_file"
+            return 1
+        fi
+    else
+        log_error "Invalid JSON content provided"
+        log_debug "JSON validation error: $(echo "$content" | jq '.' 2>&1)"
+        
+        # Tenta criar um JSON de erro como fallback
+        local error_json
+        error_json=$(cat << EOF
+{
+    "error": "Failed to generate valid JSON",
+    "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+    "layer": "$LAYER_NAME",
+    "raw_content_length": ${#content}
+}
+EOF
+)
+        
+        if echo "$error_json" | jq '.' > "$output_file" 2>/dev/null; then
+            log_warning "Generated error JSON as fallback"
+            return 0
+        else
+            log_error "Failed to generate even error JSON"
+            return 1
+        fi
+    fi
 }
 
 copy_detailed_log() {

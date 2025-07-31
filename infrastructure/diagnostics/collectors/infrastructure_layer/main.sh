@@ -1,173 +1,226 @@
 #!/bin/bash
 
-#===============================================================================
-# INFRASTRUCTURE LAYER DIAGNOSTIC - MAIN ENTRY POINT
-#===============================================================================
+# PROTEGE O SCRIPT_DIR CONTRA SOBREPOSIÇÃO!
+# Salva o SCRIPT_DIR original antes de importar qualquer arquivo
+ORIGINAL_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+readonly ORIGINAL_SCRIPT_DIR
 
-# Resolve caminhos absolutos
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+# Calcula outros paths baseados no original protegido
+CORE_DIR="$(cd "$ORIGINAL_SCRIPT_DIR/../../core" &> /dev/null && pwd)"
+ENV_FILE="$(cd "$ORIGINAL_SCRIPT_DIR/../../../../" &> /dev/null && pwd)/.env"
+
+echo "🔒 PROTECTED: ORIGINAL_SCRIPT_DIR = $ORIGINAL_SCRIPT_DIR"
+echo "📂 CORE_DIR = $CORE_DIR"
+echo "⚙️  ENV_FILE = $ENV_FILE"
+
+# Importa dependências do core
+if [[ -f "$ENV_FILE" ]]; then
+    source "$ENV_FILE"
+    echo "✅ .env loaded successfully"
+else
+    echo "⚠️  WARNING: .env not found at $ENV_FILE"
+fi
+
+# Importa core files (que podem tentar sobrescrever SCRIPT_DIR)
+source "$CORE_DIR/logger.sh" || { echo "❌ ERROR: logger.sh not found in $CORE_DIR"; exit 1; }
+source "$CORE_DIR/utils.sh" || { echo "❌ ERROR: utils.sh not found in $CORE_DIR"; exit 1; }
+source "$CORE_DIR/json_handler.sh" || { echo "❌ ERROR: json_handler.sh not found in $CORE_DIR"; exit 1; }
+source "$CORE_DIR/output_handler.sh" || { echo "❌ ERROR: output_handler.sh not found in $CORE_DIR"; exit 1; }
+
+# VERIFICA SE SCRIPT_DIR FOI ALTERADO E RESTAURA
+if [[ "$SCRIPT_DIR" != "$ORIGINAL_SCRIPT_DIR" ]]; then
+    echo "⚠️  WARNING: SCRIPT_DIR was modified from '$ORIGINAL_SCRIPT_DIR' to '$SCRIPT_DIR'"
+    echo "🔧 RESTORING: Setting SCRIPT_DIR back to original value"
+    SCRIPT_DIR="$ORIGINAL_SCRIPT_DIR"
+fi
+
+echo "📍 USING SCRIPT_DIR = $SCRIPT_DIR"
+
+# Agora importa módulos de diagnóstico do diretório correto
+echo "📦 Loading diagnostic modules from $SCRIPT_DIR"
+source "$SCRIPT_DIR/docker_diagnostic.sh" || { echo "❌ ERROR: docker_diagnostic.sh not found in $SCRIPT_DIR"; exit 1; }
+source "$SCRIPT_DIR/container_diagnostic.sh" || { echo "❌ ERROR: container_diagnostic.sh not found in $SCRIPT_DIR"; exit 1; }
+source "$SCRIPT_DIR/resource_monitoring.sh" || { echo "❌ ERROR: resource_monitoring.sh not found in $SCRIPT_DIR"; exit 1; }
+source "$SCRIPT_DIR/container_lifecycle.sh" || { echo "❌ ERROR: container_lifecycle.sh not found in $SCRIPT_DIR"; exit 1; }
+
+echo "✅ All modules loaded successfully!"
 
 # Carrega configuração da camada
 CONFIG_FILE="$SCRIPT_DIR/config.json"
+LAYER_NAME="infrastructure"
 
-# Importa módulos de diagnóstico da camada
-source "$SCRIPT_DIR/docker_diagnostic.sh" || exit 1
-source "$SCRIPT_DIR/container_diagnostic.sh" || exit 1
-source "$SCRIPT_DIR/resource_monitoring.sh" || exit 1
-source "$SCRIPT_DIR/container_lifecycle.sh" || exit 1
+# Configura diretórios base
+LOG_BASE_DIR="${HOME}/diagnose/logs"
+mkdir -p "$LOG_BASE_DIR"
 
+# Inicializa handlers
+TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+init_output_handler "$LAYER_NAME" || exit 1
+init_logger "$LAYER_NAME" "$TIMESTAMP" "$LOG_BASE_DIR" || exit 1
 
-CORE_DIR="$(cd "$SCRIPT_DIR/../../core" &> /dev/null && pwd)"
-ENV_FILE="$(cd "$SCRIPT_DIR/../../../../" &> /dev/null && pwd)/.env"
+log_info "🚀 Infrastructure diagnostics initialization complete"
 
-# Importa dependências core primeiro
-source "$CORE_DIR/logger.sh" || exit 1
-source "$ENV_FILE" 2>/dev/null || log_warning "Environment file not found"
-source "$CORE_DIR/utils.sh" || exit 1
-source "$CORE_DIR/json_handler.sh" || exit 1
-source "$CORE_DIR/output_handler.sh" || exit 1
-
-#==========================================================================
-# VALIDATION FUNCTIONS
-#===============================================================================
+# Função para executar módulo com tratamento de erro
+execute_module_safe() {
+    local module_name="$1"
+    local module_function="$2"
+    local default_json="$3"
+    
+    log_info "🔄 Executing module: $module_name"
+    
+    # Verifica se a função existe
+    if ! declare -f "$module_function" >/dev/null; then
+        log_warning "⚠️  Function $module_function not available, using default"
+        echo "$default_json"
+        return 0
+    fi
+    
+    local result
+    if result=$($module_function 2>&1); then
+        # Verifica se o resultado é JSON válido
+        if echo "$result" | jq '.' >/dev/null 2>&1; then
+            log_debug "✅ Module $module_name completed successfully"
+            echo "$result"
+        else
+            log_warning "⚠️  Module $module_name returned invalid JSON: $result"
+            log_warning "🔄 Using default JSON for $module_name"
+            echo "$default_json"
+        fi
+    else
+        log_error "❌ $module_name diagnostic failed with: $result"
+        echo "$default_json"
+    fi
+}
 
 validate_environment() {
-    log_info "Validating environment for infrastructure layer"
+    log_info "🔍 Validating environment for $LAYER_NAME layer"
     
     # Verifica versão do bash
     if [[ "${BASH_VERSION%%.*}" -lt 4 ]]; then
-        log_error "Bash version 4.0 or higher is required (current: $BASH_VERSION)"
+        log_error "❌ Bash version 4.0 or higher is required (current: $BASH_VERSION)"
         return 1
     fi
     
     # Verifica se docker está instalado
     if ! command -v docker >/dev/null 2>&1; then
-        log_error "Docker is not installed or not in PATH"
+        log_error "❌ Docker is not installed"
         return 1
     fi
     
     # Verifica se jq está instalado
     if ! command -v jq >/dev/null 2>&1; then
-        log_error "jq is not installed or not in PATH"
+        log_error "❌ jq is not installed"
         return 1
     fi
     
-    # Verifica se arquivo de configuração existe
+    # Verifica se config existe
     if [[ ! -f "$CONFIG_FILE" ]]; then
-        log_error "Configuration file not found: $CONFIG_FILE"
+        log_error "❌ Config file not found: $CONFIG_FILE"
         return 1
     fi
     
-    log_debug "Environment validation completed successfully"
+    log_info "✅ Environment validation passed"
     return 0
 }
 
-#===============================================================================
-# DIAGNOSTIC EXECUTION
-#===============================================================================
-
-execute_docker_diagnostic() {
-    log_info "Executing Docker environment diagnostic"
-    local result
-    if result=$(run_docker_diagnostic 2>/dev/null); then
-        echo "$result"
-        return 0
-    else
-        log_error "Docker diagnostic failed"
-        return 1
-    fi
+# Funções para criar JSONs padrão em caso de falha
+get_default_docker_json() {
+    echo '{
+        "docker_daemon": {
+            "status": "CRITICAL",
+            "accessible": false,
+            "version": "unknown",
+            "meets_requirements": false
+        },
+        "docker_compose": {
+            "available": false,
+            "version": "N/A"
+        }
+    }'
 }
 
-execute_container_diagnostic() {
-    log_info "Executing container status diagnostic"
-    local result
-    if result=$(run_container_diagnostic 2>/dev/null); then
-        echo "$result"
-        return 0
-    else
-        log_error "Container diagnostic failed"
-        return 1
-    fi
+get_default_container_json() {
+    echo '{
+        "status": "CRITICAL",
+        "running_count": 0,
+        "total_count": 8,
+        "containers": {},
+        "unhealthy_containers": []
+    }'
 }
 
-execute_resource_monitoring() {
-    log_info "Executing resource monitoring diagnostic"
-    local result
-    if result=$(run_resource_monitoring 2>/dev/null); then
-        echo "$result"
-        return 0
-    else
-        log_error "Resource monitoring failed"
-        return 1
-    fi
+get_default_resource_json() {
+    echo '{
+        "status": "UNKNOWN",
+        "cpu": {"usage": 0, "status": "UNKNOWN"},
+        "memory": {"usage_percent": 0, "status": "UNKNOWN"},
+        "disk": [{"usage_percent": 0, "status": "UNKNOWN"}],
+        "network": {"rx_bytes": 0, "tx_bytes": 0},
+        "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+    }'
 }
 
-execute_container_lifecycle() {
-    log_info "Executing container lifecycle diagnostic"
-    local result
-    if result=$(run_container_lifecycle 2>/dev/null); then
-        echo "$result"
-        return 0
-    else
-        log_error "Container lifecycle diagnostic failed"
-        return 1
-    fi
+get_default_lifecycle_json() {
+    echo '{
+        "lifecycle_checks": [],
+        "timestamp": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+    }'
 }
 
-#===============================================================================
-# OUTPUT GENERATION
-#===============================================================================
+generate_outputs() {
+    local start_time="$1"
+    local current_time=$(date +%s%3N)
+    local duration=$((current_time - start_time))
+    
+    log_info "📊 Generating diagnostic outputs"
+    
+    # Executa módulos com tratamento seguro
+    log_info "🔄 Running diagnostic modules..."
+    local docker_status=$(execute_module_safe "docker" "run_docker_diagnostic" "$(get_default_docker_json)")
+    local container_status=$(execute_module_safe "container" "run_container_diagnostic" "$(get_default_container_json)")
+    local resource_status=$(execute_module_safe "resource" "run_resource_monitoring" "$(get_default_resource_json)")
+    local lifecycle_status=$(execute_module_safe "lifecycle" "run_container_lifecycle" "$(get_default_lifecycle_json)")
+    
+    log_info "🎯 All modules executed, determining overall status..."
+    
+    # Determina status geral
+    local overall_status=$(get_overall_status "$docker_status" "$container_status" "$resource_status")
+    
+    log_info "📈 Overall status: $overall_status"
+    
+    # Gera conteúdo do summary
+    local summary_content
+    summary_content="[INFRASTRUCTURE DIAGNOSTIC REPORT]
+Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+Duration: ${duration}ms
+Status: $overall_status
 
-generate_summary_content() {
-    local docker_status="$1"
-    local container_status="$2"
-    local resource_status="$3"
-    local lifecycle_status="$4"
-    local duration="$5"
-    
-    local summary_content=""
-    summary_content+="## Infrastructure Layer Diagnostic Report\n\n"
-    summary_content+="**Execution Time:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")\n"
-    summary_content+="**Duration:** ${duration}ms\n"
-    summary_content+="**Status:** $(get_overall_status "$docker_status" "$container_status" "$resource_status")\n\n"
-    
-    summary_content+="### Docker Environment\n"
-    summary_content+="$(echo "$docker_status" | jq -r '.docker_daemon | "• **Daemon:** \(.status) (v\(.version))"' 2>/dev/null || echo "• **Daemon:** UNKNOWN")\n"
-    summary_content+="$(echo "$docker_status" | jq -r '.docker_compose | "• **Compose:** \(if .available then "Available" else "Not Available" end) (v\(.version))"' 2>/dev/null || echo "• **Compose:** UNKNOWN")\n\n"
-    
-    summary_content+="### Container Status\n"
-    summary_content+="$(echo "$container_status" | jq -r '"• **Running:** \(.running_count)/\(.total_count) containers"' 2>/dev/null || echo "• **Running:** UNKNOWN")\n"
-    summary_content+="$(echo "$container_status" | jq -r '"• **Health:** \(.status)"' 2>/dev/null || echo "• **Health:** UNKNOWN")\n\n"
-    
-    summary_content+="### System Resources\n"
-    summary_content+="$(echo "$resource_status" | jq -r '.cpu | "• **CPU:** \(.usage)% (\(.status))"' 2>/dev/null || echo "• **CPU:** UNKNOWN")\n"
-    summary_content+="$(echo "$resource_status" | jq -r '.memory | "• **Memory:** \(.usage_percent)% (\(.status))"' 2>/dev/null || echo "• **Memory:** UNKNOWN")\n"
-    summary_content+="$(echo "$resource_status" | jq -r '.disk[0] | "• **Disk:** \(.usage_percent)% (\(.status))"' 2>/dev/null || echo "• **Disk:** UNKNOWN")\n\n"
-    
-    summary_content+="### Recommendations\n"
-    summary_content+="$(generate_recommendations "$docker_status" "$container_status" "$resource_status")\n"
-    
-    echo "$summary_content"
-}
+-- DOCKER ENVIRONMENT --
+• Docker Daemon: $(echo "$docker_status" | jq -r '.docker_daemon.status // "UNKNOWN"')
+• Docker Version: $(echo "$docker_status" | jq -r '.docker_daemon.version // "unknown"')
+• Docker Compose: $(echo "$docker_status" | jq -r '.docker_compose.available // false')
 
-generate_infrastructure_results_json() {
-    local docker_status="$1"
-    local container_status="$2"
-    local resource_status="$3"
-    local lifecycle_status="$4"
-    local duration="$5"
+-- CONTAINER STATUS --
+• Running: $(echo "$container_status" | jq -r '.running_count // 0')/$(echo "$container_status" | jq -r '.total_count // 8') containers
+• Health Status: $(echo "$container_status" | jq -r '.status // "UNKNOWN"')
+
+-- SYSTEM RESOURCES --
+• CPU Usage: $(echo "$resource_status" | jq -r '.cpu.usage // 0')% ($(echo "$resource_status" | jq -r '.cpu.status // "UNKNOWN"'))
+• Memory Usage: $(echo "$resource_status" | jq -r '.memory.usage_percent // 0')% ($(echo "$resource_status" | jq -r '.memory.status // "UNKNOWN"'))
+• Disk Usage: $(echo "$resource_status" | jq -r '.disk[0].usage_percent // 0')% ($(echo "$resource_status" | jq -r '.disk[0].status // "UNKNOWN"'))
+
+-- RECOMMENDATIONS --
+$(generate_recommendations "$docker_status" "$container_status" "$resource_status")"
+
+    log_info "🏗️  Creating final JSON output..."
     
-    local overall_status
-    overall_status=$(get_overall_status "$docker_status" "$container_status" "$resource_status")
-    
-    cat << EOF
+    # Cria JSON final - usando template seguro
+    local results_json
+    results_json=$(cat << EOF
 {
-    "metadata": {
-        "layer": "infrastructure",
-        "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-        "duration_ms": $duration,
-        "version": "2.1.0"
-    },
+    "layer": "$LAYER_NAME",
+    "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+    "duration_ms": $duration,
     "status": "$overall_status",
     "components": {
         "docker": $docker_status,
@@ -175,74 +228,51 @@ generate_infrastructure_results_json() {
         "resources": $resource_status,
         "lifecycle": $lifecycle_status
     },
-    "anomalies": $(generate_anomalies_json "$docker_status" "$container_status" "$resource_status"),
     "recommendations": $(generate_recommendations_json "$docker_status" "$container_status" "$resource_status")
 }
 EOF
-}
-
-generate_anomalies_json() {
-    local docker_status="$1"
-    local container_status="$2"
-    local resource_status="$3"
+)
     
-    local anomalies=()
-    
-    # Verifica problemas do Docker
-    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status' 2>/dev/null) == "CRITICAL" ]]; then
-        anomalies+=('{"component": "docker_daemon", "severity": "CRITICAL", "message": "Docker daemon is not accessible"}')
+    # Valida JSON antes de salvar
+    if ! echo "$results_json" | jq '.' >/dev/null 2>&1; then
+        log_critical "❌ Generated JSON is invalid, creating minimal fallback"
+        results_json="{
+            \"layer\": \"$LAYER_NAME\",
+            \"timestamp\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\",
+            \"status\": \"CRITICAL\",
+            \"error\": \"Failed to generate complete diagnostic\"
+        }"
     fi
     
-    # Verifica problemas de containers
-    if [[ $(echo "$container_status" | jq -r '.running_count' 2>/dev/null) -lt $(echo "$container_status" | jq -r '.total_count' 2>/dev/null) ]]; then
-        anomalies+=('{"component": "containers", "severity": "WARNING", "message": "Some containers are not running"}')
-    fi
+    log_info "💾 Saving output files..."
     
-    # Verifica problemas de recursos
-    if [[ $(echo "$resource_status" | jq -r '.cpu.status' 2>/dev/null) == "CRITICAL" ]]; then
-        anomalies+=('{"component": "cpu", "severity": "CRITICAL", "message": "CPU usage is critical"}')
-    fi
-    
-    if [[ $(echo "$resource_status" | jq -r '.memory.status' 2>/dev/null) == "CRITICAL" ]]; then
-        anomalies+=('{"component": "memory", "severity": "CRITICAL", "message": "Memory usage is critical"}')
-    fi
-    
-    if [[ ${#anomalies[@]} -eq 0 ]]; then
-        echo "[]"
+    # Exporta outputs usando output handler
+    if ! generate_summary_txt "Infrastructure Layer Diagnostics" "$summary_content"; then
+        log_error "❌ Failed to generate summary.txt"
     else
-        echo "[$(IFS=,; echo "${anomalies[*]}")]"
-    fi
-}
-
-generate_recommendations_json() {
-    local docker_status="$1"
-    local container_status="$2"
-    local resource_status="$3"
-    
-    local recommendations=()
-    
-    # Recomendações baseadas no status
-    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status' 2>/dev/null) != "HEALTHY" ]]; then
-        recommendations+=('{"priority": "P1", "action": "Check Docker daemon status and restart if necessary", "component": "docker"}')
+        log_info "✅ summary.txt generated successfully"
     fi
     
-    if [[ $(echo "$container_status" | jq -r '.running_count' 2>/dev/null) -lt $(echo "$container_status" | jq -r '.total_count' 2>/dev/null) ]]; then
-        recommendations+=('{"priority": "P2", "action": "Investigate and restart stopped containers", "component": "containers"}')
-    fi
-    
-    if [[ $(echo "$resource_status" | jq -r '.cpu.status' 2>/dev/null) == "WARNING" ]]; then
-        recommendations+=('{"priority": "P3", "action": "Monitor CPU usage trend", "component": "resources"}')
-    fi
-    
-    if [[ $(echo "$resource_status" | jq -r '.memory.status' 2>/dev/null) == "WARNING" ]]; then
-        recommendations+=('{"priority": "P3", "action": "Monitor memory usage trend", "component": "resources"}')
-    fi
-    
-    if [[ ${#recommendations[@]} -eq 0 ]]; then
-        echo '[{"priority": "P4", "action": "No immediate action required", "component": "system"}]'
+    if ! generate_results_json "$results_json"; then
+        log_error "❌ Failed to generate results.json"
     else
-        echo "[$(IFS=,; echo "${recommendations[*]}")]"
+        log_info "✅ results.json generated successfully"
     fi
+    
+    # Copia log detalhado se existir
+    local detailed_log="$LOG_BASE_DIR/${LAYER_NAME}_${TIMESTAMP}.log"
+    if [[ -f "$detailed_log" ]]; then
+        if copy_detailed_log "$detailed_log"; then
+            log_info "✅ detailed.log copied successfully"
+        else
+            log_error "❌ Failed to copy detailed.log"
+        fi
+    fi
+    
+    # Limpa outputs antigos
+    cleanup_old_outputs 7
+    
+    log_info "🎉 Diagnostic outputs generated successfully"
 }
 
 generate_recommendations() {
@@ -252,26 +282,74 @@ generate_recommendations() {
     
     local recommendations=""
     
-    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status' 2>/dev/null) != "HEALTHY" ]]; then
-        recommendations+="• **CRITICAL:** Docker daemon needs attention\n"
+    # Verifica Docker
+    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status') != "HEALTHY" ]]; then
+        recommendations+="• CRITICAL: Docker daemon needs attention\n"
     fi
     
-    if [[ $(echo "$container_status" | jq -r '.running_count' 2>/dev/null) -lt $(echo "$container_status" | jq -r '.total_count' 2>/dev/null) ]]; then
-        recommendations+="• **WARNING:** Some containers are not running\n"
+    # Verifica containers
+    local running_containers=$(echo "$container_status" | jq -r '.running_count // 0')
+    if [[ $running_containers -lt 6 ]]; then
+        recommendations+="• WARNING: Some containers are not running ($running_containers/8)\n"
     fi
     
-    if [[ $(echo "$resource_status" | jq -r '.cpu.status' 2>/dev/null) == "WARNING" ]]; then
-        recommendations+="• **WARNING:** High CPU usage detected\n"
+    # Verifica recursos
+    if [[ $(echo "$resource_status" | jq -r '.cpu.status') == "WARNING" ]]; then
+        recommendations+="• WARNING: High CPU usage detected\n"
     fi
     
-    if [[ $(echo "$resource_status" | jq -r '.memory.status' 2>/dev/null) == "WARNING" ]]; then
-        recommendations+="• **WARNING:** High memory usage detected\n"
+    if [[ $(echo "$resource_status" | jq -r '.memory.status') == "WARNING" ]]; then
+        recommendations+="• WARNING: High memory usage detected\n"
     fi
     
     if [[ -z "$recommendations" ]]; then
-        recommendations="• **INFO:** No immediate action required\n"
+        recommendations="• All systems operational\n• No action required"
     fi
     
+    echo -e "$recommendations"
+}
+
+generate_recommendations_json() {
+    local docker_status="$1"
+    local container_status="$2"
+    local resource_status="$3"
+    
+    local recommendations="["
+    local has_recommendations=false
+    
+    # Verifica Docker
+    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status') != "HEALTHY" ]]; then
+        [[ "$has_recommendations" == true ]] && recommendations+=","
+        recommendations+='{
+            "priority": "CRITICAL",
+            "message": "Docker daemon needs attention",
+            "action": "check_docker_service"
+        }'
+        has_recommendations=true
+    fi
+    
+    # Verifica containers
+    local running_containers=$(echo "$container_status" | jq -r '.running_count // 0')
+    if [[ $running_containers -lt 6 ]]; then
+        [[ "$has_recommendations" == true ]] && recommendations+=","
+        recommendations+='{
+            "priority": "WARNING", 
+            "message": "Some containers are not running",
+            "action": "restart_containers"
+        }'
+        has_recommendations=true
+    fi
+    
+    # Se não há recomendações, adiciona uma padrão
+    if [[ "$has_recommendations" == false ]]; then
+        recommendations+='{
+            "priority": "INFO",
+            "message": "All systems operational",
+            "action": "continue_monitoring"
+        }'
+    fi
+    
+    recommendations+="]"
     echo "$recommendations"
 }
 
@@ -280,105 +358,69 @@ get_overall_status() {
     local container_status="$2"
     local resource_status="$3"
     
-    # Determina status geral baseado nos componentes
-    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status' 2>/dev/null) == "CRITICAL" ]] || \
-       [[ $(echo "$container_status" | jq -r '.status' 2>/dev/null) == "CRITICAL" ]] || \
-       [[ $(echo "$resource_status" | jq -r '.status' 2>/dev/null) == "CRITICAL" ]]; then
+    # Verifica status críticos
+    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status') == "CRITICAL" ]] || \
+       [[ $(echo "$container_status" | jq -r '.status') == "CRITICAL" ]] || \
+       [[ $(echo "$resource_status" | jq -r '.status') == "CRITICAL" ]]; then
         echo "CRITICAL"
-    elif [[ $(echo "$docker_status" | jq -r '.docker_daemon.status' 2>/dev/null) == "WARNING" ]] || \
-         [[ $(echo "$container_status" | jq -r '.status' 2>/dev/null) == "WARNING" ]] || \
-         [[ $(echo "$resource_status" | jq -r '.status' 2>/dev/null) == "WARNING" ]]; then
-        echo "WARNING"
-    else
-        echo "HEALTHY"
+        return
     fi
+    
+    # Verifica status de warning
+    if [[ $(echo "$docker_status" | jq -r '.docker_daemon.status') == "WARNING" ]] || \
+       [[ $(echo "$container_status" | jq -r '.status') == "WARNING" ]] || \
+       [[ $(echo "$resource_status" | jq -r '.status') == "WARNING" ]]; then
+        echo "WARNING"
+        return
+    fi
+    
+    # Se chegou até aqui, está saudável
+    echo "HEALTHY"
 }
-
-#===============================================================================
-# MAIN EXECUTION
-#===============================================================================
 
 main() {
     local start_time=$(date +%s%3N)
     
-    log_info "Starting infrastructure layer diagnostics"
+    echo ""
+    echo "🚀 ==============================================="
+    echo "🚀    INFRASTRUCTURE LAYER DIAGNOSTICS"
+    echo "🚀 ==============================================="
+    echo "📍 Working directory: $(pwd)"
+    echo "📁 Script directory: $ORIGINAL_SCRIPT_DIR"
+    echo "⏰ Started at: $(date)"
+    echo ""
+    
+    log_info "🚀 Starting $LAYER_NAME layer diagnostics"
     
     # Valida ambiente
     if ! validate_environment; then
-        log_error "Environment validation failed"
+        log_error "❌ Environment validation failed - exiting"
         exit 1
     fi
     
-    # Inicializa output handler primeiro
-    if ! init_output_handler "infrastructure"; then
-        log_critical "Failed to initialize output handler"
-        exit 1
-    fi
+    log_info "✅ Environment validation passed"
     
-    # Verifica se os diretórios foram criados corretamente
-    if [[ ! -d "$OUTPUT_DIR" ]]; then
-        log_critical "Output directory was not created: $OUTPUT_DIR"
-        exit 1
-    fi
+    # Gera outputs (com tratamento de erro interno)
+    generate_outputs "$start_time"
     
-    if [[ ! -d "$(get_logs_dir)" ]]; then
-        log_critical "Logs directory was not created: $(get_logs_dir)"
-        exit 1
-    fi
-    
-    # Inicializa logger após criar diretórios
-    if ! init_logger "$LAYER_NAME" "$TIMESTAMP" "$(get_logs_dir)"; then
-        log_critical "Failed to initialize logger"
-        exit 1
-    fi
-    
-    # Executa diagnósticos
-    local docker_status="{}"
-    local container_status="{}"
-    local resource_status="{}"
-    local lifecycle_status="{}"
-    
-    log_info "Executing Docker diagnostic"
-    docker_status=$(execute_docker_diagnostic) || docker_status='{"docker_daemon": {"status": "CRITICAL", "error": "Diagnostic failed"}}'
-    
-    log_info "Executing container diagnostic"
-    container_status=$(execute_container_diagnostic) || container_status='{"status": "CRITICAL", "error": "Diagnostic failed"}'
-    
-    log_info "Executing resource monitoring"
-    resource_status=$(execute_resource_monitoring) || resource_status='{"status": "CRITICAL", "error": "Diagnostic failed"}'
-    
-    log_info "Executing container lifecycle"
-    lifecycle_status=$(execute_container_lifecycle) || lifecycle_status='{"error": "Diagnostic failed"}'
-    
-    # Calcula duração
-    local end_time=$(date +%s%3N)
-    local duration=$((end_time - start_time))
-    
-    # Gera outputs
-    log_info "Generating diagnostic outputs"
-    
-    local summary_content
-    summary_content=$(generate_summary_content "$docker_status" "$container_status" "$resource_status" "$lifecycle_status" "$duration")
-    generate_summary_md "Infrastructure Layer Diagnostics" "$summary_content" || log_error "Failed to generate infrastructure_summary.md"
-    
-    local results_json
-    results_json=$(generate_infrastructure_results_json "$docker_status" "$container_status" "$resource_status" "$lifecycle_status" "$duration")
-    generate_results_json "$results_json" || log_error "Failed to generate infrastructure_diagnostic.json"
-    
-    copy_detailed_log "$(get_logs_dir)/infrastructure_${TIMESTAMP}.log" || log_error "Failed to copy infrastructure_detailed.log"
-    
-    # Limpa outputs antigos
-    cleanup_old_outputs 7
-    
-    log_info "Infrastructure layer diagnostics completed in ${duration}ms"
-    
-    # Inicia monitoramento se não estiver rodando
+    # Verifica se o monitoramento está rodando
     if ! pgrep -f "monitor.sh" >/dev/null; then
-        log_info "Starting infrastructure monitoring"
-        "$SCRIPT_DIR/monitor.sh" start
+        log_info "🔄 Starting infrastructure monitoring"
+        if [[ -f "$SCRIPT_DIR/monitor.sh" ]]; then
+            "$SCRIPT_DIR/monitor.sh" start 2>/dev/null || log_warning "⚠️  Failed to start monitoring"
+        fi
     fi
     
-    return 0
+    echo ""
+    echo "🎉 ==============================================="
+    echo "🎉    DIAGNOSTICS COMPLETED SUCCESSFULLY"
+    echo "🎉 ==============================================="
+    echo "📊 Check the outputs in: $(get_output_dir 2>/dev/null || echo 'diagnostic output directory')"
+    echo "📝 Detailed logs in: $LOG_BASE_DIR/${LAYER_NAME}_${TIMESTAMP}.log"
+    echo "⏰ Completed at: $(date)"
+    echo ""
+    
+    log_info "🎉 Infrastructure layer diagnostics completed successfully"
 }
 
 # Executa main se chamado diretamente
