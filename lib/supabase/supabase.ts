@@ -1,76 +1,32 @@
-import { createBrowserClient, createServerClient } from "@supabase/ssr"
-// import { cookies } from "next/headers"
-import { type NextRequest, NextResponse } from "next/server"
+import { createClient } from '@supabase/supabase-js'
+import { Database } from './types'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const createClient = () => {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("Supabase environment variables not found. Auth features will be disabled.")
+export const isSupabaseConfigured = (): boolean => {
+  return !!(supabaseUrl && supabaseAnonKey)
+}
+
+export { createClient }
+
+// Configuração específica para o cliente
+export const createSupabaseClient = () => {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured. Missing environment variables.')
     return null
   }
 
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
-}
-
-export const createMiddlewareClient = (request: NextRequest) => {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return { supabase: null, response: NextResponse.next() }
-  }
-
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      flowType: 'pkce',
+      debug: process.env.NODE_ENV === 'development'
+    }
   })
-
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value
-      },
-      set(name: string, value: string, options: any) {
-        request.cookies.set({
-          name,
-          value,
-          ...options,
-        })
-        response = NextResponse.next({
-          request: {
-            headers: request.headers,
-          },
-        })
-        response.cookies.set({
-          name,
-          value,
-          ...options,
-        })
-      },
-      remove(name: string, options: any) {
-        request.cookies.set({
-          name,
-          value: "",
-          ...options,
-        })
-        response = NextResponse.next({
-          request: {
-            headers: request.headers,
-          },
-        })
-        response.cookies.set({
-          name,
-          value: "",
-          ...options,
-        })
-      },
-    },
-  })
-
-  return { supabase, response }
 }
 
-// Helper function to check if Supabase is configured
-export const isSupabaseConfigured = () => {
-  return !!(supabaseUrl && supabaseAnonKey)
-}
+// Export default para compatibilidade
+export default createSupabaseClient
