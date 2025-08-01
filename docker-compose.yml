@@ -70,7 +70,7 @@ services:
       # URLs
       GOTRUE_SITE_URL: https://syntropy.cc
       GOTRUE_EXTERNAL_URL: https://api.syntropy.cc
-      GOTRUE_URI_ALLOW_LIST: https://syntropy.cc,https://*.syntropy.cc
+      GOTRUE_URI_ALLOW_LIST: https://syntropy.cc/*,https://api.syntropy.cc/*,http://localhost:3000/*
 
       # OAuth - Google
       GOTRUE_EXTERNAL_GOOGLE_ENABLED: true

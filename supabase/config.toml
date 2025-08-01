@@ -71,7 +71,7 @@ enabled = true
 # Port to use for Supabase Studio.
 port = 54323
 # External URL of the API server that frontend connects to.
-api_url = "http://127.0.0.1"
+api_url = "https://api.syntropy.cc"
 # OpenAI API Key to use for Supabase AI in the Supabase Studio.
 openai_api_key = "env(OPENAI_API_KEY)"
 
@@ -89,6 +89,7 @@ port = 54324
 
 [storage]
 enabled = true
+port = 54324
 # The maximum file size allowed (e.g. "5MB", "500KB").
 file_size_limit = "50MiB"
 
@@ -105,19 +106,24 @@ file_size_limit = "50MiB"
 
 [auth]
 enabled = true
+port = 9999
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 site_url = "https://syntropy.cc"
 # A list of *exact* URLs that auth providers are permitted to redirect to post auhentication.
 additional_redirect_urls = [
-  "http://localhost:3000",
-  "https://api.syntropy.cc"
+  "https://api.syntropy.cc/auth/v1/callback",
+  "https://syntropy.cc/auth/callback",
+  "https://syntropy.cc",
+  "http://localhost:3000/auth/callback", 
+  "http://localhost:3000"
 ]
+external_url = "https://api.syntropy.cc"
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 jwt_cookie              = true
 cookie_domain           = ".syntropy.cc"
-cors_allow_origins      = [ "https://syntropy.cc" ]
+cors_allow_origins      = [ "https://syntropy.cc", "https://api.syntropy.cc" ]
 # If disabled, the refresh token will never expire.
 enable_refresh_token_rotation = true
 # Allows refresh tokens to be reused after expiry, up to the specified interval in seconds.
@@ -134,6 +140,19 @@ minimum_password_length = 6
 # Passwords that do not meet the following requirements will be rejected as weak. Supported values
 # are: `letters_digits`, `lower_upper_letters_digits`, `lower_upper_letters_digits_symbols`
 password_requirements = ""
+
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+# URL de redirect específica para Google OAuth
+# redirect_uri = "https://api.syntropy.cc/auth/v1/callback"
+
+[auth.external.github]
+enabled = true
+client_id = "env(GITHUB_CLIENT_ID)"
+secret = "env(GITHUB_CLIENT_SECRET)"
+# redirect_uri = "https://api.syntropy.cc/auth/v1/callback"
 
 [auth.rate_limit]
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
@@ -297,6 +316,7 @@ enabled = false
 
 [edge_runtime]
 enabled = true
+port = 54325
 # Configure one of the supported request policies: `oneshot`, `per_worker`.
 # Use `oneshot` for hot reload, or `per_worker` for load testing.
 policy = "oneshot"
@@ -326,3 +346,6 @@ s3_region = "env(S3_REGION)"
 s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
+
+[ingest]
+enabled = false
