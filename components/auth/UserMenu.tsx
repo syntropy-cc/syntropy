@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/components/providers/AuthProvider"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Settings, LogOut, BookOpen, Code, FlaskConical } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 
 interface UserMenuProps {
   mobile?: boolean
@@ -22,9 +23,18 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
-  const { user, signOut, isConfigured } = useAuth()
+  const { user, signOut, loading, initialized } = useAuth()
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
+
+  // Mostrar loading enquanto verifica autenticação
+  if (loading || !initialized) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-400 border-t-transparent"></div>
+      </div>
+    )
+  }
 
   // Always show auth buttons that redirect to /auth
   if (!user) {
@@ -39,6 +49,37 @@ export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
         <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
           <Link href="/auth?mode=signup">Criar conta</Link>
         </Button>
+        
+        {/* BOTÃO DEBUG - APENAS EM DESENVOLVIMENTO */}
+        {process.env.NODE_ENV === 'development' && (
+          <Button
+            onClick={async () => {
+              console.log('🐛 DEBUG: Verificação manual de sessão');
+              const { createClient } = await import('@/lib/supabase/client');
+              const supabase = createClient();
+              if (!supabase) {
+                console.log('❌ DEBUG: Não foi possível criar client');
+                return;
+              }
+              
+              const { data: { session }, error } = await supabase.auth.getSession();
+              console.log('🔍 DEBUG: Resultado da sessão:', { session, error });
+              
+              if (session) {
+                console.log('👤 DEBUG: Dados do usuário:', {
+                  id: session.user.id,
+                  email: session.user.email,
+                  metadata: session.user.user_metadata
+                });
+              }
+            }}
+            variant="outline"
+            size="sm"
+            className="bg-red-500 hover:bg-red-600 text-white text-xs"
+          >
+            Debug
+          </Button>
+        )}
       </div>
     )
   }
@@ -46,9 +87,7 @@ export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
   const handleSignOut = async () => {
     setIsSigningOut(true)
     try {
-      if (isConfigured) {
-        await signOut()
-      }
+      await signOut()
       router.push("/")
       onClose?.()
     } catch (error) {
@@ -159,6 +198,48 @@ export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
           <LogOut className="mr-2 h-4 w-4" />
           {isSigningOut ? "Saindo..." : "Sair"}
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator className="bg-slate-700" />
+
+        <DropdownMenuItem
+          className="text-gray-300 hover:text-white hover:bg-slate-700 cursor-pointer"
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          {isSigningOut ? "Saindo..." : "Sair"}
+        </DropdownMenuItem>
+
+        {/* ADICIONAR ESTE ITEM DE DEBUG */}
+        {process.env.NODE_ENV === 'development' && (
+          <>
+            <DropdownMenuSeparator className="bg-slate-700" />
+            <DropdownMenuItem
+              className="text-yellow-400 hover:text-yellow-300 hover:bg-slate-700 cursor-pointer"
+              onClick={async () => {
+                console.log('🐛 DEBUG: Status da autenticação');
+                console.log('👤 User object:', user);
+                
+                const supabase = createClient();
+                if (supabase) {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  console.log('🔍 Current session:', session);
+                  
+                  // Testar query no backend
+                  const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                  
+                  console.log('🗄️ Profile from DB:', { data, error });
+                }
+              }}
+            >
+              🐛 Debug Auth
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

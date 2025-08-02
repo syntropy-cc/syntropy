@@ -2,6 +2,8 @@ import type React from "react"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { QueryProvider } from "@/lib/query-provider"
+import { AuthProvider } from "@/components/providers/AuthProvider"
+import { AuthLoading } from "@/components/ui/auth-loading"
 import { Navbar } from "@/components/syntropy/Navbar"
 import { Footer } from "@/components/syntropy/Footer"
 import { Toaster } from "@/components/ui/toaster"
@@ -25,12 +27,15 @@ export default function RootLayout({
     <html lang="pt-BR" className="dark">
       <body className={`${inter.className} bg-slate-900`}>
         <QueryProvider>
-          <div className="min-h-screen flex flex-col bg-slate-900">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
+          <AuthProvider>
+            <AuthLoading />
+            <div className="min-h-screen flex flex-col bg-slate-900">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <Toaster />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
