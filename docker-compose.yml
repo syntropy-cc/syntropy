@@ -76,7 +76,7 @@ services:
       GOTRUE_EXTERNAL_GOOGLE_ENABLED: true
       GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET}
-      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: https://syntropy.cc/auth/callback
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: https://api.syntropy.cc/auth/v1/callback
 
       # OAuth - GitHub
       GOTRUE_EXTERNAL_GITHUB_ENABLED: true
@@ -103,7 +103,7 @@ services:
       GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
       
       # Cookie e CORS
-      GOTRUE_COOKIE_DOMAIN: ".syntropy.cc"
+      GOTRUE_COOKIE_DOMAIN: "syntropy.cc"
       GOTRUE_COOKIE_SECURE: "true" 
       GOTRUE_COOKIE_SAME_SITE: "lax"
       GOTRUE_CORS_ALLOWED_ORIGINS: "https://syntropy.cc,https://api.syntropy.cc"

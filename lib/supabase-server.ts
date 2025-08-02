@@ -18,6 +18,22 @@ export const createServerSupabaseClient = async () => {
       get(name: string) {
         return cookieStore.get(name)?.value
       },
+      set(name: string, value: string, options: any) {
+        cookieStore.set(name, value, {
+          ...options,
+          domain: 'syntropy.cc',
+          secure: true,
+          sameSite: 'lax'
+        })
+      },
+      remove(name: string, options: any) {
+        cookieStore.set(name, '', {
+          ...options,
+          domain: 'syntropy.cc',
+          secure: true,
+          sameSite: 'lax'
+        })
+      },
     },
   })
 }

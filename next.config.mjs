@@ -15,6 +15,20 @@ const nextConfig = {
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
   },
+  // Configuração de cookies para autenticação
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Set-Cookie',
+            value: 'SameSite=Lax; Secure; Domain=syntropy.cc'
+          }
+        ]
+      }
+    ];
+  }
 };
 
 export default nextConfig;

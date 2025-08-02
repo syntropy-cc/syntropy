@@ -40,6 +40,9 @@ export async function middleware(req: NextRequest) {
             name,
             value,
             ...options,
+            domain: 'syntropy.cc',
+            secure: true,
+            sameSite: 'lax'
           })
         },
         remove(name: string, options: any) {
@@ -57,6 +60,9 @@ export async function middleware(req: NextRequest) {
             name,
             value: '',
             ...options,
+            domain: 'syntropy.cc',
+            secure: true,
+            sameSite: 'lax'
           })
         },
       },
