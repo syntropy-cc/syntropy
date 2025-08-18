@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, type Session } from "@supabase/auth-helpers-react";
+import { debug } from "@/lib/debug";
 
 export default function Providers({
   children,
@@ -13,19 +14,26 @@ export default function Providers({
   initialSession: Session | null;
 }) {
   const router = useRouter();
-  const [supabase] = useState(() =>
-    createBrowserClient(
+  const [supabase] = useState(() => {
+    debug("Providers: inicializando supabase client");
+    return createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    )
-  );
+    );
+  });
 
   // reidrata a UI quando a sessão muda
   useEffect(() => {
-    const { data: subscription } = supabase.auth.onAuthStateChange(() => {
+    debug("Providers: useEffect montado, subscrevendo onAuthStateChange");
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      debug("Providers: onAuthStateChange", event, session);
       router.refresh();
+      debug("Providers: router.refresh chamado após mudança de sessão");
     });
-    return () => subscription.subscription.unsubscribe();
+    return () => {
+      debug("Providers: limpando subscription onAuthStateChange");
+      subscription.subscription.unsubscribe();
+    };
   }, [supabase, router]);
 
   return (

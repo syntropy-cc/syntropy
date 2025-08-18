@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { debug } from '@/lib/debug'
 
 export async function middleware(req: NextRequest) {
   let response = NextResponse.next({
@@ -13,7 +14,7 @@ export async function middleware(req: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('🔧 Middleware: Supabase não configurado')
+    debug('Middleware: Supabase não configurado')
     return response
   }
 
@@ -76,12 +77,12 @@ export async function middleware(req: NextRequest) {
       error
     } = await supabase.auth.getSession()
 
-    console.log('🔍 Middleware - Path:', req.nextUrl.pathname)
-    console.log('🔍 Middleware - Session:', !!session)
-    console.log('🔍 Middleware - User:', session?.user?.email)
+    debug('Middleware - Path:', req.nextUrl.pathname)
+    debug('Middleware - Session:', !!session)
+    debug('Middleware - User:', session?.user?.email)
 
     if (error) {
-      console.error('❌ Middleware - Erro na sessão:', error)
+      debug('Middleware - Erro na sessão:', error)
     }
 
     // Refresh user session if exists
@@ -97,7 +98,7 @@ export async function middleware(req: NextRequest) {
 
     // Se não tem sessão e está tentando acessar área protegida
     if (!session && isProtectedPath) {
-      console.log('🚫 Middleware - Redirecionando para login')
+      debug('Middleware - Redirecionando para login')
       const redirectUrl = new URL('/auth', req.url)
       redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
       return NextResponse.redirect(redirectUrl)
@@ -105,7 +106,7 @@ export async function middleware(req: NextRequest) {
 
     // Se tem sessão e está tentando acessar página de login
     if (session && (req.nextUrl.pathname.startsWith('/auth/login') || req.nextUrl.pathname === '/auth')) {
-      console.log('✅ Middleware - Usuário já logado, redirecionando')
+      debug('Middleware - Usuário já logado, redirecionando')
       const redirectTo = req.nextUrl.searchParams.get('redirectTo') || '/'
       return NextResponse.redirect(new URL(redirectTo, req.url))
     }
@@ -113,7 +114,7 @@ export async function middleware(req: NextRequest) {
     return response
 
   } catch (err) {
-    console.error('💥 Middleware - Erro inesperado:', err)
+    debug('Middleware - Erro inesperado:', err)
     return response
   }
 }
