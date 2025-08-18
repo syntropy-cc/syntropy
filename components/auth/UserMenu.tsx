@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useAuth } from "@/components/providers/AuthProvider"
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -23,12 +23,12 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
-  const { user, signOut, loading, initialized } = useAuth()
+  const { user, signOut } = useAuth();
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   // Mostrar loading enquanto verifica autenticação
-  if (loading || !initialized) {
+  if (user === undefined) {
     return (
       <div className="flex items-center gap-2">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-400 border-t-transparent"></div>
@@ -219,20 +219,10 @@ export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
               onClick={async () => {
                 console.log('🐛 DEBUG: Status da autenticação');
                 console.log('👤 User object:', user);
-                
                 const supabase = createClient();
                 if (supabase) {
                   const { data: { session } } = await supabase.auth.getSession();
                   console.log('🔍 Current session:', session);
-                  
-                  // Testar query no backend
-                  const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-                  
-                  console.log('🗄️ Profile from DB:', { data, error });
                 }
               }}
             >

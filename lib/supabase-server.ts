@@ -1,39 +1,11 @@
-import { createBrowserClient, createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
-import { type NextRequest, NextResponse } from "next/server"
+import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import type { Database } from './types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export const createServerSupabaseClient = async () => {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("Supabase environment variables not found. Auth features will be disabled.")
-    return null
-  }
+export const createServerSupabaseClient = () =>
+  createServerClient<Database>(supabaseUrl, supabaseAnonKey, { cookies });
 
-  const cookieStore = await cookies()
-
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value
-      },
-      set(name: string, value: string, options: any) {
-        cookieStore.set(name, value, {
-          ...options,
-          domain: 'syntropy.cc',
-          secure: true,
-          sameSite: 'lax'
-        })
-      },
-      remove(name: string, options: any) {
-        cookieStore.set(name, '', {
-          ...options,
-          domain: 'syntropy.cc',
-          secure: true,
-          sameSite: 'lax'
-        })
-      },
-    },
-  })
-}
+export default createServerSupabaseClient;
