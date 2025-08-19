@@ -2,6 +2,10 @@ sode_modules
 .supabase
 supabase
 .git
-.env.development
-.env.local
-.env.test
+.next
+node_modules
+Dockerfile*
+docker-compose*.yml
+*.log
+*.local
+.env*
