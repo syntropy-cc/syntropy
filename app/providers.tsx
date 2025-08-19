@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import { SessionContextProvider, type Session } from "@supabase/auth-helpers-react";
 import { debug } from "@/lib/debug";
 

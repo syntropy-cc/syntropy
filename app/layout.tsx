@@ -1,6 +1,6 @@
 // app/layout.tsx (Server Component)
 import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/ssr";
 import Providers from "./providers";
 import { Navbar } from "@/components/syntropy/Navbar";
 import { Footer } from "@/components/syntropy/Footer";
@@ -17,9 +17,15 @@ export default async function RootLayout({
 }) {
   // 1) Padrão correto para Server Components com auth-helpers-nextjs
   const cookieStore = cookies();
-  const supabase = createServerComponentClient({
-    cookies: () => cookieStore,
-  });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: cookieStore.getAll.bind(cookieStore),
+      },
+    }
+  );
 
   const {
     data: { session },
