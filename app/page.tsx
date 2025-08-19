@@ -1493,6 +1493,14 @@ export default function HomePage() {
                   ))}
                 </div>
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/learn/courses">Explorar cursos</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                >
                   <Link href="/learn">Conhecer Syntropy Learn</Link>
                 </Button>
               </div>
@@ -1528,6 +1536,14 @@ export default function HomePage() {
                   )}
                 </div>
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/projects/coming-soon">Descobrir projetos</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                >
                   <Link href="/projects">Conhecer Syntropy Projects</Link>
                 </Button>
               </div>
@@ -1567,6 +1583,14 @@ export default function HomePage() {
                   ))}
                 </div>
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                  <Link href="/labs/coming-soon">Explorar laboratórios</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                >
                   <Link href="/labs">Conhecer Syntropy Labs</Link>
                 </Button>
               </div>
@@ -1607,6 +1631,14 @@ export default function HomePage() {
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
                   <Link href="/portfolio">Começar meu portfólio</Link>
                 </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                >
+                  <Link href="/portfolio">Conhecer Portfólio Syntropy</Link>
+                </Button>
               </div>
             </div>
             <div className="flex justify-center">
@@ -1615,28 +1647,6 @@ export default function HomePage() {
           </div>
         </div>
       </AnimatedSection>
-
-      {/* CTA Section */}
-      {(!loading && !user) && (
-        <AnimatedSection id="cta" className="bg-white/5">
-          <div className="container mx-auto">
-            <div className="text-center max-w-4xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Pronto para fazer parte da{" "}
-                <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-                  revolução open-source?
-                </span>
-              </h2>
-              <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-                Faça parte do ecossistema que conecta aprendizado prático, desenvolvimento colaborativo e pesquisa científica descentralizada.
-              </p>
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-                <Link href="/auth?mode=signup">Começar minha jornada</Link>
-              </Button>
-            </div>
-          </div>
-        </AnimatedSection>
-      )}
 
       {/* Contribute Section */}
       <AnimatedSection id="contribute" className="bg-gradient-to-r from-blue-900/30 via-slate-900 to-pink-900/20">
@@ -1669,6 +1679,29 @@ export default function HomePage() {
           </div>
         </div>
       </AnimatedSection>
+
+      
+      {/* CTA Section */}
+      {(!loading && !user) && (
+        <AnimatedSection id="cta" className="bg-white/5">
+          <div className="container mx-auto">
+            <div className="text-center max-w-4xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Pronto para fazer parte da{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+                  revolução open-source?
+                </span>
+              </h2>
+              <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Faça parte do ecossistema que conecta aprendizado prático, desenvolvimento colaborativo e pesquisa científica descentralizada.
+              </p>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
+                <Link href="/auth?mode=signup">Começar minha jornada</Link>
+              </Button>
+            </div>
+          </div>
+        </AnimatedSection>
+      )}
     </div>
   )
 }

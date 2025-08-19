@@ -290,16 +290,16 @@ export default function ProjectsLandingPage() {
             transition={{ delay: 1, duration: 0.8 }}
           >
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-              <Link href="/auth?mode=signup">Começar a contribuir</Link>
+              <Link href="/projects/coming-soon">Começar a contribuir</Link>
             </Button>
-            <Button
+            {/* <Button
               asChild
               variant="outline"
               size="lg"
               className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
             >
               <Link href="/projects/coming-soon">Explorar projetos</Link>
-            </Button>
+            </Button> */}
           </motion.div>
 
           {/* Enhanced Two-Column Layout */}

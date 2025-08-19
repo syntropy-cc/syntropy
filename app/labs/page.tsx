@@ -285,14 +285,14 @@ export default function LabsLandingPage() {
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
               <Link href="/labs/coming-soon">Criar laboratório</Link>
             </Button>
-            <Button
+            {/* <Button
               asChild
               variant="outline"
               size="lg"
               className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
             >
               <Link href="/labs/coming-soon">Explorar pesquisas</Link>
-            </Button>
+            </Button> */}
           </motion.div>
 
           {/* Enhanced Two-Column Layout */}

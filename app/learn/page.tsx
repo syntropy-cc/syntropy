@@ -265,14 +265,6 @@ export default function LearnLandingPage() {
             transition={{ delay: 1, duration: 0.8 }}
           >
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-              <Link href="/auth?mode=signup">Criar conta grátis</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
-            >
               <Link href="/learn/courses">Iniciar aprendizado</Link>
             </Button>
           </motion.div>

@@ -18,7 +18,7 @@ export function Footer() {
               <span className="font-bold text-xl">Syntropy</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A modern learning platform for developers to master new technologies.
+              Uma plataforma moderna de aprendizado para desenvolvedores dominarem novas tecnologias.
             </p>
             <div className="flex gap-4">
               <Link href="#" className="text-muted-foreground hover:text-primary">
@@ -34,49 +34,49 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Learn</h3>
+            <h3 className="font-semibold mb-4">Aprenda</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/learn/courses" className="text-muted-foreground hover:text-primary">
-                  All Courses
+                  Todos os Cursos
                 </Link>
               </li>
               <li>
                 <Link href="/learn" className="text-muted-foreground hover:text-primary">
-                  Learning Paths
+                  Trilhas de Aprendizagem
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-muted-foreground hover:text-primary">
-                  Certifications
+                  Certificações
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Build</h3>
+            <h3 className="font-semibold mb-4">Construa</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/projects" className="text-muted-foreground hover:text-primary">
-                  Projects
+                  Projetos
                 </Link>
               </li>
               <li>
                 <Link href="/labs" className="text-muted-foreground hover:text-primary">
-                  Labs
+                  Laboratórios
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-muted-foreground hover:text-primary">
-                  Templates
+                  Modelos
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Community</h3>
+            <h3 className="font-semibold mb-4">Comunidade</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#" className="text-muted-foreground hover:text-primary">
@@ -85,7 +85,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="#" className="text-muted-foreground hover:text-primary">
-                  Forum
+                  Fórum
                 </Link>
               </li>
               <li>
@@ -98,7 +98,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 Syntropy. All rights reserved.</p>
+          <p>&copy; 2024 Syntropy. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
