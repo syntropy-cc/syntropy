@@ -6,6 +6,7 @@ import { Navbar } from "@/components/syntropy/Navbar";
 import { Footer } from "@/components/syntropy/Footer";
 import { QueryProvider } from "@/lib/query-provider";
 // import { debug } from "@/lib/debug"; // opcional
+import "./globals.css";
 
 // Evita SSG nessas rotas (precisamos ler cookies/sessão a cada request)
 export const dynamic = "force-dynamic";
