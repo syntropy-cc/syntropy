@@ -1082,7 +1082,7 @@ function AnimatedSection({
     <motion.section
       id={id}
       ref={ref}
-      className={`min-h-screen flex items-center py-20 px-4 ${className}`}
+      className={`min-h-screen flex items-center py-20 ${className}`}
       initial={{ opacity: 0, y: 100 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -1374,7 +1374,7 @@ export default function HomePage() {
     <div className="bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white overflow-hidden">
       {/* Hero Section */}
       <motion.section
-        className="relative min-h-screen flex items-center justify-center px-4"
+        className="relative min-h-screen flex items-center justify-center"
         style={{ y: heroY, opacity: heroOpacity }}
       >
         <div className="container mx-auto text-center">

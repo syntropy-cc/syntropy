@@ -10,7 +10,7 @@ export default async function CoursesPage() {
   const courses = await getAllCourses()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white pb-16">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white pb-16 px-4">
       <div className="container pt-16">
         {courses.length === 0 ? (
           <div className="text-center py-16">
