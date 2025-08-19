@@ -1082,7 +1082,7 @@ function AnimatedSection({
     <motion.section
       id={id}
       ref={ref}
-      className={`min-h-screen flex items-center py-20 ${className}`}
+      className={`min-h-screen flex items-center py-20 px-4 ${className}`}
       initial={{ opacity: 0, y: 100 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -1371,7 +1371,7 @@ export default function HomePage() {
   const { user, loading } = useAuth()
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white overflow-hidden">
+    <div className="bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white overflow-hidden px-4">
       {/* Hero Section */}
       <motion.section
         className="relative min-h-screen flex items-center justify-center"

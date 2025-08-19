@@ -42,11 +42,7 @@ export default async function RootLayout({
           <QueryProvider>
             <div className="min-h-screen flex flex-col bg-slate-900">
               <Navbar />
-              <main className="flex-1">
-                <div className="container mx-auto px-4 w-full max-w-7xl">
-                  {children}
-                </div>
-              </main>
+              <main className="flex-1">{children}</main>
               <Footer />
             </div>
           </QueryProvider>
