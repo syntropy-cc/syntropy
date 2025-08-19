@@ -1,13 +1,12 @@
 // hooks/use-auth.ts
 "use client";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useSupabase } from "@/app/providers";
 import { debug } from "@/lib/debug";
 
 export function useAuth() {
   debug("useAuth: hook inicializado");
-  const { session } = useSession();
+  const { session, supabase } = useSupabase();
   debug("useAuth: session atual:", session);
-  const supabase = useSupabaseClient();
   return {
     user: session?.user ?? null,
     isConfigured: !!session,
@@ -15,5 +14,7 @@ export function useAuth() {
       debug("useAuth: signOut chamado");
       return supabase.auth.signOut();
     },
+    session,
+    supabase,
   };
 }

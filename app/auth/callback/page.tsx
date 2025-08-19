@@ -3,13 +3,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSupabase } from '@/app/providers'
 import { debug } from '@/lib/debug'
 
 export default function AuthCallback() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = useSupabaseClient()
+  const { supabase } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

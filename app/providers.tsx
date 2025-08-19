@@ -1,44 +1,55 @@
 // app/providers.tsx
 "use client";
+import React, { createContext, useContext } from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
-import { SessionContextProvider, type Session } from "@supabase/auth-helpers-react";
 import { debug } from "@/lib/debug";
 
-export default function Providers({
-  children,
-  initialSession,
-}: {
-  children: React.ReactNode;
-  initialSession: Session | null;
-}) {
+interface SupabaseContextType {
+  supabase: ReturnType<typeof createBrowserClient>;
+  session: any;
+  setSession: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);
+
+export function SupabaseProvider({ children, initialSession }: { children: React.ReactNode; initialSession: any }) {
   const router = useRouter();
   const [supabase] = useState(() => {
-    debug("Providers: inicializando supabase client");
+    debug("SupabaseProvider: inicializando supabase client");
     return createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     );
   });
+  const [session, setSession] = useState(initialSession);
 
-  // reidrata a UI quando a sessão muda
   useEffect(() => {
-    debug("Providers: useEffect montado, subscrevendo onAuthStateChange");
+    debug("SupabaseProvider: useEffect montado, subscrevendo onAuthStateChange");
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      debug("Providers: onAuthStateChange", event, session);
+      debug("SupabaseProvider: onAuthStateChange", event, session);
+      setSession(session);
       router.refresh();
-      debug("Providers: router.refresh chamado após mudança de sessão");
+      debug("SupabaseProvider: router.refresh chamado após mudança de sessão");
     });
     return () => {
-      debug("Providers: limpando subscription onAuthStateChange");
+      debug("SupabaseProvider: limpando subscription onAuthStateChange");
       subscription.subscription.unsubscribe();
     };
   }, [supabase, router]);
 
   return (
-    <SessionContextProvider supabaseClient={supabase} initialSession={initialSession}>
+    <SupabaseContext.Provider value={{ supabase, session, setSession }}>
       {children}
-    </SessionContextProvider>
+    </SupabaseContext.Provider>
   );
 }
+
+export function useSupabase() {
+  const ctx = useContext(SupabaseContext);
+  if (!ctx) throw new Error("useSupabase deve ser usado dentro de SupabaseProvider");
+  return ctx;
+}
+
+export default SupabaseProvider;
