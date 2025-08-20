@@ -1499,7 +1499,7 @@ export default function HomePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
                   <Link href="/learn">Conhecer Syntropy Learn</Link>
                 </Button>
@@ -1542,7 +1542,7 @@ export default function HomePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
                   <Link href="/projects">Conhecer Syntropy Projects</Link>
                 </Button>
@@ -1589,7 +1589,7 @@ export default function HomePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
                   <Link href="/labs">Conhecer Syntropy Labs</Link>
                 </Button>
@@ -1635,7 +1635,7 @@ export default function HomePage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
                 >
                   <Link href="/portfolio">Conhecer Portfólio Syntropy</Link>
                 </Button>
