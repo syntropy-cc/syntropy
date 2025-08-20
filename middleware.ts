@@ -91,18 +91,18 @@ export async function middleware(req: NextRequest) {
     }
 
     // Rotas que requerem autenticação
-    const protectedPaths = ['/dashboard', '/profile', '/settings', '/learn', '/projects', '/labs']
-    const isProtectedPath = protectedPaths.some(path =>
-      req.nextUrl.pathname.startsWith(path)
-    )
+    // const protectedPaths = ['/dashboard', '/profile', '/settings', '/learn', '/projects', '/labs']
+    // const isProtectedPath = protectedPaths.some(path =>
+    //   req.nextUrl.pathname.startsWith(path)
+    // )
 
     // Se não tem sessão e está tentando acessar área protegida
-    if (!session && isProtectedPath) {
-      debug('Middleware - Redirecionando para login')
-      const redirectUrl = new URL('/auth', req.url)
-      redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
-      return NextResponse.redirect(redirectUrl)
-    }
+    // if (!session && isProtectedPath) {
+    //   debug('Middleware - Redirecionando para login')
+    //   const redirectUrl = new URL('/auth', req.url)
+    //   redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
+    //   return NextResponse.redirect(redirectUrl)
+    // }
 
     // Se tem sessão e está tentando acessar página de login
     if (session && (req.nextUrl.pathname.startsWith('/auth/login') || req.nextUrl.pathname === '/auth')) {
