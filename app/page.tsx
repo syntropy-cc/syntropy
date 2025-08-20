@@ -1537,10 +1537,10 @@ export default function HomePage() {
                     ),
                   )}
                 </div>
-                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                  <Link href="/projects/coming-soon">Descobrir projetos</Link>
-                </Button>
                 <div className="flex flex-nowrap gap-4">
+                  <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                    <Link href="/projects/coming-soon">Descobrir projetos</Link>
+                  </Button>
                   <Button
                     asChild
                     variant="outline"
