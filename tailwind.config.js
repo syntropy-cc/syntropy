@@ -6,6 +6,17 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    container: {
+      center: true,           // agora todos os `.container` virão centralizados
+      padding: '1rem',        // padding lateral padrão
+      screens: {              // larguras máximas por breakpoint
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1400px',      // pode ajustar conforme seu layout
+      },
+    },
     extend: {
       colors: {
         border: "hsl(var(--border) / <alpha-value>)",
