@@ -1492,17 +1492,19 @@ export default function HomePage() {
                     </motion.div>
                   ))}
                 </div>
-                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                  <Link href="/learn/courses">Explorar cursos</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
-                >
-                  <Link href="/learn">Conhecer Syntropy Learn</Link>
-                </Button>
+                <div className="flex flex-nowrap gap-4">
+                  <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                    <Link href="/learn/courses">Explorar cursos</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  >
+                    <Link href="/learn">Conhecer Syntropy Learn</Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -1538,14 +1540,16 @@ export default function HomePage() {
                 <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
                   <Link href="/projects/coming-soon">Descobrir projetos</Link>
                 </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
-                >
-                  <Link href="/projects">Conhecer Syntropy Projects</Link>
-                </Button>
+                <div className="flex flex-nowrap gap-4">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  >
+                    <Link href="/projects">Conhecer Syntropy Projects</Link>
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="flex justify-center">
@@ -1582,17 +1586,19 @@ export default function HomePage() {
                     </motion.div>
                   ))}
                 </div>
-                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                  <Link href="/labs/coming-soon">Explorar laboratórios</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
-                >
-                  <Link href="/labs">Conhecer Syntropy Labs</Link>
-                </Button>
+                <div className="flex flex-nowrap gap-4">
+                  <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                    <Link href="/labs/coming-soon">Explorar laboratórios</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  >
+                    <Link href="/labs">Conhecer Syntropy Labs</Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -1628,17 +1634,19 @@ export default function HomePage() {
                     </motion.div>
                   ))}
                 </div>
-                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                  <Link href="/portfolio">Começar meu portfólio</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="ml-4 border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
-                >
-                  <Link href="/portfolio">Conhecer Portfólio Syntropy</Link>
-                </Button>
+                <div className="flex flex-nowrap gap-4">
+                  <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+                    <Link href="/portfolio">Começar meu portfólio</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg"
+                  >
+                    <Link href="/portfolio">Conhecer Portfólio Syntropy</Link>
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="flex justify-center">
