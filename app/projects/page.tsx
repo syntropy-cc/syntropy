@@ -269,7 +269,7 @@ export default function ProjectsLandingPage() {
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-8 mt-8">
               <span className="bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-            Crie. Clabore. Evolua.
+            Crie. Colabore. Evolua.
               </span>
             </h1>
           </motion.div>
