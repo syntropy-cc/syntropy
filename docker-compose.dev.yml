@@ -1,0 +1,264 @@
+# docker-compose.dev.yml
+services:
+  # PostgreSQL Database - Desenvolvimento
+  db:
+    image: supabase/postgres:15.8.1.106
+    container_name: syntropy-db-dev
+    restart: unless-stopped
+    ports:
+      - "5433:5432"  # Porta diferente para não conflitar
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev123}
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+      - ./configs/init-db.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    networks:
+      - syntropy-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Kong API Gateway - Desenvolvimento
+  kong:
+    image: kong:3.4
+    container_name: syntropy-kong-dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"    # HTTP
+      - "8001:8001"    # Admin API
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_LOG_LEVEL: debug  # Mais verbose para desenvolvimento
+    volumes:
+      - ./configs/kong/kong.dev.yml:/usr/local/kong/declarative/kong.yml:ro
+    depends_on:
+      - auth
+      - rest
+      - realtime
+      - storage
+    networks:
+      - syntropy-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "kong health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # GoTrue Authentication - Desenvolvimento
+  auth:
+    image: supabase/gotrue:v2.151.0
+    container_name: syntropy-auth-dev
+    restart: unless-stopped
+    ports:
+      - "9999:9999"
+    environment:
+      # API Config
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+
+      # Database
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-dev123}@db:5432/postgres?search_path=auth
+
+      # JWT
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+
+      # URLs para desenvolvimento
+      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_EXTERNAL_URL: http://localhost:8000
+      GOTRUE_URI_ALLOW_LIST: http://localhost:3000/*,http://localhost:8000/*
+
+      # OAuth - Desabilitado no dev ou configurar para localhost
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: false
+      GOTRUE_EXTERNAL_GITHUB_ENABLED: false
+
+      # Email - Autoconfirm para desenvolvimento
+      GOTRUE_MAILER_AUTOCONFIRM: true
+      GOTRUE_SMTP_HOST: ""
+      GOTRUE_SMTP_PORT: 587
+      GOTRUE_SMTP_USER: ""
+      GOTRUE_SMTP_PASS: ""
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
+
+      # Security
+      GOTRUE_DISABLE_SIGNUP: false
+      GOTRUE_RATE_LIMIT_HEADER: X-Forwarded-For
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: true
+      GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
+
+      # Cookie e CORS para desenvolvimento
+      GOTRUE_COOKIE_DOMAIN: "localhost"
+      GOTRUE_COOKIE_SECURE: "false"
+      GOTRUE_COOKIE_SAME_SITE: "Lax"
+      GOTRUE_CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:8000"
+      GOTRUE_CORS_ALLOWED_HEADERS: "apikey,Authorization,Content-Type"
+      GOTRUE_LOG_LEVEL: "debug"
+
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - syntropy-dev-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgREST - REST API
+  rest:
+    image: postgrest/postgrest:v12.0.2
+    container_name: syntropy-rest-dev
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD:-dev123}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      PGRST_JWT_SECRET_IS_BASE64: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - syntropy-dev-network
+
+  # Realtime - WebSockets
+  realtime:
+    image: supabase/realtime:v2.28.32
+    container_name: syntropy-realtime-dev
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-dev123}
+      DB_NAME: postgres
+      DB_SSL: "false"
+      SLOT_NAME: realtime_slot_dev
+      TEMPORARY_SLOT: "true"
+      MAX_REPLICATION_LAG_MB: 1000
+      SECURE_CHANNELS: "false"  # Disabled for dev
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-token-with-at-least-32-characters-long}
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SUBSCRIPTIONS_POOL_SIZE: 20
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your-secret-key-base-for-development}
+      APP_NAME: ${APP_NAME:-Syntropy-Dev}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - syntropy-dev-network
+    command: >
+      sh -c "/app/bin/migrate && /app/bin/realtime eval 'Realtime.Release.seeds(Realtime.Repo)' && /app/bin/server"
+
+  # Storage API
+  storage:
+    image: supabase/storage-api:v0.46.4
+    container_name: syntropy-storage-dev
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-dev123}@db:5432/postgres
+      PGOPTIONS: -c search_path=storage,public
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:8080
+    volumes:
+      - storage_data_dev:/var/lib/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+    networks:
+      - syntropy-dev-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Image Proxy (para Storage)
+  imgproxy:
+    image: darthsim/imgproxy:v3.8.0
+    container_name: syntropy-imgproxy-dev
+    restart: unless-stopped
+    environment:
+      IMGPROXY_BIND: ":8080"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+    volumes:
+      - storage_data_dev:/var/lib/storage:ro
+    networks:
+      - syntropy-dev-network
+
+  # Next.js Application - MODO DESENVOLVIMENTO
+  nextjs:
+    build:
+      context: ${NEXTJS_BUILD_CONTEXT:-.}
+      dockerfile: Dockerfile.dev
+    container_name: syntropy-nextjs-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_SUPABASE_URL: http://localhost:8000
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0}
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-dev123}@db:5432/postgres
+      NEXT_PUBLIC_DEBUG_AUTH: "1"
+      # Hot reload
+      WATCHPACK_POLLING: "true"
+    volumes:
+      # Para hot reload - monta o código fonte
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - kong
+    networks:
+      - syntropy-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  syntropy-dev-network:
+    driver: bridge
+
+volumes:
+  db_data_dev:
+  storage_data_dev:
