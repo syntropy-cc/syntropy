@@ -78,11 +78,11 @@ services:
       GOTRUE_URI_ALLOW_LIST: http://localhost:3000/*,http://localhost:8000/*
 
       # OAuth - Desabilitado no dev ou configurar para localhost
-      GOTRUE_EXTERNAL_GOOGLE_ENABLED: false
-      GOTRUE_EXTERNAL_GITHUB_ENABLED: false
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: "false"
+      GOTRUE_EXTERNAL_GITHUB_ENABLED: "false"
 
       # Email - Autoconfirm para desenvolvimento
-      GOTRUE_MAILER_AUTOCONFIRM: true
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
       GOTRUE_SMTP_HOST: ""
       GOTRUE_SMTP_PORT: 587
       GOTRUE_SMTP_USER: ""
@@ -90,9 +90,9 @@ services:
       GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
 
       # Security
-      GOTRUE_DISABLE_SIGNUP: false
+      GOTRUE_DISABLE_SIGNUP: "false"
       GOTRUE_RATE_LIMIT_HEADER: X-Forwarded-For
-      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: true
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
       GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
 
       # Cookie e CORS para desenvolvimento

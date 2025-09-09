@@ -13,12 +13,12 @@ echo "=========================================="
 
 # Função para gerar JWT Secret (32+ caracteres)
 generate_jwt_secret() {
-    openssl rand -hex 32
+    openssl rand -hex 32  # 32 bytes = 64 caracteres hex
 }
 
 # Função para gerar Secret Key Base (64+ caracteres para Phoenix/Realtime)
 generate_secret_key_base() {
-    openssl rand -hex 64
+    openssl rand -hex 64  # 64 bytes = 128 caracteres hex
 }
 
 # Função para gerar chaves JWT para Supabase
@@ -26,18 +26,25 @@ generate_supabase_keys() {
     local jwt_secret=$1
     local environment=$2
     
+    # Header JWT padrão
+    local header='{"alg":"HS256","typ":"JWT"}'
+    local header_b64=$(echo -n "$header" | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+    
     # Payload para ANON key
-    local anon_payload=$(echo -n "{\"iss\":\"supabase-${environment}\",\"role\":\"anon\",\"exp\":1983812996}" | base64 -w 0 | tr -d '=')
+    local anon_payload="{\"iss\":\"supabase-${environment}\",\"role\":\"anon\",\"exp\":1983812996}"
+    local anon_payload_b64=$(echo -n "$anon_payload" | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
     
     # Payload para SERVICE_ROLE key  
-    local service_payload=$(echo -n "{\"iss\":\"supabase-${environment}\",\"role\":\"service_role\",\"exp\":1983812996}" | base64 -w 0 | tr -d '=')
+    local service_payload="{\"iss\":\"supabase-${environment}\",\"role\":\"service_role\",\"exp\":1983812996}"
+    local service_payload_b64=$(echo -n "$service_payload" | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
     
-    # Header JWT
-    local header=$(echo -n "{\"alg\":\"HS256\",\"typ\":\"JWT\"}" | base64 -w 0 | tr -d '=')
+    # Gerar assinaturas (sem quebras de linha)
+    local anon_signature=$(echo -n "${header_b64}.${anon_payload_b64}" | openssl dgst -sha256 -hmac "$jwt_secret" -binary | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
+    local service_signature=$(echo -n "${header_b64}.${service_payload_b64}" | openssl dgst -sha256 -hmac "$jwt_secret" -binary | base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n')
     
-    # Simular assinatura (para demonstração - em produção use biblioteca JWT adequada)
-    echo "ANON_KEY=${header}.${anon_payload}.$(openssl rand -hex 20)"
-    echo "SERVICE_ROLE_KEY=${header}.${service_payload}.$(openssl rand -hex 20)"
+    # Retornar chaves em linhas separadas SEM quebras internas
+    printf "ANON_KEY=%s.%s.%s\n" "$header_b64" "$anon_payload_b64" "$anon_signature"
+    printf "SERVICE_ROLE_KEY=%s.%s.%s" "$header_b64" "$service_payload_b64" "$service_signature"
 }
 
 # Função para gerar senha segura
@@ -59,89 +66,226 @@ read -p "Digite sua escolha (1-6): " choice
 case $choice in
     1)
         echo -e "${YELLOW}🔨 Gerando chaves para DESENVOLVIMENTO...${NC}"
-        echo ""
         
+        # Gerar chaves (SEM MOSTRAR)
         JWT_SECRET=$(generate_jwt_secret)
         SECRET_KEY_BASE=$(generate_secret_key_base)
         DB_PASSWORD=$(generate_password)
         
-        echo -e "${GREEN}✅ Chaves de desenvolvimento geradas:${NC}"
-        echo ""
-        echo "# ========================================"
-        echo "# DESENVOLVIMENTO - .env.dev"
-        echo "# ========================================"
-        echo "POSTGRES_PASSWORD=${DB_PASSWORD}"
-        echo "JWT_SECRET=${JWT_SECRET}"
-        echo "SECRET_KEY_BASE=${SECRET_KEY_BASE}"
-        echo ""
+        # Criar conteúdo do arquivo .env.dev
+        ENV_CONTENT="# ==========================================
+# DESENVOLVIMENTO - .env.dev
+# ==========================================
+# Gerado em: $(date)
+
+# Database
+POSTGRES_PASSWORD=${DB_PASSWORD}
+
+# JWT e Keys (APENAS PARA DESENVOLVIMENTO)
+JWT_SECRET=${JWT_SECRET}
+SECRET_KEY_BASE=${SECRET_KEY_BASE}
+
+# Realtime
+APP_NAME=Syntropy-Dev
+
+# URLs de desenvolvimento
+API_EXTERNAL_URL=http://localhost:8000
+
+# OAuth (desabilitado para desenvolvimento)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+# Email (autoconfirm ativado)
+MAILER_AUTOCONFIRM=true
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+SMTP_ADMIN_EMAIL=admin@localhost
+
+# Build context
+NEXTJS_BUILD_CONTEXT=.
+
+# Chaves Supabase para desenvolvimento
+$(generate_supabase_keys "$JWT_SECRET" "dev")"
+
+        # SALVAR DIRETAMENTE NO ARQUIVO .env.dev
+        if [ -f ".env.dev" ]; then
+            echo -e "${YELLOW}⚠️  Arquivo .env.dev já existe!${NC}"
+            read -p "Deseja sobrescrever? (y/N): " overwrite
+            if [[ $overwrite =~ ^[Yy]$ ]]; then
+                echo "$ENV_CONTENT" > .env.dev
+                echo -e "${GREEN}✅ Arquivo .env.dev atualizado com sucesso!${NC}"
+            else
+                echo -e "${YELLOW}❌ Operação cancelada${NC}"
+                exit 0
+            fi
+        else
+            echo "$ENV_CONTENT" > .env.dev
+            echo -e "${GREEN}✅ Arquivo .env.dev criado com sucesso!${NC}"
+        fi
         
-        # Gerar chaves Supabase simplificadas para dev
-        echo "# Chaves Supabase para desenvolvimento (simplificadas)"
-        echo "ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZXYiLCJyb2xlIjoiYW5vbiIsImV4cCI6MTk4MzgxMjk5Nn0.$(openssl rand -hex 20)"
-        echo "SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZXYiLCJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxOTgzODEyOTk2fQ.$(openssl rand -hex 20)"
-        echo ""
-        echo -e "${CYAN}💡 Copie essas variáveis para seu arquivo .env.dev${NC}"
+        echo -e "${BLUE}🔒 Chaves salvas com segurança no arquivo .env.dev${NC}"
+        echo -e "${CYAN}🎯 Pronto! Execute: ./dev.sh start${NC}"
         ;;
         
     2)
         echo -e "${RED}🔒 Gerando chaves para PRODUÇÃO...${NC}"
-        echo ""
         
+        # Gerar chaves (SEM MOSTRAR)
         JWT_SECRET=$(generate_jwt_secret)
         SECRET_KEY_BASE=$(generate_secret_key_base)
         DB_PASSWORD=$(generate_password)
         
-        echo -e "${RED}⚠️  ATENÇÃO: Guarde essas chaves em local SEGURO!${NC}"
-        echo ""
-        echo "# ========================================"
-        echo "# PRODUÇÃO - .env (MANTER SECRETO!)"
-        echo "# ========================================"
-        echo "POSTGRES_PASSWORD=${DB_PASSWORD}"
-        echo "JWT_SECRET=${JWT_SECRET}"
-        echo "SECRET_KEY_BASE=${SECRET_KEY_BASE}"
-        echo ""
+        # Criar conteúdo do arquivo .env
+        ENV_CONTENT="# ==========================================
+# PRODUÇÃO - .env (MANTER SECRETO!)
+# ==========================================
+# Gerado em: $(date)
+
+# Database
+POSTGRES_PASSWORD=${DB_PASSWORD}
+
+# JWT e Keys (PRODUÇÃO - MANTER SEGURO!)
+JWT_SECRET=${JWT_SECRET}
+SECRET_KEY_BASE=${SECRET_KEY_BASE}
+
+# Realtime
+APP_NAME=Syntropy-Prod
+
+# URLs de produção (AJUSTAR CONFORME NECESSÁRIO)
+API_EXTERNAL_URL=https://api.syntropy.cc
+
+# OAuth (CONFIGURAR COM CHAVES REAIS)
+GOOGLE_CLIENT_ID=SEU_GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=SEU_GOOGLE_CLIENT_SECRET
+GITHUB_CLIENT_ID=SEU_GITHUB_CLIENT_ID
+GITHUB_CLIENT_SECRET=SEU_GITHUB_CLIENT_SECRET
+
+# Email (CONFIGURAR SMTP REAL)
+MAILER_AUTOCONFIRM=false
+SMTP_HOST=seu-smtp-host.com
+SMTP_PORT=587
+SMTP_USER=seu-usuario-smtp
+SMTP_PASS=sua-senha-smtp
+SMTP_ADMIN_EMAIL=admin@syntropy.cc
+
+# Build context
+NEXTJS_BUILD_CONTEXT=.
+
+# Chaves Supabase para produção
+$(generate_supabase_keys "$JWT_SECRET" "prod")"
+
+        # SALVAR DIRETAMENTE NO ARQUIVO .env
+        if [ -f ".env" ]; then
+            echo -e "${YELLOW}⚠️  Arquivo .env já existe!${NC}"
+            echo -e "${RED}🚨 CUIDADO: Este é o arquivo de PRODUÇÃO!${NC}"
+            read -p "Tem CERTEZA que deseja sobrescrever? (y/N): " overwrite
+            if [[ $overwrite =~ ^[Yy]$ ]]; then
+                # Fazer backup antes de sobrescrever
+                backup_name=".env.backup.$(date +%Y%m%d-%H%M%S)"
+                cp .env "$backup_name"
+                echo -e "${BLUE}📦 Backup criado: $backup_name${NC}"
+                
+                echo "$ENV_CONTENT" > .env
+                echo -e "${GREEN}✅ Arquivo .env atualizado com sucesso!${NC}"
+            else
+                echo -e "${YELLOW}❌ Operação cancelada${NC}"
+                exit 0
+            fi
+        else
+            echo "$ENV_CONTENT" > .env
+            echo -e "${GREEN}✅ Arquivo .env criado com sucesso!${NC}"
+        fi
         
-        # Gerar chaves Supabase para produção
-        echo "# Chaves Supabase para produção"
-        echo "ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1wcm9kIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.$(openssl rand -hex 20)"
-        echo "SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1wcm9kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.$(openssl rand -hex 20)"
-        echo ""
-        echo -e "${RED}🚨 NUNCA commite essas chaves no repositório!${NC}"
+        echo -e "${BLUE}🔒 Chaves salvas com segurança no arquivo .env${NC}"
+        echo -e "${RED}🔒 IMPORTANTE: Não commite este arquivo no repositório!${NC}"
         ;;
         
     3)
-        echo -e "${GREEN}🔑 JWT Secret gerado:${NC}"
-        echo "JWT_SECRET=$(generate_jwt_secret)"
+        echo -e "${GREEN}🔑 JWT Secret gerado${NC}"
+        JWT_SECRET=$(generate_jwt_secret)
+        echo "Comprimento: ${#JWT_SECRET} caracteres"
+        echo -e "${BLUE}🔒 Use este valor manualmente onde necessário${NC}"
+        echo -e "${YELLOW}Para ver o valor: echo \$JWT_SECRET${NC}"
         ;;
         
     4)
-        echo -e "${GREEN}🗝️  Secret Key Base gerado:${NC}"
-        echo "SECRET_KEY_BASE=$(generate_secret_key_base)"
+        echo -e "${GREEN}🗝️  Secret Key Base gerado${NC}"
+        SECRET_KEY_BASE=$(generate_secret_key_base)
+        echo "Comprimento: ${#SECRET_KEY_BASE} caracteres"
+        echo -e "${BLUE}🔒 Use este valor manualmente onde necessário${NC}"
+        echo -e "${YELLOW}Para ver o valor: echo \$SECRET_KEY_BASE${NC}"
         ;;
         
     5)
-        echo -e "${GREEN}🔐 Senha de banco gerada:${NC}"
-        echo "POSTGRES_PASSWORD=$(generate_password)"
+        echo -e "${GREEN}🔐 Senha de banco gerada${NC}"
+        DB_PASSWORD=$(generate_password)
+        echo "Comprimento: ${#DB_PASSWORD} caracteres"
+        echo -e "${BLUE}🔒 Use este valor manualmente onde necessário${NC}"
+        echo -e "${YELLOW}Para ver o valor: echo \$DB_PASSWORD${NC}"
         ;;
         
     6)
-        echo -e "${CYAN}🛠️  Geração customizada:${NC}"
-        echo ""
+        echo -e "${CYAN}🛠️  Geração customizada${NC}"
         read -p "Nome do ambiente (dev/prod/staging): " env_name
         
+        # Gerar chaves (SEM MOSTRAR)
         JWT_SECRET=$(generate_jwt_secret)
         SECRET_KEY_BASE=$(generate_secret_key_base)
         DB_PASSWORD=$(generate_password)
         
-        echo ""
-        echo "# ========================================"
-        echo "# AMBIENTE: ${env_name^^}"
-        echo "# ========================================"
-        echo "POSTGRES_PASSWORD=${DB_PASSWORD}"
-        echo "JWT_SECRET=${JWT_SECRET}"
-        echo "SECRET_KEY_BASE=${SECRET_KEY_BASE}"
-        echo "ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS0ke_name}\",\"role\":\"anon\",\"exp\":1983812996}.$(openssl rand -hex 20)"
-        echo "SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS0ke_name}\",\"role\":\"service_role\",\"exp\":1983812996}.$(openssl rand -hex 20)"
+        # Determinar nome do arquivo
+        if [ "$env_name" = "prod" ]; then
+            env_file=".env"
+        else
+            env_file=".env.${env_name}"
+        fi
+        
+        # Criar conteúdo do arquivo
+        ENV_CONTENT="# ==========================================
+# AMBIENTE: ${env_name^^}
+# ==========================================
+# Gerado em: $(date)
+
+# Database
+POSTGRES_PASSWORD=${DB_PASSWORD}
+
+# JWT e Keys
+JWT_SECRET=${JWT_SECRET}
+SECRET_KEY_BASE=${SECRET_KEY_BASE}
+
+# Realtime
+APP_NAME=Syntropy-${env_name^}
+
+# URLs (AJUSTAR CONFORME NECESSÁRIO)
+API_EXTERNAL_URL=https://api-${env_name}.syntropy.cc
+
+# Build context
+NEXTJS_BUILD_CONTEXT=.
+
+# Chaves Supabase para ${env_name}
+$(generate_supabase_keys "$JWT_SECRET" "$env_name")"
+
+        # SALVAR DIRETAMENTE NO ARQUIVO
+        if [ -f "$env_file" ]; then
+            echo -e "${YELLOW}⚠️  Arquivo $env_file já existe!${NC}"
+            read -p "Deseja sobrescrever? (y/N): " overwrite
+            if [[ $overwrite =~ ^[Yy]$ ]]; then
+                echo "$ENV_CONTENT" > "$env_file"
+                echo -e "${GREEN}✅ Arquivo $env_file atualizado com sucesso!${NC}"
+            else
+                echo -e "${YELLOW}❌ Operação cancelada${NC}"
+                exit 0
+            fi
+        else
+            echo "$ENV_CONTENT" > "$env_file"
+            echo -e "${GREEN}✅ Arquivo $env_file criado com sucesso!${NC}"
+        fi
+        
+        echo -e "${BLUE}🔒 Chaves salvas com segurança no arquivo $env_file${NC}"
         ;;
         
     *)
@@ -152,25 +296,9 @@ esac
 
 echo ""
 echo -e "${BLUE}📋 Dicas importantes:${NC}"
-echo "• Mantenha as chaves de produção em local seguro"
+echo "• Chaves nunca são exibidas no terminal por segurança"
 echo "• Use diferentes chaves para cada ambiente"
 echo "• Nunca commite arquivos .env no repositório"
-echo "• Considere usar um gerenciador de secrets em produção"
-echo "• Faça backup das chaves de produção"
-echo ""
-
-# Oferecer para salvar em arquivo
-read -p "Deseja salvar em arquivo? (y/N): " save_file
-if [[ $save_file =~ ^[Yy]$ ]]; then
-    filename="keys-$(date +%Y%m%d-%H%M%S).env"
-    case $choice in
-        1) filename="dev-${filename}" ;;
-        2) filename="prod-${filename}" ;;
-        6) filename="${env_name}-${filename}" ;;
-    esac
-    
-    echo "Arquivo salvo como: ${filename}"
-    echo "⚠️  Lembre-se de mover para local seguro e deletar se necessário!"
-fi
+echo "• Mantenha backups das chaves de produção"
 
 echo -e "${GREEN}✨ Concluído!${NC}"
