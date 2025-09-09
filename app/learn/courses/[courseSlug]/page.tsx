@@ -60,11 +60,11 @@ export default async function CoursePage({
                 </Badge>
                 <Badge variant="outline" className="text-sm px-3 py-1">
                   <Clock className="mr-1 h-3 w-3" />
-                  {course.duration} hours
+                  {course.duration} Horas
                 </Badge>
                 <Badge variant="outline" className="text-sm px-3 py-1">
                   <BookOpen className="mr-1 h-3 w-3" />
-                  {course.chapters.length} chapters
+                  {course.chapterCount} Capítulos
                 </Badge>
               </div>
               
@@ -105,44 +105,54 @@ export default async function CoursePage({
             </div>
           </div>
 
-          {/* Course Info Card - Simplified */}
-          <Card className="mb-8 border">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <span className="font-semibold text-lg">{course.duration}h</span>
-                  <p className="text-sm text-muted-foreground">Duração</p>
+          {/* Course Highlights - Subtle Design */}
+          <div className="mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Duration */}
+              <div className="group relative bg-muted/30 border border-border/50 rounded-xl p-4 hover:bg-muted/50 transition-all duration-200">
+                <div className="flex items-center justify-center mb-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
                 </div>
-                
-                <div>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <BookOpen className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <span className="font-semibold text-lg">{course.chapters.length}</span>
-                  <p className="text-sm text-muted-foreground">Capítulos</p>
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Award className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <span className="font-semibold text-lg text-green-600">Sim</span>
-                  <p className="text-sm text-muted-foreground">Certificado</p>
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <span className="font-semibold text-lg">Vitalício</span>
-                  <p className="text-sm text-muted-foreground">Acesso</p>
+                <div className="text-center space-y-1">
+                  <div className="text-2xl font-bold text-foreground">{course.duration}h</div>
+                  <div className="text-sm text-muted-foreground">Duração</div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Chapters */}
+              <div className="group relative bg-muted/30 border border-border/50 rounded-xl p-4 hover:bg-muted/50 transition-all duration-200">
+                <div className="flex items-center justify-center mb-2">
+                  <BookOpen className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="text-center space-y-1">
+                  <div className="text-2xl font-bold text-foreground">{course.chapterCount}</div>
+                  <div className="text-sm text-muted-foreground">Capítulos</div>
+                </div>
+              </div>
+
+              {/* Real Project */}
+              <div className="group relative bg-muted/30 border border-border/50 rounded-xl p-4 hover:bg-muted/50 transition-all duration-200">
+                <div className="flex items-center justify-center mb-2">
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="text-center space-y-1">
+                  <div className="text-lg font-bold text-foreground">Projeto Real</div>
+                  <div className="text-sm text-muted-foreground">Portfólio</div>
+                </div>
+              </div>
+
+              {/* Community */}
+              <div className="group relative bg-muted/30 border border-border/50 rounded-xl p-4 hover:bg-muted/50 transition-all duration-200">
+                <div className="flex items-center justify-center mb-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="text-center space-y-1">
+                  <div className="text-lg font-bold text-foreground">Comunidade</div>
+                  <div className="text-sm text-muted-foreground">Suporte mútuo</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Key Benefits Section */}
           <div className="mb-12">
