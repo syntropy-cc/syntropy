@@ -10,7 +10,9 @@ export interface CourseSummary {
   description?: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
   duration?: number;
+  chapterCount?: number;
   cover?: string;
+  finished?: string;
   author?: {
     name: string;
     bio?: string;
