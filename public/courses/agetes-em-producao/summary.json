@@ -9,7 +9,7 @@
     "bio": "Especialista em IA e sistemas multi-agente"
   },
   "level": "intermediate",
-  "duration": 160,
+  "duration": 600,
   "tags": ["IA", "Multi-Agente", "LangChain", "CrewAI", "Produção", "Startups"],
   "cover": "images/agentes-em-producao-course-cover.png",
   "outcomes": [

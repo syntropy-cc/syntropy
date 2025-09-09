@@ -23,13 +23,13 @@ export default async function CoursesPage() {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 md:gap-8">
             {courses.map((course, i) => {
-              const VISIBLE_TAGS = 2
+              const VISIBLE_TAGS = 4 // Aumentado para mostrar mais tags na linha dedicada
               const visibleTags = course.tags?.slice(0, VISIBLE_TAGS) ?? []
               const hiddenCount = (course.tags?.length ?? 0) - visibleTags.length
 
               return (
                 <Link
-                  key={course.id || course.slug}
+                  key={course.slug}
                   href={`/learn/courses/${course.slug}`}
                   className="group focus:outline-none"
                   aria-label={`Acessar curso ${course.title}`}
@@ -58,25 +58,26 @@ export default async function CoursesPage() {
                           </div>
                         </div>
                       )}
+
+                      {/* ----------- OVERLAY COM RESUMO DO CURSO ----------- */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-center p-4">
+                        <div className="text-center">
+                          <h3 className="font-bold text-lg text-white mb-2 line-clamp-2">
+                            {course.title}
+                          </h3>
+                          <p className="text-sm text-blue-100/90 line-clamp-4">
+                            {course.description || 'Sem descrição disponível'}
+                          </p>
+                        </div>
+                      </div>
                     </figure>
 
-                    {/* ----------- CORPO ----------- */}
-                    <div className="flex flex-col gap-3 p-4 grow">
-                      {/* Título */}
-                      <h3 className="font-semibold text-lg line-clamp-2 text-white">
-                        {course.title}
-                      </h3>
-
-                      {/* Descrição */}
-                      <p className="text-sm text-blue-100/80 line-clamp-3">
-                        {course.description || 'Sem descrição disponível'}
-                      </p>
-
-                      {/* nível • capítulos • tags */}
-                      <div className="flex items-center gap-2 text-xs text-blue-200/70 flex-wrap">
+                    {/* ----------- INFORMAÇÕES BÁSICAS ----------- */}
+                    <div className="flex flex-col gap-3 p-4">
+                      {/* Primeira linha: nível • capítulos • horas */}
+                      <div className="flex items-center gap-3">
                         <Badge
-                          variant="secondary"
-                          className={`px-2 py-0.5 shrink-0 rounded-full font-medium ${
+                          className={`px-3 py-1 shrink-0 rounded-full font-medium text-xs ${
                             course.level === "beginner"
                               ? "bg-green-700/80 text-green-200"
                               : course.level === "intermediate"
@@ -91,41 +92,46 @@ export default async function CoursesPage() {
                             : "Avançado"}
                         </Badge>
 
-                        <span className="shrink-0">
-                          {course.chapters?.length || 0} capítulos
-                        </span>
+                        <div className="flex items-center gap-1 text-white text-sm">
+                          <span className="text-blue-200/70">📚</span>
+                          <span className="font-medium">{course.chapters?.length || 0} capítulos</span>
+                        </div>
 
+                        {course.duration && (
+                          <div className="flex items-center gap-1 text-white text-sm">
+                            <span className="text-blue-200/70">⏱️</span>
+                            <span className="font-medium">{Math.round(course.duration / 60)}h</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Segunda linha: tags */}
+                      <div className="flex items-center gap-2 flex-wrap">
                         {visibleTags.map((tag) => (
                           <Badge
                             key={tag}
-                            variant="outline"
-                            className="shrink-0 border-blue-400/30 bg-slate-700/40 text-[10px] text-blue-200/80 px-2 py-0.5"
+                            className="shrink-0 border-blue-400/30 bg-slate-700/40 text-xs text-blue-200/80 px-2 py-1 rounded-full"
                           >
                             {tag}
                           </Badge>
                         ))}
 
                         {hiddenCount > 0 && (
-                          <span className="shrink-0 text-blue-300/80">+{hiddenCount}</span>
+                          <span className="text-xs text-blue-300/80 font-medium">+{hiddenCount}</span>
                         )}
                       </div>
 
-                      {/* Autor */}
-                      <div className="mt-auto flex items-center gap-2">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-700 text-base font-bold">
-                          {course.author?.name?.charAt(0) || '?'}
+                      {/* Terceira linha: autor (canto direito) */}
+                      <div className="flex justify-end">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-700 text-xs font-bold text-white">
+                            {course.author?.name?.charAt(0) || '?'}
+                          </div>
+                          <span className="text-xs text-blue-100/80 font-medium">
+                            {course.author?.name || 'Autor desconhecido'}
+                          </span>
                         </div>
-                        <span className="text-xs text-blue-100/80">
-                          {course.author?.name || 'Autor desconhecido'}
-                        </span>
                       </div>
-                    </div>
-
-                    {/* ----------- OVERLAY ----------- */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="rounded-full bg-indigo-600 py-2 px-4 text-sm font-medium shadow">
-                        Ver curso
-                      </span>
                     </div>
                   </Card>
                 </Link>
