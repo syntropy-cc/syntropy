@@ -455,30 +455,59 @@ rebuild() {
 fix_issues() {
     echo -e "${YELLOW}🔧 Resolvendo problemas comuns do projeto...${NC}"
     
-    # Gerar package-lock.json se não existir
-    if [ ! -f "package-lock.json" ] && [ -f "package.json" ]; then
-        echo -e "${BLUE}📦 Gerando package-lock.json...${NC}"
-        npm install
-        echo -e "${GREEN}✅ package-lock.json criado!${NC}"
+    # Verificar se há conflitos de package manager
+    if [ -f "package.json" ] && grep -q '"packageManager"' package.json; then
+        echo -e "${BLUE}🔄 Removendo conflito de packageManager...${NC}"
+        # Fazer backup
+        cp package.json package.json.backup
+        # Remover linha do packageManager
+        sed -i.tmp 's/.*"packageManager".*,\?//g' package.json
+        sed -i.tmp '/^[[:space:]]*$/d' package.json
+        rm -f package.json.tmp
+        echo -e "${GREEN}✅ Conflito removido!${NC}"
     fi
     
-    # Limpar node_modules se existir
+    # Limpar instalações anteriores
     if [ -d "node_modules" ]; then
         echo -e "${BLUE}🗑️  Limpando node_modules...${NC}"
         rm -rf node_modules
         echo -e "${GREEN}✅ node_modules removido!${NC}"
     fi
     
-    # Reinstalar dependências
-    echo -e "${BLUE}📦 Reinstalando dependências...${NC}"
-    npm install
+    # Remover locks conflitantes
+    if [ -f "package-lock.json" ]; then
+        echo -e "${BLUE}🗑️  Removendo package-lock.json antigo...${NC}"
+        rm -f package-lock.json
+    fi
+    
+    if [ -f "yarn.lock" ]; then
+        echo -e "${BLUE}🗑️  Removendo yarn.lock...${NC}"
+        rm -f yarn.lock
+    fi
+    
+    if [ -f "pnpm-lock.yaml" ]; then
+        echo -e "${BLUE}🗑️  Removendo pnpm-lock.yaml...${NC}"
+        rm -f pnpm-lock.yaml
+    fi
     
     # Limpar cache do npm
     echo -e "${BLUE}🧹 Limpando cache do npm...${NC}"
     npm cache clean --force
     
+    # Reinstalar dependências com npm
+    echo -e "${BLUE}📦 Reinstalando dependências com npm...${NC}"
+    npm install
+    
+    # Verificar se há problemas de compatibilidade
+    if [ -f "package.json" ]; then
+        if grep -q '"node".*">=20\|"node".*"^20' package.json; then
+            echo -e "${YELLOW}⚠️  Projeto requer Node.js 20+${NC}"
+            echo -e "${CYAN}💡 Dockerfile.dev será atualizado para Node.js 20${NC}"
+        fi
+    fi
+    
     # Limpar Docker
-    echo -e "${BLUE}🐳 Limpando Docker...${NC}"
+    echo -e "${BLUE}🐳 Limpando cache do Docker...${NC}"
     docker system prune -af >/dev/null 2>&1
     
     echo -e "${GREEN}✅ Problemas comuns resolvidos!${NC}"

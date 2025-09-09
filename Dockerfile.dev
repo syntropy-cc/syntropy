@@ -1,13 +1,24 @@
 # Dockerfile.dev
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
+
+# Enable Corepack for proper package manager support
+RUN corepack enable
 
 # Install dependencies
 COPY package*.json ./
 
-# Use npm install se não houver package-lock.json, senão use npm ci
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+# Use the project's specified package manager or fallback to npm
+RUN if [ -f package-lock.json ]; then \
+        npm ci; \
+    elif [ -f yarn.lock ]; then \
+        yarn install; \
+    elif [ -f pnpm-lock.yaml ]; then \
+        pnpm install; \
+    else \
+        npm install; \
+    fi
 
 # Copy source code (será sobrescrito pelo volume mount)
 COPY . .
