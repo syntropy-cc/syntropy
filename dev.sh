@@ -198,19 +198,63 @@ check_project_files() {
         fi
     done
     
-    # Verificar se package-lock.json existe
-    if [ ! -f "package-lock.json" ]; then
-        echo -e "${YELLOW}⚠️  package-lock.json não encontrado${NC}"
+    # Verificar se há arquivos de lock dos package managers
+    lock_files_found=()
+    if [ -f "package-lock.json" ]; then
+        lock_files_found+=("npm (package-lock.json)")
+    fi
+    if [ -f "yarn.lock" ]; then
+        lock_files_found+=("yarn (yarn.lock)")
+    fi
+    if [ -f "pnpm-lock.yaml" ]; then
+        lock_files_found+=("pnpm (pnpm-lock.yaml)")
+    fi
+    
+    if [ ${#lock_files_found[@]} -eq 0 ]; then
+        echo -e "${YELLOW}⚠️  Nenhum arquivo de lock encontrado${NC}"
         echo -e "${CYAN}💡 Isso pode causar problemas no build do Docker${NC}"
         
         if [ -f "package.json" ]; then
-            read -p "Deseja gerar package-lock.json automaticamente? (Y/n): " generate_lock
+            # Detectar package manager preferido do package.json
+            local preferred_pm="npm"
+            if grep -q '"packageManager".*pnpm' package.json; then
+                preferred_pm="pnpm"
+            elif grep -q '"packageManager".*yarn' package.json; then
+                preferred_pm="yarn"
+            fi
+            
+            read -p "Deseja gerar arquivo de lock usando ${preferred_pm}? (Y/n): " generate_lock
             if [[ ! $generate_lock =~ ^[Nn]$ ]]; then
-                echo -e "${GREEN}📦 Executando npm install...${NC}"
-                npm install
-                echo -e "${GREEN}✅ package-lock.json criado!${NC}"
+                echo -e "${GREEN}📦 Instalando dependências com ${preferred_pm}...${NC}"
+                
+                case $preferred_pm in
+                    "pnpm")
+                        if ! command -v pnpm >/dev/null 2>&1; then
+                            corepack enable
+                            corepack prepare pnpm@latest --activate
+                        fi
+                        pnpm install
+                        ;;
+                    "yarn")
+                        corepack enable
+                        corepack prepare yarn@stable --activate
+                        yarn install
+                        ;;
+                    "npm")
+                        npm install
+                        ;;
+                esac
+                echo -e "${GREEN}✅ Arquivo de lock criado!${NC}"
             fi
         fi
+    elif [ ${#lock_files_found[@]} -gt 1 ]; then
+        echo -e "${YELLOW}⚠️  Múltiplos arquivos de lock encontrados:${NC}"
+        for lock_file in "${lock_files_found[@]}"; do
+            echo -e "   • $lock_file"
+        done
+        echo -e "${CYAN}💡 Recomenda-se usar apenas um package manager por projeto${NC}"
+    else
+        echo -e "${GREEN}✅ Package manager: ${lock_files_found[0]}${NC}"
     fi
     
     # Verificar se existem dependências no package.json

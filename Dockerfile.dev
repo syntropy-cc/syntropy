@@ -6,16 +6,16 @@ WORKDIR /app
 # Enable Corepack for proper package manager support
 RUN corepack enable
 
-# Install dependencies
-COPY package*.json ./
+# Copy package manager files
+COPY package*.json yarn.lock* pnpm-lock.yaml* ./
 
-# Use the project's specified package manager or fallback to npm
-RUN if [ -f package-lock.json ]; then \
-        npm ci; \
+# Install dependencies using the correct package manager
+RUN if [ -f pnpm-lock.yaml ]; then \
+        pnpm install; \
     elif [ -f yarn.lock ]; then \
         yarn install; \
-    elif [ -f pnpm-lock.yaml ]; then \
-        pnpm install; \
+    elif [ -f package-lock.json ]; then \
+        npm ci; \
     else \
         npm install; \
     fi
@@ -26,5 +26,11 @@ COPY . .
 # Expose port
 EXPOSE 3000
 
-# Start development server with hot reload
-CMD ["npm", "run", "dev"]
+# Determine the correct dev command based on package manager
+CMD if [ -f pnpm-lock.yaml ]; then \
+        pnpm dev; \
+    elif [ -f yarn.lock ]; then \
+        yarn dev; \
+    else \
+        npm run dev; \
+    fi
