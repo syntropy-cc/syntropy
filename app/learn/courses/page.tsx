@@ -114,7 +114,7 @@ export default async function CoursesPage() {
 
                         <div className="flex items-center gap-1 text-white text-sm">
                           <span className="text-blue-200/70">📚</span>
-                          <span className="font-medium">{course.chapterCount || course.chapters?.length || 0} capítulos</span>
+                          <span className="font-medium">{course.unitCount || course.blocks?.reduce((total, block) => total + block.units.length, 0) || 0} unidades</span>
                         </div>
 
                         {course.duration && (

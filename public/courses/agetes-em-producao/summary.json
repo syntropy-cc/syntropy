@@ -11,7 +11,7 @@
   "finished": "false",
   "level": "intermediate",
   "duration": 60,
-  "chapterCount": 40,
+  "unitCount": 40,
   "tags": ["IA", "Multi-Agente", "LangChain", "CrewAI", "Produção", "Startups"],
   "cover": "images/agentes-em-producao-course-cover.png",
   "outcomes": [
@@ -32,22 +32,62 @@
       "description": "Documentação, métricas e roadmap de crescimento"
     }
   ],
-  "chapters": [
+  "learningPoints": [
     {
-      "id": "sistemas-trabalham-voce",
-      "title": "Sistemas que Trabalham por Você",
-      "slug": "sistemas-trabalham-voce",
-      "description": "Conheça soluções multi-agente de mercado e identifique problemas seus que podem ser automatizados.",
-      "duration": 60,
-      "completed": false,
-      "locked": false,
-      "project": "Brainstorm de 10 problemas seus que poderiam ser automatizados e análise de 5 sistemas multi-agente reais.",
-      "sections": [
-        "O que torna um software 'agente'",
-        "5 soluções multi-agente de mercado",
-        "Brainstorm de problemas automatizáveis",
-        "Critérios para escolher seu projeto",
-        "Estimativa de retorno vs esforço"
+      "title": "Sistemas Multi-Agente",
+      "subtitle": "Arquitetura e implementação"
+    },
+    {
+      "title": "IA em Produção",
+      "subtitle": "Deploy e monitoramento"
+    },
+    {
+      "title": "Modelo de Negócio",
+      "subtitle": "Validação e monetização"
+    },
+    {
+      "title": "Stack Profissional",
+      "subtitle": "Ferramentas e integrações"
+    }
+  ],
+  "projectDescription": {
+    "title": "Assistente de Produtividade Multi-Agente",
+    "description": "Você construirá um sistema completo de automação que gerencia tarefas, agenda reuniões, analisa dados e toma decisões inteligentes. O projeto inclui interface web, API robusta, banco de dados e integração com ferramentas profissionais.",
+    "features": [
+      "Agente de gerenciamento de tarefas com priorização automática",
+      "Assistente de agenda que otimiza horários e agenda reuniões",
+      "Analisador de dados que gera insights e relatórios",
+      "Sistema de tomada de decisões baseado em IA"
+    ],
+    "techStack": [
+      "LangChain e CrewAI para orquestração de agentes",
+      "FastAPI para backend robusto",
+      "React/Next.js para interface moderna",
+      "PostgreSQL para persistência de dados",
+      "Docker para containerização e deploy"
+    ]
+  },
+  "blocks": [
+    {
+      "id": "fundamentos-sistemas-multi-agente",
+      "title": "Fundamentos de Sistemas Multi-Agente",
+      "description": "Base conceitual e identificação de oportunidades",
+      "units": [
+        {
+          "id": "sistemas-trabalham-voce",
+          "title": "Sistemas que Trabalham por Você",
+          "slug": "sistemas-trabalham-voce",
+          "description": "Conheça soluções multi-agente de mercado e identifique problemas seus que podem ser automatizados.",
+          "duration": 60,
+          "artifact": "Brainstorm de 10 problemas seus que poderiam ser automatizados e análise de 5 sistemas multi-agente reais.",
+          "fragments": [
+            "O que torna um software 'agente'",
+            "5 soluções multi-agente de mercado",
+            "Brainstorm de problemas automatizáveis",
+            "Critérios para escolher seu projeto",
+            "Estimativa de retorno vs esforço"
+          ]
+        }
       ]
     }
   ],

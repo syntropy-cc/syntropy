@@ -10,7 +10,7 @@ export interface CourseSummary {
   description?: string;
   level?: 'beginner' | 'intermediate' | 'advanced';
   duration?: number;
-  chapterCount?: number;
+  unitCount?: number;
   cover?: string;
   finished?: string;
   author?: {
@@ -22,15 +22,29 @@ export interface CourseSummary {
     title: string;
     description: string;
   }>;
-  chapters: Array<{
-    id?: string;
-    slug: string;
+  learningPoints?: Array<{
     title: string;
-    description?: string;
-    duration?: number;
-    completed?: boolean;
-    sections?: string[];
-    project?: string;
+    subtitle: string;
+  }>;
+  projectDescription?: {
+    title: string;
+    description: string;
+    features?: string[];
+    techStack?: string[];
+  };
+  blocks: Array<{
+    id: string;
+    title: string;
+    description: string;
+    units: Array<{
+      id: string;
+      slug: string;
+      title: string;
+      description?: string;
+      duration?: number;
+      artifact?: string;
+      fragments?: string[];
+    }>;
   }>;
 }
 
