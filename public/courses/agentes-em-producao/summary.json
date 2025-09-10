@@ -1,7 +1,7 @@
 {
-  "id": "sistemas-multi-agente",
-  "title": "Sistemas Multi-Agente: Do Zero ao Produto Real",
-  "slug": "sistemas-multi-agente",
+  "id": "agentes-em-producao",
+  "title": "Agentes em Produção",
+  "slug": "agentes-em-producao",
   "description": "Construa sistemas inteligentes que trabalham por você: do problema real ao produto funcionando em produção. 40 capítulos práticos para criar, testar e lançar sua solução multi-agente com primeiros usuários e modelo de negócio validado.",
   "author": {
     "name": "José Scott",

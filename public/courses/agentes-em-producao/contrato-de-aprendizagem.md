@@ -39,12 +39,12 @@ A ideia de que aprendemos melhor quando colocamos a mão na massa não é nova. 
 
 A filosofia "Project-First" que adotamos aqui é a aplicação direta desse princípio. Em vez de começar com semanas de teoria densa e abstrata, partimos de um problema concreto e significativo. O projeto não é algo que você faz depois de aprender; é o veículo através do qual você aprende.
 
-:::{figure} [[Unidade 0 - Figura 1 - Diferença Entre Modelos de Ensino.png]]
-:name: project-first-diagram
+:::{figure} images/unidade0-figura1-diferenca-modelos-ensino.png
+:name: diferenca-modelos-ensino
 :align: center
 :width: 600px
 
-*Explicação didática:* Este diagrama ilustra a inversão do modelo tradicional. No ensino passivo, a teoria vem primeiro e a prática (se vier) é uma aplicação isolada. No modelo "Project-First", o projeto é o centro, e a teoria é "puxada" conforme a necessidade, garantindo relevância e contexto imediatos.
+Este diagrama ilustra a inversão do modelo tradicional. No ensino passivo, a teoria vem primeiro e a prática (se vier) é uma aplicação isolada. No modelo "Project-First", o projeto é o centro, e a teoria é "puxada" conforme a necessidade, garantindo relevância e contexto imediatos.
 :::
 
 A beleza dessa abordagem é que ela cria uma necessidade genuína pelo conhecimento. Você não vai aprender sobre arquiteturas de agentes porque está no cronograma; vai aprender porque seu projeto chegou a um ponto em que essa decisão é crucial. Cada conceito teórico, interação com a comunidade ou mentoria é uma ferramenta que você busca ativamente para resolver um obstáculo real que está bem na sua frente. Essa é a abordagem "faça aprendendo".
@@ -65,12 +65,12 @@ Esses **Artefatos** são as peças fundamentais do seu projeto. Fragmentos geram
 
 O diferencial desta metodologia está na integração contínua entre teoria e prática. Não existe momento de "só teoria" ou "só implementação" - você aprende construindo e constrói aprendendo. Essa abordagem elimina a separação tradicional entre fases de estudo e aplicação, criando um ciclo de aprendizado onde o conhecimento adquirido para construir cada solução se torna a base para desenvolver as próximas.
 
-:::{figure} [[Unidade 0 - Figura 2 - Filosofia de Ensino Baseada em Projetos.png]]
-:name: estrutura-curso-projeto-based-learning
+:::{figure} images/unidade0-figura2-filosofia-ensino.png
+:name: filosofia-ensino
 :align: center
 :width: 600px
 
-*Explicação didática:* Esta figura ilustra como construímos conhecimento de forma prática e gradual. Na base, cada **Fragmento** resolve um problema real seguindo o ciclo: desafio → teoria → prática → resultado concreto. Esses fragmentos se agrupam em **Unidades** temáticas, que formam **Blocos** estruturais, culminando no seu **Projeto Final** completo. É como montar com LEGO: cada peça pequena tem propósito, mas juntas criam algo muito maior. As conexões mostram que teoria e prática andam sempre juntas, transformando aprendizado em construção real.
+Esta figura ilustra como construímos conhecimento de forma prática e gradual. Na base, cada **Fragmento** resolve um problema real seguindo o ciclo: desafio → teoria → prática → resultado concreto. Esses fragmentos se agrupam em **Unidades** temáticas, que formam **Blocos** estruturais, culminando no seu **Projeto Final** completo. É como montar com LEGO: cada peça pequena tem propósito, mas juntas criam algo muito maior. As conexões mostram que teoria e prática andam sempre juntas, transformando aprendizado em construção real.
 :::
 
 #### Testando Sua Compreensão da Mudança
@@ -265,12 +265,12 @@ Este conceito está profundamente enraizado na teoria da **Aprendizagem Situada*
 
 Quando você aprende "Just-in-Time", você está vivenciando a Aprendizagem Situada. O "problema" do seu projeto cria o contexto; a "necessidade" de resolvê-lo te leva a buscar o conhecimento; a "aplicação" imediata consolida o aprendizado.
 
-:::{figure} [[Unidade 0 - Figura 3 - Ciclo de Aprendizado sob Demanda.png]]
-:name: just-in-time-learning-cycle
+:::{figure} images/unidade0-figura3-ciclo-aprendizado.png
+:name: ciclo-aprendizado
 :align: center
 :width: 500px
 
-*Explicação didática:* Este ciclo ilustra o fluxo do Aprendizado Sob Demanda. Ao contrário do modelo linear (teoria -> prática), aqui temos um ciclo contínuo onde o problema prático exige a busca por teoria, cuja aplicação gera um novo estado do projeto, que por sua vez apresenta novos problemas. É um motor de aprendizado auto-sustentável.
+Este ciclo ilustra o fluxo do Aprendizado Sob Demanda. Ao contrário do modelo linear (teoria -> prática), aqui temos um ciclo contínuo onde o problema prático exige a busca por teoria, cuja aplicação gera um novo estado do projeto, que por sua vez apresenta novos problemas. É um motor de aprendizado auto-sustentável.
 :::
 
 A abordagem de **Aprendizagem Cognitiva** (Cognitive Apprenticeship), desenvolvida por Collins, Brown e Newman, também reforça essa ideia. Eles propõem que habilidades complexas são melhor adquiridas da mesma forma que um aprendiz aprende um ofício: observando, recebendo orientação (coaching) e praticando em um contexto real, com apoio que é gradualmente retirado (scaffolding). O aprendizado "Just-in-Time" é um mecanismo natural dentro desse modelo, onde o aprendiz busca a informação teórica necessária para completar a tarefa que o mestre lhe confiou.
@@ -370,12 +370,12 @@ Ao final, usando algum aplicativo como o Miro, você terá o seguinte mapa menta
 
 **[EXEMPLO] Mapa Mental do Fluxo de Aprendizagem**
 
-::::{figure} [[Unidade 0 - Figura 4 - Mapa Mental.jpg]]
-:name: learning-mind-map
+::::{figure} images/unidade0-figura4-mapa-mental.png
+:name: mapa-mental
 :align: center
 :width: 700px
 
-*Exemplo de um mapa mental para um projeto que visa automatizar relatórios financeiros. Note como um grande problema é quebrado em uma primeira etapa factível, que por sua vez "puxa" a necessidade de aprender um conceito específico para uma ação prática com resultado mensurável.*
+Exemplo de um mapa mental para um projeto que visa automatizar relatórios financeiros. Note como um grande problema é quebrado em uma primeira etapa factível, que por sua vez "puxa" a necessidade de aprender um conceito específico para uma ação prática com resultado mensurável.
 ::::
 
 O mapa mental vai evoluindo naturalmente com o tempo, a medida que entramos em um assunto específico, entendemos que existem muito mais coisas para aprender do que imaginávamos. Porém, essa versão inicial já nos da uma visão do que precisamos aprender para criar nosso projeto.
@@ -419,12 +419,12 @@ A cada novo conceito (ex: "arquitetura BDI", "protocolos de comunicação"), nó
 
 A nossa solução é apenas *uma* das infinitas soluções possíveis. Ao ver nosso processo, você deve internaliza os padrões de pensamento, não apenas o resultado final. Isso acelera sua jornada de novato a praticante.
 
-:::{figure} [[Unidade 0 - Figura 5 - Processo de Aprendizado.png]]
-:name: apprenticeship-model
+:::{figure} images/unidade0-figura5-processo-aprendizado.png
+:name: processo-aprendizado
 :align: center
 :width: 650px
 
-*Explicação didática:* Este diagrama mostra a relação entre o aluno, o instrutor e os projetos. O instrutor usa o projeto-exemplo para demonstrar o processo de pensamento (tornar o invisível, visível). O aluno observa, entende os princípios e, em seguida, aplica esses mesmos princípios para construir seu próprio projeto autoral, desenvolvendo competência genuína.
+Este diagrama mostra a relação entre o aluno, o instrutor e os projetos. O instrutor usa o projeto-exemplo para demonstrar o processo de pensamento (tornar o invisível, visível). O aluno observa, entende os princípios e, em seguida, aplica esses mesmos princípios para construir seu próprio projeto autoral, desenvolvendo competência genuína.
 :::
 
 Lembre-se, você deve ser o protagonista do seu projeto. Nosso papel é ser o mentor que te dá as ferramentas e os mapas, mas a jornada é sua.
@@ -640,12 +640,12 @@ A plataforma **Syntropy Projects** é a nossa comunidade de prática. É uma "ga
 
 Além de todos os artefatos desenvolvidos durante o projeto.
 
-:::{figure} [[Unidade 0 - Figura 6 - Interação com a Comunidade.png]]
-:name: community-of-practice
+:::{figure} images/unidade0-figura6-interacao-comunidade.png
+:name: interacao-comunidade
 :align: center
 :width: 600px
 
-*Explicação didática:* Este diagrama, inspirado na teoria de Lave e Wenger, mostra como um praticante evolui. O "Projeto de Curso" vive em isolamento. Ao ser levado para a "Comunidade de Prática" (Syntropy Projects), ele se torna um "Portfólio Visível". Através da interação, feedback e compartilhamento, ele se transforma em "Prova Social", validando a identidade do criador como um especialista competente na área.
+Este diagrama, inspirado na teoria de Lave e Wenger, mostra como um praticante evolui. O "Projeto de Curso" vive em isolamento. Ao ser levado para a "Comunidade de Prática" (Syntropy Projects), ele se torna um "Portfólio Visível". Através da interação, feedback e compartilhamento, ele se transforma em "Prova Social", validando a identidade do criador como um especialista competente na área.
 :::
 
 Este perfil se torna uma prova social poderosa. É um link que você pode colocar no seu currículo, no seu LinkedIn, ou enviar diretamente para um recrutador. Ele não apenas diz que você concluiu um curso; ele mostra que você é capaz de arquitetar e construir sistemas complexos e inteligentes do início ao fim.
