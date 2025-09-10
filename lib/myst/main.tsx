@@ -390,14 +390,28 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     
     // Procurar por nó de imagem nos children para extrair informações adicionais
     let imageNode = null;
+    let caption = '';
+    
     if (node.children && node.children.length > 0) {
       const container = node.children.find((child: any) => child.type === 'container' && child.kind === 'figure');
       if (container && container.children) {
         imageNode = container.children.find((child: any) => child.type === 'image');
+        
+        // Procurar por parágrafo que contém a legenda
+        const captionNode = container.children.find((child: any) => 
+          child.type === 'paragraph' && child.children && child.children.length > 0
+        );
+        if (captionNode && captionNode.children) {
+          caption = captionNode.children
+            .filter((child: any) => child.type === 'text')
+            .map((child: any) => child.value)
+            .join(' ');
+        }
       }
     }
     
     console.log('[DEBUG FIGURE] ImageNode encontrado:', imageNode);
+    console.log('[DEBUG FIGURE] Caption encontrada:', caption);
     
     // Usar informações do imageNode se disponível, senão usar options
     const figureProps = {
@@ -406,6 +420,7 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
       width: imageNode?.width || options.width,
       height: imageNode?.height || options.height,
       align: (imageNode?.align || options.align || 'center') as 'left' | 'center' | 'right',
+      caption: caption || undefined,
       courseSlug
     };
     

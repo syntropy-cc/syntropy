@@ -49,10 +49,17 @@ function resolveImagePath(src: string, courseSlug?: string): string {
   
   // Fallback: assume que é um caminho relativo da pasta images do curso
   if (courseSlug) {
-    const imageName = src.replace(/^\/+/, ''); // Remove barras iniciais
-    const resolvedPath = `/courses/${courseSlug}/images/${imageName}`;
-    console.log('[DEBUG FIGURE] Fallback para /public/courses:', resolvedPath);
-    return resolvedPath;
+    // Se o src já contém 'images/', não duplicar
+    if (src.includes('images/')) {
+      const resolvedPath = `/courses/${courseSlug}/${src}`;
+      console.log('[DEBUG FIGURE] Fallback para /public/courses (com images/):', resolvedPath);
+      return resolvedPath;
+    } else {
+      const imageName = src.replace(/^\/+/, ''); // Remove barras iniciais
+      const resolvedPath = `/courses/${courseSlug}/images/${imageName}`;
+      console.log('[DEBUG FIGURE] Fallback para /public/courses:', resolvedPath);
+      return resolvedPath;
+    }
   }
   
   console.log('[DEBUG FIGURE] Nenhuma resolução aplicada, retornando src original:', src);
@@ -199,7 +206,7 @@ const Figure: React.FC<FigureProps> = ({
         </div>
         
         {caption && (
-          <figcaption className="mt-4 text-sm text-slate-400 text-center leading-relaxed">
+          <figcaption className="mt-4 text-sm text-slate-400 text-left leading-relaxed">
             {caption}
           </figcaption>
         )}
