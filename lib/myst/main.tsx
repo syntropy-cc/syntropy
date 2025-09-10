@@ -9,6 +9,7 @@ import Important from '@/components/myst/admonitions/important';
 import Caution from '@/components/myst/admonitions/caution';
 import Attention from '@/components/myst/admonitions/attention';
 import Challenge from '@/components/myst/admonitions/challenge';
+import CtaAction from '@/components/myst/admonitions/cta-action';
 import MathBlock, { resetEquationCounter } from '@/components/myst/math/math-block';
 import MathLine from '@/components/myst/math/math-line';
 import Figure from '@/components/myst/content/figure';
@@ -19,6 +20,22 @@ const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.R
   title, 
   children 
 }) => {
+  // Verificar se é um bloco CTA baseado no título
+  const isCtaBlock = title && (
+    title.includes('Sua Vez de Aplicar') || 
+    title.includes('🚀') ||
+    title.toLowerCase().includes('cta') ||
+    title.toLowerCase().includes('aplicar')
+  );
+
+  if (isCtaBlock) {
+    return (
+      <CtaAction title={title}>
+        {children}
+      </CtaAction>
+    );
+  }
+
   const typeConfig = {
     note: { 
       icon: '📝', 
@@ -56,6 +73,12 @@ const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.R
       border: 'border-l-purple-500',
       title: 'Atenção'
     },
+    admonition: { 
+      icon: '📋', 
+      bg: 'bg-gray-50 dark:bg-gray-950/30', 
+      border: 'border-l-gray-500',
+      title: 'Admonição'
+    },
   };
 
   const config = typeConfig[type as keyof typeof typeConfig] || typeConfig.note;
@@ -81,7 +104,9 @@ const DIRECTIVE_COMPONENTS: Record<string, React.FC<any>> = {
   important: Important,
   caution: Caution,
   attention: Attention,
-  admonition: (props: any) => <AdmonitionBase type="note" {...props} />,
+  challenge: Challenge,
+  'cta-action': CtaAction,
+  admonition: (props: any) => <AdmonitionBase type="admonition" {...props} />,
 };
 
 // Função para fuzzy matching de diretivas de admonition
@@ -94,6 +119,7 @@ function normalizeAdmonitionName(name: string): string {
   if (n.startsWith('imp')) return 'important';
   if (n.startsWith('caut')) return 'caution';
   if (n.startsWith('att')) return 'attention';
+  if (n.includes('cta') || n.includes('action')) return 'cta-action';
   return n;
 }
 
@@ -132,6 +158,7 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     const rawName = node.name?.toLowerCase();
     const name = normalizeAdmonitionName(rawName);
     
+    
     // Bloco de código
     if (name === 'code' || name === 'code-block') {
       const language = node.argument || node.lang || 'text';
@@ -150,6 +177,43 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     // Admonitions
     const Comp = DIRECTIVE_COMPONENTS[name];
     if (Comp) {
+      // Verificar se há classes CSS especificadas
+      const options = node.options || {};
+      const data = node.data || {};
+      
+      // Tentar diferentes formas de acessar as classes
+      let classes = [];
+      if (options.class) classes = Array.isArray(options.class) ? options.class : [options.class];
+      else if (options.classes) classes = Array.isArray(options.classes) ? options.classes : [options.classes];
+      else if (data.class) classes = Array.isArray(data.class) ? data.class : [data.class];
+      else if (data.classes) classes = Array.isArray(data.classes) ? data.classes : [data.classes];
+      
+      // Verificar também se há propriedades diretas no nó
+      if (node.class) classes = Array.isArray(node.class) ? node.class : [node.class];
+      if (node.classes) classes = Array.isArray(node.classes) ? node.classes : [node.classes];
+      
+      // Se a classe 'cta-action' estiver presente, usar o componente CtaAction
+      if (classes.includes('cta-action') || name === 'cta-action') {
+        return (
+          <CtaAction key={key} title={node.argument}>
+            {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+          </CtaAction>
+        );
+      }
+      
+      // Fallback: se o título contém "Sua Vez de Aplicar" ou similar, usar CtaAction
+      if (node.argument && (
+        node.argument.includes('Sua Vez de Aplicar') || 
+        node.argument.includes('🚀') ||
+        node.argument.toLowerCase().includes('cta')
+      )) {
+        return (
+          <CtaAction key={key} title={node.argument}>
+            {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+          </CtaAction>
+        );
+      }
+      
       return (
         <Comp key={key} title={node.argument}>
           {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}

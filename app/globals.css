@@ -280,3 +280,83 @@ html {
 .katex span {
   color: inherit !important;
 }
+
+/* Estilos específicos para CTA Action */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.admonition-cta-action {
+  position: relative;
+  overflow: hidden;
+}
+
+.admonition-cta-action::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s ease-in-out;
+}
+
+.admonition-cta-action:hover::before {
+  left: 100%;
+}
+
+/* Efeito de sombra especial para CTA */
+.admonition-cta-action {
+  box-shadow: 
+    0 10px 25px -5px rgba(59, 130, 246, 0.1),
+    0 10px 10px -5px rgba(59, 130, 246, 0.04),
+    0 0 0 1px rgba(59, 130, 246, 0.05);
+}
+
+.admonition-cta-action:hover {
+  box-shadow: 
+    0 20px 40px -10px rgba(59, 130, 246, 0.2),
+    0 10px 20px -5px rgba(59, 130, 246, 0.1),
+    0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+/* Animação do foguete melhorada */
+@keyframes rocket-bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+  }
+  25% {
+    transform: translateY(-4px) rotate(-3deg) scale(1.1);
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8));
+  }
+  50% {
+    transform: translateY(-2px) rotate(0deg) scale(1.15);
+    filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.9));
+  }
+  75% {
+    transform: translateY(-3px) rotate(3deg) scale(1.1);
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8));
+  }
+}
+
+.admonition-cta-action .animate-pulse {
+  animation: rocket-bounce 2s ease-in-out infinite;
+}
+
+/* Responsividade para CTA */
+@media (max-width: 768px) {
+  .admonition-cta-action {
+    @apply px-6 pt-5 pb-5;
+  }
+  
+  .admonition-cta-action .text-lg {
+    @apply text-base;
+  }
+}
