@@ -1,0 +1,415 @@
+/* ========================================
+   MyST Grid Components - Syntropy Design System
+   ======================================== */
+
+/* Grid Container */
+.myst-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 0;
+}
+
+/* Grid Layouts - Responsive */
+.myst-grid--1 { grid-template-columns: 1fr; }
+.myst-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.myst-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.myst-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Grid Responsivo - Conforme documentação MyST */
+.myst-grid--responsive {
+  /* Mobile first - sempre 1 coluna por padrão */
+  grid-template-columns: 1fr;
+}
+
+/* Breakpoints MyST conforme documentação:
+   - Mobile: < 768px
+   - Tablet: 768px - 1024px  
+   - Desktop: 1024px - 1280px
+   - Large: > 1280px
+*/
+
+/* Mobile (padrão) */
+.myst-grid--mobile-1 { grid-template-columns: 1fr; }
+.myst-grid--mobile-2 { grid-template-columns: repeat(2, 1fr); }
+.myst-grid--mobile-3 { grid-template-columns: repeat(3, 1fr); }
+.myst-grid--mobile-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Tablet */
+@media (min-width: 768px) {
+  .myst-grid--tablet-1 { grid-template-columns: 1fr; }
+  .myst-grid--tablet-2 { grid-template-columns: repeat(2, 1fr); }
+  .myst-grid--tablet-3 { grid-template-columns: repeat(3, 1fr); }
+  .myst-grid--tablet-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .myst-grid--desktop-1 { grid-template-columns: 1fr; }
+  .myst-grid--desktop-2 { grid-template-columns: repeat(2, 1fr); }
+  .myst-grid--desktop-3 { grid-template-columns: repeat(3, 1fr); }
+  .myst-grid--desktop-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Large Desktop */
+@media (min-width: 1280px) {
+  .myst-grid--large-1 { grid-template-columns: 1fr; }
+  .myst-grid--large-2 { grid-template-columns: repeat(2, 1fr); }
+  .myst-grid--large-3 { grid-template-columns: repeat(3, 1fr); }
+  .myst-grid--large-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Fallback para grids não responsivos */
+@media (max-width: 768px) {
+  .myst-grid--2,
+  .myst-grid--3,
+  .myst-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .myst-grid--3,
+  .myst-grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================
+   Card Components
+   ======================================== */
+
+.myst-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.myst-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Card Header */
+.myst-card__header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+/* Card Header Variants */
+.myst-card__header--primary {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+  color: hsl(var(--primary-foreground));
+}
+
+.myst-card__header--success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.myst-card__header--info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.myst-card__header--warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.myst-card__header--danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+/* Card Body */
+.myst-card__body {
+  padding: 1.5rem;
+}
+
+/* Card Content */
+.myst-card__content {
+  color: hsl(var(--card-foreground));
+  line-height: 1.6;
+}
+
+.myst-card__content p {
+  margin-bottom: 1rem;
+}
+
+.myst-card__content p:last-child {
+  margin-bottom: 0;
+}
+
+.myst-card__content strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+/* ========================================
+   Dropdown Components
+   ======================================== */
+
+.myst-dropdown {
+  margin: 1rem 0;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: hsl(var(--card));
+}
+
+.myst-dropdown__trigger {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: hsl(var(--muted));
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.myst-dropdown__trigger:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.myst-dropdown__trigger:focus {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.myst-dropdown__icon {
+  transition: transform 0.2s ease-in-out;
+  font-size: 0.875rem;
+}
+
+.myst-dropdown__trigger[aria-expanded="true"] .myst-dropdown__icon {
+  transform: rotate(180deg);
+}
+
+.myst-dropdown__content {
+  padding: 1rem;
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-top: 1px solid hsl(var(--border));
+  line-height: 1.6;
+}
+
+/* Dropdown Color Variants */
+.myst-dropdown--success .myst-dropdown__content {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border-left: 3px solid #10b981;
+}
+
+.myst-dropdown--info .myst-dropdown__content {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);
+  border-left: 3px solid #3b82f6;
+}
+
+.myst-dropdown--warning .myst-dropdown__content {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border-left: 3px solid #f59e0b;
+}
+
+.myst-dropdown--danger .myst-dropdown__content {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border-left: 3px solid #ef4444;
+}
+
+/* ========================================
+   Admonition Components
+   ======================================== */
+
+.myst-admonition {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border-left: 4px solid;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.myst-admonition__title {
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.myst-admonition__content {
+  line-height: 1.6;
+}
+
+/* Admonition Variants */
+.myst-admonition--tip {
+  border-left-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+}
+
+.myst-admonition--note {
+  border-left-color: #3b82f6;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);
+}
+
+.myst-admonition--warning {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+}
+
+.myst-admonition--danger {
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+}
+
+.myst-admonition--cta-action {
+  border-left-color: hsl(var(--primary));
+  background: linear-gradient(135deg, rgba(0, 96, 255, 0.05) 0%, rgba(0, 153, 255, 0.05) 100%);
+  border: 1px solid hsl(var(--primary));
+}
+
+/* ========================================
+   Figure Components
+   ======================================== */
+
+.myst-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.myst-figure__image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.myst-figure__caption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ========================================
+   Dark Mode Support
+   ======================================== */
+
+.dark .myst-card {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+
+.dark .myst-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.dark .myst-dropdown {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+
+.dark .myst-dropdown__trigger {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.dark .myst-dropdown__trigger:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.dark .myst-admonition {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+/* ========================================
+   Animation and Transitions
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.myst-grid > * {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.myst-grid > *:nth-child(1) { animation-delay: 0.1s; }
+.myst-grid > *:nth-child(2) { animation-delay: 0.2s; }
+.myst-grid > *:nth-child(3) { animation-delay: 0.3s; }
+.myst-grid > *:nth-child(4) { animation-delay: 0.4s; }
+
+/* ========================================
+   Accessibility Enhancements
+   ======================================== */
+
+.myst-dropdown__trigger:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.myst-card:focus-within {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+  .myst-grid {
+    display: block;
+  }
+  
+  .myst-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .myst-dropdown__trigger {
+    display: none;
+  }
+  
+  .myst-dropdown__content {
+    display: block !important;
+    border-top: none;
+  }
+}

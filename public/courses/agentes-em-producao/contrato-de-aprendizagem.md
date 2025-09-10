@@ -75,46 +75,50 @@ Esta figura ilustra como construímos conhecimento de forma prática e gradual. 
 
 #### Testando Sua Compreensão da Mudança
 
-```{card} 📝 Verificação de Conceitos
-:class-header: bg-primary text-white
+::: grid 1 1 1 1
+:::{card}
+:header: **Pergunta 1:** Qual a principal crítica de John Dewey ao modelo de educação tradicional, e como a filosofia "Project-First" aborda essa crítica?
 
-**Pergunta 1:** Qual a principal crítica de John Dewey ao modelo de educação tradicional, e como a filosofia "Project-First" aborda essa crítica?
-
-```{dropdown} 💡 Resposta
+:::{dropdown} 💡 Resposta
 :color: success
 Dewey criticava o modelo que trata alunos como receptores passivos de informação. A filosofia "Project-First" aborda isso diretamente ao colocar o aluno em um papel ativo, onde ele constrói conhecimento através da experiência de resolver um problema real, alinhando-se ao princípio de "aprender fazendo".
-```
+:::
+:::
 
-**Pergunta 2:** Por que aprender teoria dentro do contexto de um projeto é, frequentemente, mais eficaz do que aprendê-la de forma isolada?
+:::{card}
+:header: **Pergunta 2:** Por que aprender teoria dentro do contexto de um projeto é, frequentemente, mais eficaz do que aprendê-la de forma isolada?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 Dentro de um projeto, a teoria tem um propósito imediato e uma aplicação concreta. Isso aumenta a motivação e a retenção, pois o cérebro conecta o novo conhecimento a um problema significativo, em vez de armazená-lo como uma informação abstrata e desconectada.
-```
+:::
+:::
 
-**Pergunta 3:** Qual a diferença entre "fazer um projeto no final do curso" e a abordagem "Project-First"?
+:::{card}
+:header: **Pergunta 3:** Qual a diferença entre "fazer um projeto no final do curso" e a abordagem "Project-First"?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 No modelo tradicional, o projeto final é uma mera avaliação para verificar se a teoria foi absorvida. Na abordagem "Project-First", o projeto é a própria ferramenta de aprendizado. Ele guia a jornada, determina qual teoria é necessária e serve como o ambiente onde o conhecimento é construído e validado continuamente.
-```
-```
+:::
+:::
 
-```{card} 🎯 Aplicação Prática 1
-:class-header: bg-success text-white
+:::{card}
+:header: 🎯 Aplicação Prática 1
 
 **Cenário:** Você quer aprender uma nova linguagem de programação que nunca viu antes.
 **Desafio:** Usando a filosofia "Project-First", como você estruturaria seu aprendizado, em contraste com a abordagem tradicional de ler toda a documentação primeiro?
 **Dica:** Pense em um mini-projeto simples, mas completo (do início ao fim), que te forçaria a aprender os 80% mais importantes da linguagem para colocá-lo no ar.
-```
+:::
 
-```{card} 🎯 Aplicação Prática 2
-:class-header: bg-info text-white
+:::{card}
+:header:  🎯 Aplicação Prática 2
 
 **Cenário:** Sua empresa adota uma nova ferramenta complexa de gerenciamento de projetos.
 **Desafio:** Como você, sendo o líder da equipe, poderia aplicar os princípios do "aprender fazendo" para treinar seu time, em vez de apenas fazê-los assistir a tutoriais?
 **Dica:** Considere criar um "projeto piloto" interno, com um objetivo real, mas de baixo risco, para que a equipe aprenda a usar a ferramenta em um contexto prático.
-```
+:::
+:::
 
 #### Artefato Prático: Sua Declaração de Missão
 
@@ -281,46 +285,50 @@ Pense no GPS do seu carro. Ele não te dá o mapa completo do estado antes de vo
 
 #### Verificando seu Novo "GPS" de Aprendizagem
 
-```{card} 📝 Verificação de Conceitos
-:class-header: bg-primary text-white
+:::{grid} 1 1 1 1
+:::{card}
+:header: **Pergunta 1:** O que é "Aprendizado Situado" e qual sua relação com o aprendizado "Just-in-Time"?
 
-**Pergunta 1:** O que é "Aprendizado Situado" e qual sua relação com o aprendizado "Just-in-Time"?
-
-```{dropdown} 💡 Resposta
+:::{dropdown} 💡 Resposta
 :color: success
 "Aprendizado Situado", de Lave e Wenger, é a teoria de que o aprendizado é um processo social inseparável do contexto e da prática. O aprendizado "Just-in-Time" é uma manifestação prática dessa teoria, onde o conhecimento é adquirido e aplicado dentro do contexto autêntico de um problema real, na hora exata da necessidade.
-```
+:::
+:::
 
-**Pergunta 2:** Dê um exemplo prático de como a "Aprendizagem Cognitiva" pode ser aplicada no aprendizado de programação.
+:::{card}
+:header: **Pergunta 2:** Dê um exemplo prático de como a "Aprendizagem Cognitiva" pode ser aplicada no aprendizado de programação.
 
-```{dropdown}
+:::{dropdown}
 :color: success
 Um exemplo seria um programador sênior fazendo "pair programming" com um júnior. O sênior primeiro modela a solução de um problema (modeling), depois orienta o júnior enquanto ele tenta (coaching), oferecendo ajuda pontual (scaffolding), até que o júnior consiga resolver problemas similares sozinho. O conhecimento é passado no contexto da tarefa.
-```
+:::
+:::
 
-**Pergunta 3:** Qual a principal desvantagem do aprendizado "Just-in-Case" em comparação com o "Just-in-Time"?
+:::{card}
+:header: **Pergunta 3:** Qual a principal desvantagem do aprendizado "Just-in-Case" em comparação com o "Just-in-Time"?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 A principal desvantagem do "Just-in-Case" é a baixa retenção de conhecimento. Como a informação é aprendida sem um contexto de aplicação imediata, o cérebro não a considera relevante e tende a descartá-la. O "Just-in-Time" resolve isso conectando diretamente o aprendizado à ação.
-```
-```
+:::
+:::
 
-```{card} 🎯 Aplicação Prática 1
-:class-header: bg-success text-white
+:::{card}
+:header: 🎯 Aplicação Prática 1
 
 **Cenário:** Você está construindo seu projeto e se depara com a necessidade de conectar a uma API externa pela primeira vez.
 **Desafio:** Em vez de ler um livro inteiro sobre APIs, como você aplicaria o "Just-in-Time Learning" para resolver essa tarefa específica de forma rápida e eficaz?
 **Dica:** Foque sua pesquisa em exemplos de código que realizam a tarefa exata que você precisa (ex: "como fazer uma requisição GET com autenticação X na linguagem Y"). Aprenda o conceito na prática e depois, se necessário, aprofunde na teoria.
-```
+:::
 
-```{card} 🎯 Aplicação Prática 2
-:class-header: bg-info text-white
+:::{card}
+:header:  🎯 Aplicação Prática 2
 
 **Cenário:** Você precisa apresentar seu projeto para stakeholders, mas não tem experiência com design de apresentações.
 **Desafio:** Como você pode aprender o suficiente sobre "design de slides" de forma "Just-in-Time" para criar uma apresentação impactante sem se tornar um especialista em design?
 **Dica:** Pesquise por "10 princípios de design para slides de negócio" ou "templates de pitch para startups". O objetivo é aprender apenas o necessário para a tarefa imediata.
-```
+:::
+:::
 
 #### Artefato Prático: Seu Mapa Mental de Aprendizagem
 
@@ -370,13 +378,13 @@ Ao final, usando algum aplicativo como o Miro, você terá o seguinte mapa menta
 
 **[EXEMPLO] Mapa Mental do Fluxo de Aprendizagem**
 
-::::{figure} images/unidade0-figura4-mapa-mental.png
+:::{figure} images/unidade0-figura4-mapa-mental.jpg
 :name: mapa-mental
 :align: center
 :width: 700px
 
 Exemplo de um mapa mental para um projeto que visa automatizar relatórios financeiros. Note como um grande problema é quebrado em uma primeira etapa factível, que por sua vez "puxa" a necessidade de aprender um conceito específico para uma ação prática com resultado mensurável.
-::::
+:::
 
 O mapa mental vai evoluindo naturalmente com o tempo, a medida que entramos em um assunto específico, entendemos que existem muito mais coisas para aprender do que imaginávamos. Porém, essa versão inicial já nos da uma visão do que precisamos aprender para criar nosso projeto.
 
@@ -431,46 +439,50 @@ Lembre-se, você deve ser o protagonista do seu projeto. Nosso papel é ser o me
 
 #### Entendendo Seu Papel de Protagonista
 
-```{card} 📝 Verificação de Conceitos
-:class-header: bg-primary text-white
+:::{grid} 1 1 1 1
+:::{card}
+:header: **Pergunta 1:** Qual é o objetivo principal de um instrutor em um modelo de "Aprendizagem Cognitiva"?
 
-**Pergunta 1:** Qual é o objetivo principal de um instrutor em um modelo de "Aprendizagem Cognitiva"?
-
-```{dropdown} 💡 Resposta
+:::{dropdown} 💡 Resposta
 :color: success
 O objetivo principal é tornar os processos de pensamento, geralmente implícitos e invisíveis, explícitos e visíveis para o aprendiz. O foco não é apenas mostrar o "o quê", mas o "porquê" e o "como" das decisões tomadas por um especialista.
-```
+:::
+:::
 
-**Pergunta 2:** Por que a competência adquirida ao replicar um tutorial pode ser considerada "frágil"?
+:::{card}
+:header: **Pergunta 2:** Por que a competência adquirida ao replicar um tutorial pode ser considerada "frágil"?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 É frágil porque geralmente se baseia na memorização de uma sequência de passos, sem a compreensão profunda dos princípios subjacentes. Quando o contexto muda ou um problema inesperado surge, o aluno não tem as ferramentas conceituais para adaptar sua abordagem.
-```
+:::
+:::
 
-**Pergunta 3:** Qual a diferença entre usar um projeto-exemplo como um "gabarito" versus uma "pista de pouso"?
+:::{card}
+:header: **Pergunta 3:** Qual a diferença entre usar um projeto-exemplo como um "gabarito" versus uma "pista de pouso"?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 Um "gabarito" é algo a ser copiado fielmente, com o objetivo de replicar o resultado. Uma "pista de pouso" é uma infraestrutura de apoio: você a usa como referência para decolar com seu próprio veículo (seu projeto) e para aterrissar com segurança quando está aprendendo uma nova manobra (um novo conceito). O foco está em capacitar o seu voo, não em replicar o avião do instrutor.
-```
-```
+:::
+:::
 
-```{card} 🎯 Aplicação Prática 1
-:class-header: bg-success text-white
+:::{card}
+:header: 🎯 Aplicação Prática 1
 
 **Cenário:** Você assiste a um vídeo onde um desenvolvedor constrói um aplicativo de lista de tarefas do zero.
 **Desafio:** Em vez de simplesmente digitar o mesmo código, como você pode usar esse vídeo como uma experiência de "Aprendizagem Cognitiva"?
 **Dica:** A cada passo importante do vídeo, pause e tente responder: "Por que ele fez essa escolha de arquitetura? Quais alternativas ele poderia ter considerado? Como eu faria isso de forma diferente para um aplicativo de lista de compras?".
-```
+:::
 
-```{card} 🎯 Aplicação Prática 2
-:class-header: bg-info text-white
+:::{card}
+:header: 🎯 Aplicação Prática 2
 
 **Cenário:** Você está lendo a documentação de uma nova biblioteca de software que inclui vários exemplos de código.
 **Desafio:** Como ir além de copiar e colar os exemplos, transformando-os em uma oportunidade de aprendizado mais profundo?
 **Dica:** Após fazer um exemplo funcionar, quebre-o de propósito. Mude parâmetros, remova linhas, tente combiná-lo com outro exemplo. Tente prever o que vai acontecer. Essa exploração ativa constrói um modelo mental muito mais robusto.
-```
+:::
+:::
 
 #### Artefato Prático: Transformando Observação em Conhecimento
 
@@ -659,45 +671,50 @@ O Syntropy Projects ainda está sendo construído. O projeto está sendo criado 
 Enquanto construímos o Syntropy Projects juntos, recomendamos que você use o GitHub como repositório para versionar seus projetos. Embora o GitHub tenha suas limitações, ele é uma boa ferramenta para ser utilizado como repositório. Se você ainda não tem familiaridade com Git e GitHub, confira nosso [Guia de Bolso sobre GitHub](https://github.com/git-guides) para começar a versionar seus projetos desde o primeiro dia.
 #### Verificando o Valor do Seu Futuro Portfólio
 
-```{card} 📝 Verificação de Conceitos
-:class-header: bg-primary text-white
+:::{grid} 1 1 1 1
+:::{card}
+:header: **Pergunta 1:** De acordo com a teoria das "Comunidades de Prática", como o conhecimento é validado e a identidade profissional é construída?
 
-**Pergunta 1:** De acordo com a teoria das "Comunidades de Prática", como o conhecimento é validado e a identidade profissional é construída?
-
-```{dropdown} 💡 Resposta
+:::{dropdown} 💡 Resposta
 :color: success
 Segundo Lave e Wenger, isso ocorre através da participação e interação social dentro da comunidade. Ao compartilhar seu trabalho, observar os outros e engajar nas práticas do grupo, um novato ganha legitimidade e constrói sua identidade como um membro competente daquela prática.
-```
+:::
+:::
 
-**Pergunta 2:** Por que um projeto de portfólio bem documentado pode ser mais eficaz que um certificado em uma entrevista de emprego?
+:::{card}
+:header: **Pergunta 2:** Por que um projeto de portfólio bem documentado pode ser mais eficaz que um certificado em uma entrevista de emprego?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 Um certificado prova que você foi exposto a um conhecimento, enquanto um projeto prova que você consegue aplicar esse conhecimento para criar valor. Ele demonstra habilidades práticas, capacidade de resolver problemas, tomada de decisão e perseverança, que são qualidades muito mais difíceis de avaliar apenas com um currículo.```
+:::
+:::
 
-**Pergunta 3:** Qual a diferença entre ter um projeto em um repositório privado no GitHub e tê-lo em uma plataforma como a Syntropy Projects?
+:::{card}
+:header: **Pergunta 3:** Qual a diferença entre ter um projeto em um repositório privado no GitHub e tê-lo em uma plataforma como a Syntropy Projects?
 
-```{dropdown}
+:::{dropdown}
 :color: success
 Um repositório privado é um arquivo, enquanto um perfil na Syntropy Projects é uma narrativa. A plataforma é desenhada para contextualizar o projeto, explicando o problema, a solução e o processo, tornando-o compreensível e impactante para quem não é técnico, como recrutadores e gestores, transformando o código em uma história de competência.
-```
-```
+:::
+:::
 
-```{card} 🎯 Aplicação Prática 1
-:class-header: bg-success text-white
+:::{card}
+:header: 🎯 Aplicação Prática 1
 
 **Cenário:** Você está se candidatando a uma vaga e o recrutador pergunta sobre sua experiência com "sistemas autônomos".
 **Desafio:** Elabore duas respostas: uma sem ter um projeto de portfólio e outra usando o seu futuro projeto na Syntropy Projects como a peça central da sua resposta.
 **Dica:** Na segunda resposta, em vez de listar conceitos, conte a história do seu projeto: "Na verdade, eu construí um sistema que resolve [problema]. Para isso, desenhei uma arquitetura com [X] agentes onde...".
-```
+:::
 
-```{card} 🎯 Aplicação Prática 2
-:class-header: bg-info text-white
+:::{card}
+:header: 🎯 Aplicação Prática 2
 
 **Cenário:** Você quer fazer networking com outros profissionais da área de IA em um evento online.
 **Desafio:** Como você pode usar a ideia do seu projeto (mesmo que ainda não esteja construído) para iniciar conversas mais significativas do que apenas "Oi, tudo bem?"?
 **Dica:** Prepare um "elevator pitch" de uma frase sobre o problema que seu projeto resolve. Ex: "Olá, [Nome]! Vi que você trabalha com [Área]. Estou explorando como usar sistemas multi-agentes para resolver o problema de [seu problema]. Adoraria ouvir sua opinião sobre isso.".
-```
+:::
+:::
 
 #### Artefato Prático: O Esboço do Seu Futuro Ativo
 

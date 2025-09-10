@@ -1,5 +1,67 @@
 import { mystParse } from 'myst-parser';
 import React from 'react';
+
+// Configuração MyST para diretivas customizadas
+const mystConfig = {
+  directives: {
+    grid: {
+      required_arguments: 0,
+      optional_arguments: 1,
+      has_content: true,
+      option_spec: {
+        columns: {
+          validator: (value: string) => {
+            const cols = value.split(' ').map(Number);
+            return cols.every(col => col >= 1 && col <= 4);
+          },
+          default: '1 1'
+        }
+      }
+    },
+    card: {
+      required_arguments: 0,
+      optional_arguments: 1,
+      has_content: true,
+      option_spec: {
+        header: {
+          validator: (value: string) => typeof value === 'string',
+          default: ''
+        },
+        'class-header': {
+          validator: (value: string) => ['bg-primary', 'bg-success', 'bg-info', 'bg-warning', 'bg-danger'].includes(value),
+          default: 'bg-primary'
+        }
+      }
+    },
+    dropdown: {
+      required_arguments: 0,
+      optional_arguments: 1,
+      has_content: true,
+      option_spec: {
+        color: {
+          validator: (value: string) => ['success', 'info', 'warning', 'danger'].includes(value),
+          default: 'info'
+        }
+      }
+    }
+  },
+  parser: {
+    enable: [
+      'colon_fence',
+      'html_image',
+      'html_admonition',
+      'myst_targets',
+      'myst_role',
+      'myst_directive',
+      'footnotes',
+      'deflist',
+      'tasklist',
+      'strikethrough',
+      'smartquotes',
+      'substitution'
+    ]
+  }
+};
 import CodeBlock from '@/components/myst/code/code-block';
 import CodeLine from '@/components/myst/code/code-line';
 import Note from '@/components/myst/admonitions/note';
@@ -13,6 +75,7 @@ import CtaAction from '@/components/myst/admonitions/cta-action';
 import MathBlock, { resetEquationCounter } from '@/components/myst/math/math-block';
 import MathLine from '@/components/myst/math/math-line';
 import Figure from '@/components/myst/content/figure';
+import { MystGrid, MystCard, MystDropdown } from '@/components/myst-grid-interactive';
 
 // Componentes de admonition básicos (implementação funcional)
 const AdmonitionBase: React.FC<{ type: string; title?: string; children: React.ReactNode }> = ({ 
@@ -107,6 +170,10 @@ const DIRECTIVE_COMPONENTS: Record<string, React.FC<any>> = {
   challenge: Challenge,
   'cta-action': CtaAction,
   admonition: (props: any) => <AdmonitionBase type="admonition" {...props} />,
+  // Componentes de grid
+  grid: MystGrid,
+  card: MystCard,
+  dropdown: MystDropdown,
 };
 
 // Função para fuzzy matching de diretivas de admonition
@@ -158,6 +225,58 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     const rawName = node.name?.toLowerCase();
     const name = normalizeAdmonitionName(rawName);
     
+    // DEBUG: Log específico para componentes de grid
+    if (rawName === 'grid' || rawName === 'card' || rawName === 'dropdown') {
+      console.log(`[DEBUG GRID] Diretiva ${rawName} encontrada:`, JSON.stringify(node, null, 2));
+    }
+    
+    // Componentes de Grid
+    if (name === 'grid') {
+      // O argumento da diretiva grid contém os números das colunas (ex: "1 1 2 3")
+      const gridArgs = node.argument || '1 1';
+      const columnCount = gridArgs.split(' ').length;
+      
+      return (
+        <MystGrid 
+          key={key} 
+          columns={Math.min(columnCount, 4) as 1 | 2 | 3 | 4}
+          responsiveColumns={gridArgs}
+        >
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystGrid>
+      );
+    }
+    
+    if (name === 'card') {
+      const options = node.options || {};
+      const header = node.argument || options.header || '';
+      const classHeader = options['class-header'] || 'bg-primary';
+      
+      // Mapear classes para cores
+      let headerColor: 'primary' | 'success' | 'info' | 'warning' | 'danger' = 'primary';
+      if (classHeader.includes('success')) headerColor = 'success';
+      else if (classHeader.includes('info')) headerColor = 'info';
+      else if (classHeader.includes('warning')) headerColor = 'warning';
+      else if (classHeader.includes('danger')) headerColor = 'danger';
+      
+      return (
+        <MystCard key={key} header={header} headerColor={headerColor}>
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystCard>
+      );
+    }
+    
+    if (name === 'dropdown') {
+      const options = node.options || {};
+      const title = node.argument || 'Conteúdo';
+      const color = options.color || 'info';
+      
+      return (
+        <MystDropdown key={key} title={title} color={color}>
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystDropdown>
+      );
+    }
     
     // Bloco de código
     if (name === 'code' || name === 'code-block') {
@@ -500,6 +619,59 @@ function renderNode(node: any, index: number = 0, courseSlug?: string): React.Re
     if (rawName === 'figure') {
       console.log('[DEBUG FIGURE] Nó figure encontrado:', JSON.stringify(node, null, 2));
     }
+    
+    // DEBUG: Log específico para componentes de grid
+    if (rawName === 'grid' || rawName === 'card' || rawName === 'dropdown') {
+      console.log(`[DEBUG GRID] mystDirective ${rawName} encontrada:`, JSON.stringify(node, null, 2));
+    }
+
+    // Componentes de Grid
+    if (name === 'grid') {
+      // O argumento da diretiva grid contém os números das colunas (ex: "1 1 2 3")
+      const gridArgs = node.args || '1 1';
+      const columnCount = gridArgs.split(' ').length;
+      
+      return (
+        <MystGrid 
+          key={key} 
+          columns={Math.min(columnCount, 4) as 1 | 2 | 3 | 4}
+          responsiveColumns={gridArgs}
+        >
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystGrid>
+      );
+    }
+    
+    if (name === 'card') {
+      const options = node.options || {};
+      const header = node.args || options.header || '';
+      const classHeader = options['class-header'] || 'bg-primary';
+      
+      // Mapear classes para cores
+      let headerColor: 'primary' | 'success' | 'info' | 'warning' | 'danger' = 'primary';
+      if (classHeader.includes('success')) headerColor = 'success';
+      else if (classHeader.includes('info')) headerColor = 'info';
+      else if (classHeader.includes('warning')) headerColor = 'warning';
+      else if (classHeader.includes('danger')) headerColor = 'danger';
+      
+      return (
+        <MystCard key={key} header={header} headerColor={headerColor}>
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystCard>
+      );
+    }
+    
+    if (name === 'dropdown') {
+      const options = node.options || {};
+      const title = node.args || 'Conteúdo';
+      const color = options.color || 'info';
+      
+      return (
+        <MystDropdown key={key} title={title} color={color}>
+          {node.children?.map((child: any, i: number) => renderNode(child, i, courseSlug))}
+        </MystDropdown>
+      );
+    }
 
     // Bloco de código
     if (name === 'code' || name === 'code-block') {
@@ -585,7 +757,12 @@ export const MystRenderer: React.FC<MystRendererProps> = ({
     // RESET DO CONTADOR DE EQUAÇÕES A CADA RENDERIZAÇÃO
     resetEquationCounter();
     
+    // Usar o parser padrão por enquanto para testar
+    console.log('[DEBUG MYST] Usando parser padrão');
     const tree = mystParse(content);
+    
+    // DEBUG: Log da árvore parseada para verificar se as diretivas estão sendo reconhecidas
+    console.log('[DEBUG MYST] Árvore parseada:', JSON.stringify(tree, null, 2));
     
     return (
       <div 
