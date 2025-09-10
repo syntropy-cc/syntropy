@@ -6,6 +6,7 @@ import { Play, Clock, BookOpen, Award, Users, Star, CheckCircle, Zap, Target, Co
 import Link from "next/link"
 import { getCourseSummary } from "@/lib/courses"
 import { notFound } from "next/navigation"
+import { BlockDropdown } from "@/components/course/BlockDropdown"
 
 export default async function CoursePage({
   params,
@@ -234,111 +235,14 @@ export default async function CoursePage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {course.blocks.map((block, blockIndex) => (
-                  <div key={block.id} className="space-y-3">
-                    {/* Block Header */}
-                    <div className="border-l-4 border-syntropy-600 pl-4 py-2">
-                      <h3 className="font-bold text-lg text-syntropy-600">{block.title}</h3>
-                      <p className="text-sm text-muted-foreground">{block.description}</p>
-                    </div>
-                    
-                    {/* Units in Block */}
-                    <div className="ml-4 space-y-3">
-                      {block.units.map((unit, unitIndex) => (
-                        <div key={unit.id} className="group border rounded-lg overflow-hidden hover:shadow-md transition-all">
-                          {/* Unit Details Toggle */}
-                          <details className="group/details">
-                            <summary className="list-none">
-                              {/* Main Unit Content - Clickable Link */}
-                              <div className="relative group/unit">
-                                <Link href={`/learn/courses/${course.slug}/${unit.slug}`} className="block p-4 hover:bg-muted/50 transition-colors">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-syntropy-600 to-syntropy-700 rounded-full flex items-center justify-center text-white font-semibold">
-                                      {blockIndex + 1}.{unitIndex + 1}
-                                    </div>
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-lg group-hover:text-syntropy-600 transition-colors">
-                                        {unit.title}
-                                      </h4>
-                                      {unit.description && (
-                                        <p className="text-muted-foreground mt-1">
-                                          {unit.description}
-                                        </p>
-                                      )}
-                                      <div className="flex items-center gap-4 mt-2">
-                                        {unit.duration && (
-                                          <span className="text-sm text-muted-foreground flex items-center gap-1">
-                                            <Clock className="h-3 w-3" />
-                                            {unit.duration} min
-                                          </span>
-                                        )}
-                                        {unit.artifact && (
-                                          <span className="text-sm text-green-600 font-medium">
-                                            ✓ Artefato prático incluído
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </Link>
-                                
-                                {/* Hover Overlay with CTA Button */}
-                                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover/unit:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-sm">
-                                  <Button 
-                                    asChild 
-                                    size="lg" 
-                                    className="bg-syntropy-600 hover:bg-syntropy-700 text-white shadow-xl transform scale-95 group-hover/unit:scale-100 transition-all duration-300"
-                                  >
-                                    <Link href={`/learn/courses/${course.slug}/${unit.slug}`}>
-                                      <Play className="mr-2 h-5 w-5" />
-                                      Iniciar Unidade
-                                    </Link>
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              {/* Expandable Bottom Bar */}
-                              <div className="h-8 bg-gradient-to-r from-syntropy-600/20 to-syntropy-600/60 group-hover:from-syntropy-600/40 group-hover:to-syntropy-600/80 transition-all cursor-pointer flex items-center justify-center relative">
-                                <span className="text-xs text-white font-medium opacity-90 group-hover:opacity-100 transition-opacity">
-                                  Ver fragmentos e conteúdo detalhado
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
-                              </div>
-                            </summary>
-                            
-                            {/* Expandable Section Details */}
-                            <div className="border-t bg-muted/30 p-4">
-                              <h5 className="font-medium text-sm mb-3 text-muted-foreground uppercase tracking-wide">
-                                Fragmentos da Unidade
-                              </h5>
-                              <div className="space-y-2">
-                                {unit.fragments?.map((fragment, fragmentIndex) => (
-                                  <div key={fragmentIndex} className="flex items-center justify-between py-2 px-3 bg-background rounded-md">
-                                    <div className="flex items-center gap-3">
-                                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                      <span className="text-sm">{fragment}</span>
-                                    </div>
-                                  </div>
-                                ))}
-                                {unit.artifact && (
-                                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-md">
-                                    <div className="flex items-start gap-3">
-                                      <div className="w-2 h-2 rounded-full bg-green-500 mt-2" />
-                                      <div>
-                                        <span className="text-sm font-medium text-green-800">Artefato Prático:</span>
-                                        <p className="text-sm text-green-700 mt-1">{unit.artifact}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </details>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <BlockDropdown
+                    key={block.id}
+                    block={block}
+                    blockIndex={blockIndex}
+                    courseSlug={course.slug}
+                  />
                 ))}
               </div>
             </CardContent>
