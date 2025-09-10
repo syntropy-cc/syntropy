@@ -75,7 +75,6 @@ Esta figura ilustra como construímos conhecimento de forma prática e gradual. 
 
 #### Testando Sua Compreensão da Mudança
 
-::: grid 1 1 1 1
 :::{card}
 :header: **Pergunta 1:** Qual a principal crítica de John Dewey ao modelo de educação tradicional, e como a filosofia "Project-First" aborda essa crítica?
 
@@ -117,7 +116,6 @@ No modelo tradicional, o projeto final é uma mera avaliação para verificar se
 **Cenário:** Sua empresa adota uma nova ferramenta complexa de gerenciamento de projetos.
 **Desafio:** Como você, sendo o líder da equipe, poderia aplicar os princípios do "aprender fazendo" para treinar seu time, em vez de apenas fazê-los assistir a tutoriais?
 **Dica:** Considere criar um "projeto piloto" interno, com um objetivo real, mas de baixo risco, para que a equipe aprenda a usar a ferramenta em um contexto prático.
-:::
 :::
 
 #### Artefato Prático: Sua Declaração de Missão
@@ -285,7 +283,6 @@ Pense no GPS do seu carro. Ele não te dá o mapa completo do estado antes de vo
 
 #### Verificando seu Novo "GPS" de Aprendizagem
 
-:::{grid} 1 1 1 1
 :::{card}
 :header: **Pergunta 1:** O que é "Aprendizado Situado" e qual sua relação com o aprendizado "Just-in-Time"?
 
@@ -327,7 +324,6 @@ A principal desvantagem do "Just-in-Case" é a baixa retenção de conhecimento.
 **Cenário:** Você precisa apresentar seu projeto para stakeholders, mas não tem experiência com design de apresentações.
 **Desafio:** Como você pode aprender o suficiente sobre "design de slides" de forma "Just-in-Time" para criar uma apresentação impactante sem se tornar um especialista em design?
 **Dica:** Pesquise por "10 princípios de design para slides de negócio" ou "templates de pitch para startups". O objetivo é aprender apenas o necessário para a tarefa imediata.
-:::
 :::
 
 #### Artefato Prático: Seu Mapa Mental de Aprendizagem
@@ -439,7 +435,6 @@ Lembre-se, você deve ser o protagonista do seu projeto. Nosso papel é ser o me
 
 #### Entendendo Seu Papel de Protagonista
 
-:::{grid} 1 1 1 1
 :::{card}
 :header: **Pergunta 1:** Qual é o objetivo principal de um instrutor em um modelo de "Aprendizagem Cognitiva"?
 
@@ -481,7 +476,6 @@ Um "gabarito" é algo a ser copiado fielmente, com o objetivo de replicar o resu
 **Cenário:** Você está lendo a documentação de uma nova biblioteca de software que inclui vários exemplos de código.
 **Desafio:** Como ir além de copiar e colar os exemplos, transformando-os em uma oportunidade de aprendizado mais profundo?
 **Dica:** Após fazer um exemplo funcionar, quebre-o de propósito. Mude parâmetros, remova linhas, tente combiná-lo com outro exemplo. Tente prever o que vai acontecer. Essa exploração ativa constrói um modelo mental muito mais robusto.
-:::
 :::
 
 #### Artefato Prático: Transformando Observação em Conhecimento
@@ -671,7 +665,6 @@ O Syntropy Projects ainda está sendo construído. O projeto está sendo criado 
 Enquanto construímos o Syntropy Projects juntos, recomendamos que você use o GitHub como repositório para versionar seus projetos. Embora o GitHub tenha suas limitações, ele é uma boa ferramenta para ser utilizado como repositório. Se você ainda não tem familiaridade com Git e GitHub, confira nosso [Guia de Bolso sobre GitHub](https://github.com/git-guides) para começar a versionar seus projetos desde o primeiro dia.
 #### Verificando o Valor do Seu Futuro Portfólio
 
-:::{grid} 1 1 1 1
 :::{card}
 :header: **Pergunta 1:** De acordo com a teoria das "Comunidades de Prática", como o conhecimento é validado e a identidade profissional é construída?
 
@@ -713,7 +706,6 @@ Um repositório privado é um arquivo, enquanto um perfil na Syntropy Projects �
 **Cenário:** Você quer fazer networking com outros profissionais da área de IA em um evento online.
 **Desafio:** Como você pode usar a ideia do seu projeto (mesmo que ainda não esteja construído) para iniciar conversas mais significativas do que apenas "Oi, tudo bem?"?
 **Dica:** Prepare um "elevator pitch" de uma frase sobre o problema que seu projeto resolve. Ex: "Olá, [Nome]! Vi que você trabalha com [Área]. Estou explorando como usar sistemas multi-agentes para resolver o problema de [seu problema]. Adoraria ouvir sua opinião sobre isso.".
-:::
 :::
 
 #### Artefato Prático: O Esboço do Seu Futuro Ativo
