@@ -74,18 +74,17 @@
       "description": "Base conceitual e identificação de oportunidades",
       "units": [
         {
-          "id": "sistemas-trabalham-voce",
-          "title": "Sistemas que Trabalham por Você",
-          "slug": "sistemas-trabalham-voce",
-          "description": "Conheça soluções multi-agente de mercado e identifique problemas seus que podem ser automatizados.",
+          "id": "contrato-de-aprendizagem",
+          "title": "O Contrato de Aprendizagem",
+          "slug": "contrato-de-aprendizagem",
+          "description": "Abandone o modelo de ensino passivo. Aprenda a filosofia 'Project-First' e transforme seu projeto autoral no motor do seu aprendizado e em um poderoso ativo de carreira.",
           "duration": 60,
-          "artifact": "Brainstorm de 10 problemas seus que poderiam ser automatizados e análise de 5 sistemas multi-agente reais.",
+          "artifact": "Criação da Declaração de Missão, Mapa Mental de Aprendizagem e o Esboço do Perfil do seu projeto autoral.",
           "fragments": [
-            "O que torna um software 'agente'",
-            "5 soluções multi-agente de mercado",
-            "Brainstorm de problemas automatizáveis",
-            "Critérios para escolher seu projeto",
-            "Estimativa de retorno vs esforço"
+            "Adeus, Colecionadores de Conhecimento: A filosofia 'Project-First'",
+            "O Fim da Obesidade Intelectual: Aprendizado Sob Demanda",
+            "Construindo Seu Próprio Veículo: O papel do projeto-exemplo",
+            "A Prova Definitiva do Seu Talento: Seu projeto como ativo de carreira"
           ]
         }
       ]
