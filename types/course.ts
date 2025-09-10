@@ -1,32 +1,29 @@
-export interface CourseChapter {
+// Re-exportar tipos do lib/courses.ts para manter consistência
+export type { CourseSummary } from '@/lib/courses'
+
+export interface CourseUnit {
   id: string
-  title: string
   slug: string
+  title: string
   description?: string
   duration?: number
+  artifact?: string
+  fragments?: string[]
   completed?: boolean
   locked?: boolean
+  type?: 'lesson' | 'project' | 'quiz' | 'milestone'
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
 }
 
-export interface CourseSummary {
+export interface CourseBlock {
   id: string
   title: string
-  slug: string
   description: string
-  author: {
-    name: string
-    avatar?: string
-    bio?: string
-  }
-  level: "beginner" | "intermediate" | "advanced"
-  duration: number
-  tags: string[]
-  chapters: CourseChapter[]
-  thumbnail?: string
-  published: boolean
-  createdAt: string
-  updatedAt: string
+  units: CourseUnit[]
 }
+
+// Manter compatibilidade com versão anterior
+export interface CourseChapter extends CourseUnit {}
 
 export interface CourseProgress {
   courseId: string

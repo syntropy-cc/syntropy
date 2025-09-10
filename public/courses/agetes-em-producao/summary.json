@@ -69,9 +69,9 @@
   },
   "blocks": [
     {
-      "id": "fundamentos-sistemas-multi-agente",
-      "title": "Fundamentos de Sistemas Multi-Agente",
-      "description": "Base conceitual e identificação de oportunidades",
+      "id": "descubra-seu-projeto",
+      "title": "Descobrindo seu Projeto",
+      "description": "Tire sua ideia de IA do papel! Aprenda a validar seu projeto, desenhar o sistema e criar um plano de ação para entregar valor em 4 semanas. Você terá um blueprint completo em mãos, provando que sua ideia é um negócio viável. Dê os primeiros passos para construir algo incrível!",
       "units": [
         {
           "id": "contrato-de-aprendizagem",

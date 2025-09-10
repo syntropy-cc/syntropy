@@ -1,11 +1,12 @@
 // app/learn/courses/[courseSlug]/[chapterSlug]/page.tsx
-import { getCourseSummary, getChapterContent } from "@/lib/courses";
+import { getCourseSummary, getChapterContent, CourseSummary } from "@/lib/courses";
 import { ChapterSidebar } from "./ChapterSidebar";
 import { ChapterTopbar } from "./ChapterTopbar";
 import ChapterContent from "./ChapterContent";
 import { ChapterIDE } from "./ChapterIDE";
 import { SidebarProvider } from "./SidebarProvider";
 import { notFound } from "next/navigation";
+import { CourseUnit, CourseBlock } from "@/types/course";
 
 export default async function ChapterPage({
   params,
@@ -14,38 +15,40 @@ export default async function ChapterPage({
 }) {
   const { courseSlug, chapterSlug } = params;
 
-  console.log('[DEBUG PAGE] Carregando página do capítulo:', { courseSlug, chapterSlug });
+  console.log('[DEBUG PAGE] Carregando página da unidade:', { courseSlug, chapterSlug });
 
-  const course = await getCourseSummary(courseSlug);
+  const course: CourseSummary | null = await getCourseSummary(courseSlug);
   if (!course) {
     console.error('[DEBUG PAGE] Curso não encontrado:', courseSlug);
     notFound();
   }
 
   // Encontrar a unidade nos blocos
-  let unit = null;
+  let unit: CourseUnit | null = null;
+  let block: CourseBlock | null = null;
   let blockIndex = -1;
   let unitIndex = -1;
   
   for (let i = 0; i < course.blocks.length; i++) {
-    const block = course.blocks[i];
-    const foundUnitIndex = block.units.findIndex((u) => u.slug === chapterSlug);
+    const currentBlock = course.blocks[i];
+    const foundUnitIndex = currentBlock.units.findIndex((u) => u.slug === chapterSlug);
     if (foundUnitIndex !== -1) {
-      unit = block.units[foundUnitIndex];
+      unit = currentBlock.units[foundUnitIndex];
+      block = currentBlock;
       blockIndex = i;
       unitIndex = foundUnitIndex;
       break;
     }
   }
 
-  if (!unit) {
+  if (!unit || !block) {
     console.error('[DEBUG PAGE] Unidade não encontrada:', chapterSlug);
     notFound();
   }
 
   // Encontrar unidade anterior e próxima
-  let prevUnit = null;
-  let nextUnit = null;
+  let prevUnit: CourseUnit | null = null;
+  let nextUnit: CourseUnit | null = null;
   
   if (unitIndex > 0) {
     prevUnit = course.blocks[blockIndex].units[unitIndex - 1];
@@ -65,7 +68,7 @@ export default async function ChapterPage({
     }
   }
 
-  // Carregar o conteúdo do markdown do capítulo usando a nova função
+  // Carregar o conteúdo do markdown da unidade usando a nova função
   const mdSource = await getChapterContent(courseSlug, chapterSlug);
   if (!mdSource) {
     console.error('[DEBUG PAGE] Conteúdo markdown não encontrado:', { courseSlug, chapterSlug });
@@ -85,22 +88,23 @@ export default async function ChapterPage({
         <ChapterTopbar course={course} progressPct={progressPct} />
 
         <div className="flex flex-1 overflow-hidden">
-          <ChapterSidebar course={course} chapterSlug={chapterSlug} />
+          <ChapterSidebar course={course} unitSlug={chapterSlug} />
 
           <main className="flex-1 flex overflow-hidden">
             <ChapterContent
-              chapter={unit}
+              unit={unit}
+              block={block}
               idx={currentUnitNumber - 1}
               course={course}
-              prevChapter={prevUnit}
-              nextChapter={nextUnit}
-              chapterCount={totalUnits}
+              prevUnit={prevUnit}
+              nextUnit={nextUnit}
+              unitCount={totalUnits}
               mdSource={mdSource}
             />
 
             {/* ChapterIDE oculto em telas pequenas (mobile) */}
             <div className="hidden xl:block">
-              <ChapterIDE chapterTitle={chapter.title} />
+              <ChapterIDE chapterTitle={unit.title} />
             </div>
           </main>
         </div>
