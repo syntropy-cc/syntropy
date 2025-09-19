@@ -75,8 +75,10 @@ Esta figura ilustra como construímos conhecimento de forma prática e gradual. 
 
 #### Testando Sua Compreensão da Mudança
 
-:::{card}
-:header: **Pergunta 1:** Qual a principal crítica de John Dewey ao modelo de educação tradicional, e como a filosofia "Project-First" aborda essa crítica?
+:::{card} **Pergunta 1:**
+:class-header: bg-info
+
+Qual a principal crítica de John Dewey ao modelo de educação tradicional, e como a filosofia "Project-First" aborda essa crítica?
 
 :::{dropdown} 💡 Resposta
 :color: success
@@ -84,8 +86,8 @@ Dewey criticava o modelo que trata alunos como receptores passivos de informaç�
 :::
 :::
 
-:::{card}
-:header: **Pergunta 2:** Por que aprender teoria dentro do contexto de um projeto é, frequentemente, mais eficaz do que aprendê-la de forma isolada?
+:::{card} **Pergunta 2:** Por que aprender teoria dentro do contexto de um projeto é, frequentemente, mais eficaz do que aprendê-la de forma isolada?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -93,8 +95,8 @@ Dentro de um projeto, a teoria tem um propósito imediato e uma aplicação conc
 :::
 :::
 
-:::{card}
-:header: **Pergunta 3:** Qual a diferença entre "fazer um projeto no final do curso" e a abordagem "Project-First"?
+:::{card} **Pergunta 3:** Qual a diferença entre "fazer um projeto no final do curso" e a abordagem "Project-First"?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -102,16 +104,16 @@ No modelo tradicional, o projeto final é uma mera avaliação para verificar se
 :::
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 1
+:::{card} 🎯 Aplicação Prática 1
+:class-header: bg-primary
 
 **Cenário:** Você quer aprender uma nova linguagem de programação que nunca viu antes.
 **Desafio:** Usando a filosofia "Project-First", como você estruturaria seu aprendizado, em contraste com a abordagem tradicional de ler toda a documentação primeiro?
 **Dica:** Pense em um mini-projeto simples, mas completo (do início ao fim), que te forçaria a aprender os 80% mais importantes da linguagem para colocá-lo no ar.
 :::
 
-:::{card}
-:header:  🎯 Aplicação Prática 2
+:::{card} 🎯 Aplicação Prática 2
+:class-header: bg-success
 
 **Cenário:** Sua empresa adota uma nova ferramenta complexa de gerenciamento de projetos.
 **Desafio:** Como você, sendo o líder da equipe, poderia aplicar os princípios do "aprender fazendo" para treinar seu time, em vez de apenas fazê-los assistir a tutoriais?
@@ -283,8 +285,10 @@ Pense no GPS do seu carro. Ele não te dá o mapa completo do estado antes de vo
 
 #### Verificando seu Novo "GPS" de Aprendizagem
 
-:::{card}
-:header: **Pergunta 1:** O que é "Aprendizado Situado" e qual sua relação com o aprendizado "Just-in-Time"?
+:::{card} **Pergunta 1:**
+
+O que é "Aprendizado Situado" e qual sua relação com o aprendizado "Just-in-Time"?
+:class-header: bg-info
 
 :::{dropdown} 💡 Resposta
 :color: success
@@ -292,8 +296,8 @@ Pense no GPS do seu carro. Ele não te dá o mapa completo do estado antes de vo
 :::
 :::
 
-:::{card}
-:header: **Pergunta 2:** Dê um exemplo prático de como a "Aprendizagem Cognitiva" pode ser aplicada no aprendizado de programação.
+:::{card} **Pergunta 2:** Dê um exemplo prático de como a "Aprendizagem Cognitiva" pode ser aplicada no aprendizado de programação.
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -301,8 +305,8 @@ Um exemplo seria um programador sênior fazendo "pair programming" com um júnio
 :::
 :::
 
-:::{card}
-:header: **Pergunta 3:** Qual a principal desvantagem do aprendizado "Just-in-Case" em comparação com o "Just-in-Time"?
+:::{card} **Pergunta 3:** Qual a principal desvantagem do aprendizado "Just-in-Case" em comparação com o "Just-in-Time"?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -310,16 +314,16 @@ A principal desvantagem do "Just-in-Case" é a baixa retenção de conhecimento.
 :::
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 1
+:::{card} 🎯 Aplicação Prática 1
+:class-header: bg-primary
 
 **Cenário:** Você está construindo seu projeto e se depara com a necessidade de conectar a uma API externa pela primeira vez.
 **Desafio:** Em vez de ler um livro inteiro sobre APIs, como você aplicaria o "Just-in-Time Learning" para resolver essa tarefa específica de forma rápida e eficaz?
 **Dica:** Foque sua pesquisa em exemplos de código que realizam a tarefa exata que você precisa (ex: "como fazer uma requisição GET com autenticação X na linguagem Y"). Aprenda o conceito na prática e depois, se necessário, aprofunde na teoria.
 :::
 
-:::{card}
-:header:  🎯 Aplicação Prática 2
+:::{card} 🎯 Aplicação Prática 2
+:class-header: bg-success
 
 **Cenário:** Você precisa apresentar seu projeto para stakeholders, mas não tem experiência com design de apresentações.
 **Desafio:** Como você pode aprender o suficiente sobre "design de slides" de forma "Just-in-Time" para criar uma apresentação impactante sem se tornar um especialista em design?
@@ -435,8 +439,8 @@ Lembre-se, você deve ser o protagonista do seu projeto. Nosso papel é ser o me
 
 #### Entendendo Seu Papel de Protagonista
 
-:::{card}
-:header: **Pergunta 1:** Qual é o objetivo principal de um instrutor em um modelo de "Aprendizagem Cognitiva"?
+:::{card} **Pergunta 1:** Qual é o objetivo principal de um instrutor em um modelo de "Aprendizagem Cognitiva"?
+:class-header: bg-info
 
 :::{dropdown} 💡 Resposta
 :color: success
@@ -444,8 +448,8 @@ O objetivo principal é tornar os processos de pensamento, geralmente implícito
 :::
 :::
 
-:::{card}
-:header: **Pergunta 2:** Por que a competência adquirida ao replicar um tutorial pode ser considerada "frágil"?
+:::{card} **Pergunta 2:** Por que a competência adquirida ao replicar um tutorial pode ser considerada "frágil"?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -453,8 +457,8 @@ O objetivo principal é tornar os processos de pensamento, geralmente implícito
 :::
 :::
 
-:::{card}
-:header: **Pergunta 3:** Qual a diferença entre usar um projeto-exemplo como um "gabarito" versus uma "pista de pouso"?
+:::{card} **Pergunta 3:** Qual a diferença entre usar um projeto-exemplo como um "gabarito" versus uma "pista de pouso"?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -462,16 +466,16 @@ Um "gabarito" é algo a ser copiado fielmente, com o objetivo de replicar o resu
 :::
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 1
+:::{card} 🎯 Aplicação Prática 1
+:class-header: bg-primary
 
 **Cenário:** Você assiste a um vídeo onde um desenvolvedor constrói um aplicativo de lista de tarefas do zero.
 **Desafio:** Em vez de simplesmente digitar o mesmo código, como você pode usar esse vídeo como uma experiência de "Aprendizagem Cognitiva"?
 **Dica:** A cada passo importante do vídeo, pause e tente responder: "Por que ele fez essa escolha de arquitetura? Quais alternativas ele poderia ter considerado? Como eu faria isso de forma diferente para um aplicativo de lista de compras?".
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 2
+:::{card} 🎯 Aplicação Prática 2
+:class-header: bg-success
 
 **Cenário:** Você está lendo a documentação de uma nova biblioteca de software que inclui vários exemplos de código.
 **Desafio:** Como ir além de copiar e colar os exemplos, transformando-os em uma oportunidade de aprendizado mais profundo?
@@ -665,8 +669,8 @@ O Syntropy Projects ainda está sendo construído. O projeto está sendo criado 
 Enquanto construímos o Syntropy Projects juntos, recomendamos que você use o GitHub como repositório para versionar seus projetos. Embora o GitHub tenha suas limitações, ele é uma boa ferramenta para ser utilizado como repositório. Se você ainda não tem familiaridade com Git e GitHub, confira nosso [Guia de Bolso sobre GitHub](https://github.com/git-guides) para começar a versionar seus projetos desde o primeiro dia.
 #### Verificando o Valor do Seu Futuro Portfólio
 
-:::{card}
-:header: **Pergunta 1:** De acordo com a teoria das "Comunidades de Prática", como o conhecimento é validado e a identidade profissional é construída?
+:::{card} **Pergunta 1:** De acordo com a teoria das "Comunidades de Prática", como o conhecimento é validado e a identidade profissional é construída?
+:class-header: bg-info
 
 :::{dropdown} 💡 Resposta
 :color: success
@@ -674,8 +678,8 @@ Segundo Lave e Wenger, isso ocorre através da participação e interação soci
 :::
 :::
 
-:::{card}
-:header: **Pergunta 2:** Por que um projeto de portfólio bem documentado pode ser mais eficaz que um certificado em uma entrevista de emprego?
+:::{card} **Pergunta 2:** Por que um projeto de portfólio bem documentado pode ser mais eficaz que um certificado em uma entrevista de emprego?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -683,8 +687,8 @@ Um certificado prova que você foi exposto a um conhecimento, enquanto um projet
 :::
 :::
 
-:::{card}
-:header: **Pergunta 3:** Qual a diferença entre ter um projeto em um repositório privado no GitHub e tê-lo em uma plataforma como a Syntropy Projects?
+:::{card} **Pergunta 3:** Qual a diferença entre ter um projeto em um repositório privado no GitHub e tê-lo em uma plataforma como a Syntropy Projects?
+:class-header: bg-info
 
 :::{dropdown}
 :color: success
@@ -692,16 +696,16 @@ Um repositório privado é um arquivo, enquanto um perfil na Syntropy Projects �
 :::
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 1
+:::{card} 🎯 Aplicação Prática 1
+:class-header: bg-primary
 
 **Cenário:** Você está se candidatando a uma vaga e o recrutador pergunta sobre sua experiência com "sistemas autônomos".
 **Desafio:** Elabore duas respostas: uma sem ter um projeto de portfólio e outra usando o seu futuro projeto na Syntropy Projects como a peça central da sua resposta.
 **Dica:** Na segunda resposta, em vez de listar conceitos, conte a história do seu projeto: "Na verdade, eu construí um sistema que resolve [problema]. Para isso, desenhei uma arquitetura com [X] agentes onde...".
 :::
 
-:::{card}
-:header: 🎯 Aplicação Prática 2
+:::{card} 🎯 Aplicação Prática 2
+:class-header: bg-success
 
 **Cenário:** Você quer fazer networking com outros profissionais da área de IA em um evento online.
 **Desafio:** Como você pode usar a ideia do seu projeto (mesmo que ainda não esteja construído) para iniciar conversas mais significativas do que apenas "Oi, tudo bem?"?
