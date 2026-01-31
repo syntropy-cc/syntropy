@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useMemo, useRef, useEffect } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -26,10 +28,12 @@ export default function MathBlock({ children, label, equationNumber }: MathBlock
   }
 
   // Extrai o texto do conteúdo
-  const extractText = (node: any): string => {
+  const extractText = (node: React.ReactNode): string => {
     if (typeof node === 'string') return node;
     if (Array.isArray(node)) return node.map(extractText).join('');
-    if (React.isValidElement(node)) return extractText(node.props.children);
+    if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+      return extractText(node.props.children);
+    }
     return String(node || '');
   };
 

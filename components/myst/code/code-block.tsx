@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-python";
