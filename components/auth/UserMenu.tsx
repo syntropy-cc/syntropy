@@ -16,6 +16,7 @@ import { User, Settings, LogOut, BookOpen, Code, FlaskConical } from "lucide-rea
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import { isAuthEnabled } from "@/lib/feature-flags"
 
 interface UserMenuProps {
   mobile?: boolean
@@ -26,6 +27,11 @@ export function UserMenu({ mobile = false, onClose }: UserMenuProps) {
   const { user, signOut } = useAuth();
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
+
+  // Se autenticação está desabilitada, não mostrar nada
+  if (!isAuthEnabled()) {
+    return null;
+  }
 
   // Mostrar loading enquanto verifica autenticação
   if (user === undefined) {

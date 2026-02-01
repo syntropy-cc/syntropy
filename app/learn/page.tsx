@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Code, Upload, CheckCircle, Zap, Users, Award, Clock, ArrowRight, Laptop, Share, Target } from "lucide-react"
 import Link from "next/link"
+import { isAuthEnabled } from "@/lib/feature-flags"
 
 // JupyterBook-style Content Component
 function JupyterBookContent() {
@@ -599,14 +600,19 @@ export default function LearnLandingPage() {
               Junte-se a milhares de desenvolvedores que já estão construindo o futuro com o Syntropy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-                <Link href="/auth?mode=signup">Começar gratuitamente</Link>
-              </Button>
+              {isAuthEnabled() && (
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
+                  <Link href="/auth?mode=signup">Começar gratuitamente</Link>
+                </Button>
+              )}
               <Button
                 asChild
-                variant="outline"
+                variant={isAuthEnabled() ? "outline" : "default"}
                 size="lg"
-                className="border-white/20 text-white hover:bg-white/10 px-12 py-4 text-lg"
+                className={isAuthEnabled() 
+                  ? "border-white/20 text-white hover:bg-white/10 px-12 py-4 text-lg"
+                  : "bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg"
+                }
               >
                 <Link href="/learn/courses">Explorar cursos</Link>
               </Button>

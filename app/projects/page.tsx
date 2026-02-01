@@ -25,6 +25,7 @@ import {
   Globe,
 } from "lucide-react"
 import Link from "next/link"
+import { isAuthEnabled } from "@/lib/feature-flags"
 
 // Project Hub Visualization Component
 function ProjectHubVisualization() {
@@ -621,14 +622,19 @@ export default function ProjectsLandingPage() {
               colaborativos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
-                <Link href="/auth?mode=signup">Começar a contribuir</Link>
-              </Button>
+              {isAuthEnabled() && (
+                <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg">
+                  <Link href="/auth?mode=signup">Começar a contribuir</Link>
+                </Button>
+              )}
               <Button
                 asChild
-                variant="outline"
+                variant={isAuthEnabled() ? "outline" : "default"}
                 size="lg"
-                className="border-white/20 text-white hover:bg-white/10 px-12 py-4 text-lg"
+                className={isAuthEnabled()
+                  ? "border-white/20 text-white hover:bg-white/10 px-12 py-4 text-lg"
+                  : "bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg"
+                }
               >
                 <Link href="/projects/coming-soon">Explorar projetos</Link>
               </Button>

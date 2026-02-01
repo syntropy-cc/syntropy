@@ -10,6 +10,7 @@ import { CheckCircle, Award, User, Briefcase, GraduationCap, TrendingUp, Star, U
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
+import { isAuthEnabled } from "@/lib/feature-flags"
 
 // Animated Section Component
 function AnimatedSection({
@@ -104,13 +105,16 @@ function PortfolioStats() {
 
 export default function PortfolioLandingPage() {
   const router = useRouter()
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
 
   function handleCtaClick() {
     if (user) {
       router.push("/portfolio/comming-soon")
-    } else {
+    } else if (isAuthEnabled()) {
       router.push("/auth?mode=signup")
+    } else {
+      // Se auth está desabilitado, redireciona para coming soon
+      router.push("/portfolio/comming-soon")
     }
   }
 
@@ -148,7 +152,6 @@ export default function PortfolioLandingPage() {
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
               onClick={handleCtaClick}
-              disabled={loading}
             >
               Crie seu portfólio
             </Button>
@@ -401,7 +404,6 @@ export default function PortfolioLandingPage() {
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 text-lg"
                 onClick={handleCtaClick}
-                disabled={loading}
               >
                 Crie seu portfólio
               </Button>

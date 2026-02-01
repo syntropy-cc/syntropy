@@ -9,6 +9,7 @@ import { BookOpen, Users, FlaskConical, Check, Award, Briefcase, GraduationCap, 
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/hooks/use-auth"
+import { isAuthEnabled } from "@/lib/feature-flags"
 
 // Portfolio Preview Component
 function PortfolioPreview() {
@@ -1368,7 +1369,7 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll()
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
 
   return (
     <div className="bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 text-white overflow-hidden px-4">
@@ -1689,8 +1690,8 @@ export default function HomePage() {
       </AnimatedSection>
 
       
-      {/* CTA Section */}
-      {(!loading && !user) && (
+      {/* CTA Section - Só aparece se autenticação estiver habilitada */}
+      {isAuthEnabled() && !user && (
         <AnimatedSection id="cta" className="bg-white/5">
           <div className="container mx-auto">
             <div className="text-center max-w-4xl mx-auto">
