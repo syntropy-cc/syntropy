@@ -1,0 +1,352 @@
+---
+description: Core workflow rules for implementation tracking and execution
+globs: ["**/*"]
+alwaysApply: true
+priority: 0
+---
+
+# Implementation Workflow Rules
+
+## Purpose
+
+This file defines the workflow for implementing features and components. It ensures that implementation is always driven by architecture, properly tracked, and documented. The implementation backlog is the bridge between architectural decisions and working code.
+
+> **AI Instruction**: Before implementing ANY code, you MUST consult the implementation tracking documents. Never implement without knowing the current state of the project. Always update tracking documents as you work.
+
+## Core Principle: Architecture Drives Implementation
+
+Implementation is a manifestation of architecture. Every line of code should trace back to an architectural decision. The workflow is:
+
+```
+Architecture Documents          Implementation Tracking          Code
+┌─────────────────────┐        ┌─────────────────────┐        ┌──────────┐
+│ ARCHITECTURE.md     │───────▶│ BACKLOG.md          │───────▶│ src/     │
+│ ADRs                │        │ CURRENT-WORK.md     │        │          │
+│ Component Specs     │        │ Component Records   │        │          │
+└─────────────────────┘        └─────────────────────┘        └──────────┘
+         │                              │                           │
+         │         Traceability         │                           │
+         └──────────────────────────────┴───────────────────────────┘
+```
+
+### Rule IMPL-001: Architecture as Source of Truth
+
+Every implementation task MUST originate from architecture:
+
+| Architecture Source | Generates |
+|---------------------|-----------|
+| Component in ARCHITECTURE.md | Component implementation items |
+| ADR (Architecture Decision Record) | Implementation tasks for that decision |
+| RFC (Request for Comments) | Feature implementation items when approved |
+| Domain model | Entity and value object implementations |
+| API specification | Endpoint implementations |
+
+**Before creating any work item**, verify it traces to an architecture element. If it doesn't, either the architecture needs updating first, or the task is out of scope.
+
+### Rule IMPL-002: Implementation Document Hierarchy
+
+```
+docs/implementation/
+├── ROADMAP.md                    # Strategic: Long-term vision, milestones
+├── BACKLOG.md                    # Tactical: All identified work items
+├── CURRENT-WORK.md               # Operational: Items being worked on NOW
+├── PROGRESS-SUMMARY.md           # Executive summary with metrics
+│
+├── components/                   # One file per architectural component
+│   ├── _TEMPLATE.md              # Template for new components
+│   └── {COMPONENT-ID}-name.md    # Implementation record (permanent)
+│
+└── archive/                      # Completed milestones (optional organization)
+```
+
+## Pre-Implementation Workflow
+
+### Rule IMPL-003: Mandatory Pre-Work Consultation
+
+Before writing ANY implementation code, you MUST:
+
+1. **Read CURRENT-WORK.md** to understand what's actively being worked on
+2. **Check item dependencies** - ensure all dependencies are marked `Done`
+3. **Read the component record** if one exists for this component
+4. **Verify architecture alignment** - confirm the implementation matches current architecture
+
+```markdown
+## Pre-Implementation Checklist
+
+- [ ] Consulted CURRENT-WORK.md
+- [ ] Verified no blocking dependencies
+- [ ] Read existing component record (if any)
+- [ ] Confirmed alignment with ARCHITECTURE.md
+- [ ] Identified related ADRs to follow
+```
+
+> **AI Instruction**: If asked to implement something not in CURRENT-WORK.md, first ask if it should be added. Do not implement untracked work.
+
+### Rule IMPL-004: Selecting Work Items
+
+Work items should be selected based on:
+
+1. **Priority** (Critical > High > Medium > Low)
+2. **Dependencies** (items with no blockers first)
+3. **Architecture alignment** (implement foundational components before dependent ones)
+
+```
+Selection Order:
+1. Items marked "In Progress" (continue existing work)
+2. Items marked "Ready" with highest priority
+3. Items with no unresolved dependencies
+4. Items that unblock the most other items
+```
+
+## During Implementation Workflow
+
+### Rule IMPL-005: Status Transitions
+
+Work items flow through these states:
+
+```
+┌──────────┐    ┌─────────┐    ┌─────────────┐    ┌────────┐    ┌──────┐
+│ Backlog  │───▶│  Ready  │───▶│ In Progress │───▶│ Review │───▶│ Done │
+└──────────┘    └─────────┘    └─────────────┘    └────────┘    └──────┘
+     │                              │                               │
+     │         Can return to        │                               │
+     └──────────────────────────────┘◀──────────────────────────────┘
+                              (if blocked or needs rework)
+```
+
+**State Definitions**:
+
+| State | Meaning | Entry Criteria |
+|-------|---------|----------------|
+| Backlog | Identified, not yet prioritized | Traced to architecture |
+| Ready | Prioritized, all dependencies met | Dependencies Done, in CURRENT-WORK.md |
+| In Progress | Actively being implemented | Work has started |
+| Review | Code complete, awaiting verification | Code written, tests pass |
+| Done | Fully complete | All checklist items verified |
+
+### Rule IMPL-006: Update Tracking During Work
+
+As you implement, update the component record with:
+
+- Decisions made during implementation
+- Deviations from original plan (with justification)
+- Blockers encountered
+- Dependencies discovered
+- Technical debt identified
+
+```markdown
+## Implementation Log
+
+### {DATE} - Session Start
+- Starting implementation of {item}
+- Approach: {brief description}
+
+### {DATE} - Decision Made
+- **Decision**: {what was decided}
+- **Reason**: {why}
+- **Alternatives considered**: {what else was considered}
+
+### {DATE} - Blocker Found
+- **Blocker**: {description}
+- **Impact**: {what this blocks}
+- **Resolution**: {how to resolve}
+```
+
+### Rule IMPL-007: Granular Task Breakdown
+
+Each work item should be completable in 1-3 prompts. If an item requires more, break it down:
+
+```markdown
+### [IMPL-001] User Authentication Component
+
+This is too large. Break down into:
+
+### [IMPL-001.1] Create User entity and value objects
+### [IMPL-001.2] Implement password hashing service  
+### [IMPL-001.3] Create authentication use case
+### [IMPL-001.4] Implement JWT token generation
+### [IMPL-001.5] Create login API endpoint
+### [IMPL-001.6] Write unit tests for auth use case
+### [IMPL-001.7] Write integration tests for auth flow
+```
+
+**Granularity Guidelines**:
+- Each item should touch 1-3 files
+- Each item should have clear, verifiable outcome
+- If description exceeds 3 sentences, item is too large
+- If implementation requires multiple architectural concepts, split it
+
+## Post-Implementation Workflow
+
+### Rule IMPL-008: Completion Checklist
+
+Before marking any item as `Done`, verify ALL applicable criteria:
+
+```markdown
+## Completion Checklist
+
+### Code Quality
+- [ ] Code follows coding standards (see coding-standards.mdc)
+- [ ] No commented-out code
+- [ ] No TODO comments without linked issues
+- [ ] Error handling implemented
+
+### Testing
+- [ ] Unit tests written and passing
+- [ ] Integration tests written (if applicable)
+- [ ] Edge cases covered
+- [ ] Test coverage meets threshold
+
+### Documentation
+- [ ] Code is self-documenting (clear names, structure)
+- [ ] Complex logic has explanatory comments
+- [ ] Public APIs have docstrings
+- [ ] Component record updated
+
+### Architecture Compliance
+- [ ] Implementation matches architecture specification
+- [ ] No architectural violations (checked against rules)
+- [ ] Dependencies injected correctly
+- [ ] Layer boundaries respected
+```
+
+### Rule IMPL-009: Updating Records on Completion
+
+When marking an item `Done`:
+
+1. **Update CURRENT-WORK.md**: Change status to Done, add completion date
+2. **Update component record**: Add completion summary, final decisions, lessons learned
+3. **Update PROGRESS-SUMMARY.md**: Update metrics if significant milestone
+4. **Update BACKLOG.md**: Mark item as Done, update any dependent items to Ready
+
+### Rule IMPL-010: Component Record Permanence
+
+Component records are NEVER deleted. They evolve with the component:
+
+```markdown
+## Component Evolution History
+
+### v1.0 - Initial Implementation (2024-01-15)
+- Basic functionality implemented
+- See implementation details below
+
+### v1.1 - Performance Optimization (2024-02-20)
+- Added caching layer
+- Refactored query logic
+- See ADR-015 for decision rationale
+
+### v2.0 - Breaking Change (2024-04-10)
+- New API contract per RFC-008
+- Migration guide in docs/
+- Previous version deprecated
+```
+
+## Architecture Change Workflow
+
+### Rule IMPL-011: Handling Architecture Changes
+
+When architecture changes (new ADR, updated ARCHITECTURE.md):
+
+1. **Identify affected components** from the architecture change
+2. **Create new work items** in BACKLOG.md for each affected component
+3. **Update existing component records** to note the pending change
+4. **Prioritize based on impact** (breaking changes first)
+
+```markdown
+### [IMPL-042] Update OrderService for new event schema
+- **Status**: Ready
+- **Origin**: ADR-023 (Event Schema v2)
+- **Type**: Architecture Evolution
+- **Impact**: Breaking change to downstream consumers
+- **Priority**: Critical
+
+Update OrderService to emit events in new schema format per ADR-023.
+Must coordinate with consumer teams.
+```
+
+### Rule IMPL-012: Traceability Maintenance
+
+Every implementation must maintain bidirectional traceability:
+
+**From Architecture to Implementation**:
+```markdown
+# In ARCHITECTURE.md or component spec
+## OrderService Component
+Implementation: [IMPL-015](../implementation/components/IMPL-015-order-service.md)
+```
+
+**From Implementation to Architecture**:
+```markdown
+# In component record
+## Architecture References
+- Component Definition: [ARCHITECTURE.md#order-service](../../architecture/ARCHITECTURE.md#order-service)
+- Design Decisions: [ADR-005](../../architecture/decisions/ADR-005.md)
+- API Contract: [orders-api.yaml](../../architecture/api/orders-api.yaml)
+```
+
+## Metrics and Tracking
+
+### Rule IMPL-013: Required Metrics
+
+Track these metrics in PROGRESS-SUMMARY.md:
+
+| Metric | Description | Update Frequency |
+|--------|-------------|------------------|
+| Total Items | Count of all items in backlog | On item creation |
+| Items by Status | Count per status | On status change |
+| Architecture Coverage | % of arch components with implementation | Weekly |
+| Completion Rate | Items done / Items started | On completion |
+| Average Cycle Time | Mean time from Ready to Done | On completion |
+| Blocked Items | Items waiting on dependencies | Daily |
+| Technical Debt Items | Known debt tracked | On identification |
+
+### Rule IMPL-014: Progress Calculation
+
+Architecture coverage is calculated as:
+
+```
+Coverage = (Components with Done implementation / Total Components in Architecture) × 100
+```
+
+A component is considered "implemented" when:
+- All its work items are Done
+- Tests are passing
+- Documentation is complete
+
+## Quick Reference for AI Assistants
+
+### When Asked to Implement Something
+
+```
+1. Is it in CURRENT-WORK.md?
+   ├─ YES → Check dependencies, proceed if clear
+   └─ NO  → Ask if it should be added, or find existing item
+
+2. Is the item Ready or In Progress?
+   ├─ Ready → Update to In Progress, start work
+   ├─ In Progress → Continue previous work
+   └─ Other → Cannot start, explain why
+
+3. After completing work:
+   ├─ Update component record
+   ├─ Run completion checklist
+   ├─ Update status in CURRENT-WORK.md
+   └─ Update metrics if needed
+```
+
+### When Asked About Project Status
+
+```
+1. Read PROGRESS-SUMMARY.md for high-level status
+2. Read CURRENT-WORK.md for active items
+3. Summarize: what's done, what's in progress, what's blocked
+```
+
+### When Architecture Changes
+
+```
+1. Identify affected components
+2. Create new items in BACKLOG.md
+3. Update affected component records
+4. Adjust priorities as needed
+```

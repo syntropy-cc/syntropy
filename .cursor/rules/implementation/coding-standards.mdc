@@ -1,0 +1,740 @@
+---
+description: Coding standards and implementation patterns
+globs: ["**/*.py", "**/*.ts", "**/*.js", "**/*.go"]
+alwaysApply: true
+priority: 2
+---
+
+# Coding Standards Rules
+
+## Purpose
+
+This file defines the coding standards that all implementations must follow. These standards ensure consistency, maintainability, and quality across the codebase. They complement architectural rules by defining HOW code should be written, not just WHAT should be built.
+
+> **AI Instruction**: Apply these standards to ALL code you write. When reviewing existing code, note violations but don't fix them unless explicitly asked. When implementing new code, follow these standards strictly.
+
+## Code Organization
+
+### Rule CODE-001: File Structure
+
+Every source file follows a consistent structure:
+
+```python
+# Python Example
+"""
+Module docstring explaining purpose.
+
+This module handles {responsibility}.
+Part of {component} component.
+Architecture reference: {ARCH-XXX}
+"""
+
+# Standard library imports
+import os
+from datetime import datetime
+from typing import Optional, List
+
+# Third-party imports
+from sqlalchemy import Column
+from pydantic import BaseModel
+
+# Local imports (relative)
+from .interfaces import Repository
+from .entities import User
+
+# Constants
+MAX_RETRIES = 3
+DEFAULT_TIMEOUT = 30
+
+# Type definitions
+UserId = str
+Email = str
+
+# Module-level variables (minimize these)
+_cache: dict = {}
+
+
+# Classes (main content)
+class UserService:
+    """Service handling user operations."""
+    pass
+
+
+# Functions (if not in classes)
+def create_user_id() -> UserId:
+    """Generate a new user ID."""
+    pass
+
+
+# Private/helper functions
+def _validate_email(email: str) -> bool:
+    """Internal validation helper."""
+    pass
+```
+
+### Rule CODE-002: Module Size Limits
+
+Keep modules focused and manageable:
+
+| Metric | Soft Limit | Hard Limit | Action if Exceeded |
+|--------|------------|------------|-------------------|
+| Lines of code | 300 | 500 | Split into submodules |
+| Classes per file | 2 | 4 | One class per file |
+| Functions per file | 10 | 15 | Group into classes or split |
+| Function length | 30 lines | 50 lines | Extract helper functions |
+| Cyclomatic complexity | 10 | 15 | Refactor conditionals |
+
+### Rule CODE-003: Import Organization
+
+Imports are organized in groups with blank line separators:
+
+```python
+# Group 1: Standard library
+import os
+import sys
+from datetime import datetime
+from typing import Optional
+
+# Group 2: Third-party packages
+import numpy as np
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+# Group 3: Local application imports
+from app.domain.entities import User
+from app.infrastructure.database import get_session
+
+# Group 4: Relative imports (same package)
+from .interfaces import UserRepository
+from .exceptions import UserNotFoundError
+```
+
+**Rules**:
+- Alphabetize within each group
+- Prefer explicit imports over wildcards (`from x import *` is banned)
+- Use absolute imports for cross-package, relative for same-package
+
+## Naming Conventions
+
+### Rule CODE-004: Naming Patterns
+
+| Element | Convention | Example |
+|---------|------------|---------|
+| Classes | PascalCase | `UserService`, `OrderRepository` |
+| Functions/Methods | snake_case | `create_user`, `calculate_total` |
+| Variables | snake_case | `user_count`, `is_active` |
+| Constants | UPPER_SNAKE_CASE | `MAX_RETRIES`, `DEFAULT_TIMEOUT` |
+| Private members | _leading_underscore | `_internal_cache`, `_validate` |
+| Type aliases | PascalCase | `UserId`, `EmailAddress` |
+| Modules | snake_case | `user_service.py`, `order_repository.py` |
+| Packages | snake_case | `domain`, `infrastructure` |
+
+### Rule CODE-005: Meaningful Names
+
+Names should be self-documenting:
+
+```python
+# BAD: Cryptic or abbreviated names
+def calc(u, o):
+    t = o.amt * u.disc
+    return t
+
+# GOOD: Clear, intention-revealing names
+def calculate_discounted_total(user: User, order: Order) -> Decimal:
+    discount_amount = order.amount * user.discount_rate
+    return discount_amount
+
+# BAD: Generic names
+data = get_data()
+result = process(data)
+items = fetch()
+
+# GOOD: Specific, contextual names
+user_profile = get_user_profile(user_id)
+validated_order = validate_order(raw_order)
+pending_invoices = fetch_pending_invoices(customer_id)
+```
+
+### Rule CODE-006: Boolean Naming
+
+Boolean variables and functions use affirmative prefixes:
+
+```python
+# Variables: is_, has_, can_, should_, was_, will_
+is_active = True
+has_permission = user.check_permission("admin")
+can_edit = document.is_editable_by(user)
+should_notify = preferences.notifications_enabled
+was_processed = order.status == "processed"
+
+# Functions: Check, validate, or question form
+def is_valid_email(email: str) -> bool: ...
+def has_exceeded_limit(user: User) -> bool: ...
+def can_user_access(user: User, resource: Resource) -> bool: ...
+
+# BAD: Negative or ambiguous names
+not_found = True  # Use: found = False
+disable_feature = True  # Use: feature_enabled = False
+```
+
+## Function Design
+
+### Rule CODE-007: Function Signature Principles
+
+Functions should be predictable and honest:
+
+```python
+# Principle 1: Single Responsibility
+# BAD: Does multiple things
+def process_order(order: Order) -> Order:
+    validate_order(order)
+    calculate_totals(order)
+    save_to_database(order)
+    send_confirmation_email(order)
+    return order
+
+# GOOD: Each function does one thing
+def validate_order(order: Order) -> ValidationResult: ...
+def calculate_order_totals(order: Order) -> OrderTotals: ...
+def save_order(order: Order) -> Order: ...
+def send_order_confirmation(order: Order) -> None: ...
+
+# Principle 2: Command-Query Separation
+# BAD: Modifies and returns
+def get_and_increment_counter() -> int:
+    global counter
+    counter += 1  # Side effect
+    return counter  # Query
+
+# GOOD: Separate commands from queries
+def get_counter() -> int:
+    return counter
+
+def increment_counter() -> None:
+    global counter
+    counter += 1
+
+# Principle 3: Honest Return Types
+# BAD: Returns None on error (ambiguous)
+def find_user(user_id: str) -> User:
+    user = db.query(User).filter_by(id=user_id).first()
+    return user  # Could be None!
+
+# GOOD: Explicit about possibility of absence
+def find_user(user_id: str) -> Optional[User]:
+    return db.query(User).filter_by(id=user_id).first()
+
+# BETTER: Use Result type for operations that can fail
+def find_user(user_id: str) -> Result[User, UserNotFoundError]:
+    user = db.query(User).filter_by(id=user_id).first()
+    if user is None:
+        return Failure(UserNotFoundError(user_id))
+    return Success(user)
+```
+
+### Rule CODE-008: Parameter Guidelines
+
+```python
+# Maximum parameters: 4 (prefer fewer)
+# BAD: Too many parameters
+def create_user(
+    email: str,
+    password: str,
+    first_name: str,
+    last_name: str,
+    phone: str,
+    address: str,
+    city: str,
+    country: str,
+    preferences: dict
+) -> User: ...
+
+# GOOD: Group related parameters
+@dataclass
+class UserRegistration:
+    email: str
+    password: str
+    name: PersonName
+    contact: ContactInfo
+    preferences: UserPreferences
+
+def create_user(registration: UserRegistration) -> User: ...
+
+# Use keyword arguments for optional parameters
+def search_users(
+    query: str,
+    *,  # Force keyword-only after this
+    limit: int = 10,
+    offset: int = 0,
+    include_inactive: bool = False
+) -> List[User]: ...
+```
+
+### Rule CODE-009: Return Value Consistency
+
+```python
+# Always return the same type (or compatible types)
+
+# BAD: Inconsistent returns
+def get_user_name(user_id: str):
+    user = find_user(user_id)
+    if user:
+        return user.name  # Returns string
+    return False  # Returns bool - inconsistent!
+
+# GOOD: Consistent return type
+def get_user_name(user_id: str) -> Optional[str]:
+    user = find_user(user_id)
+    if user:
+        return user.name
+    return None
+
+# For collections, return empty collection instead of None
+# BAD
+def get_user_orders(user_id: str) -> Optional[List[Order]]:
+    orders = db.query(Order).filter_by(user_id=user_id).all()
+    return orders if orders else None
+
+# GOOD
+def get_user_orders(user_id: str) -> List[Order]:
+    return db.query(Order).filter_by(user_id=user_id).all()
+```
+
+## Error Handling
+
+### Rule CODE-010: Exception Strategy
+
+```python
+# Layer-specific exceptions
+class DomainException(Exception):
+    """Base for all domain exceptions."""
+    pass
+
+class InfrastructureException(Exception):
+    """Base for all infrastructure exceptions."""
+    pass
+
+# Specific, meaningful exceptions
+class UserNotFoundError(DomainException):
+    """Raised when a user cannot be found."""
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        super().__init__(f"User not found: {user_id}")
+
+class InsufficientFundsError(DomainException):
+    """Raised when account has insufficient funds."""
+    def __init__(self, available: Decimal, required: Decimal):
+        self.available = available
+        self.required = required
+        super().__init__(
+            f"Insufficient funds: {available} available, {required} required"
+        )
+```
+
+### Rule CODE-011: Exception Handling Patterns
+
+```python
+# Catch specific exceptions, not generic ones
+# BAD
+try:
+    result = process_order(order)
+except Exception as e:
+    logger.error(f"Error: {e}")
+    return None
+
+# GOOD
+try:
+    result = process_order(order)
+except OrderValidationError as e:
+    logger.warning(f"Validation failed: {e}")
+    return ValidationFailure(e.errors)
+except PaymentDeclinedError as e:
+    logger.info(f"Payment declined for order {order.id}")
+    return PaymentFailure(e.reason)
+except Exception as e:
+    # Only catch generic Exception as last resort
+    logger.exception(f"Unexpected error processing order {order.id}")
+    raise  # Re-raise unexpected errors
+
+# Don't silently swallow exceptions
+# BAD
+try:
+    send_email(user.email, message)
+except:
+    pass  # Silent failure - we'll never know it failed
+
+# GOOD
+try:
+    send_email(user.email, message)
+except EmailDeliveryError as e:
+    logger.error(f"Failed to send email to {user.email}: {e}")
+    # Decide: raise, retry, or record for later
+    queue_for_retry(user.email, message)
+```
+
+### Rule CODE-012: Early Returns and Guard Clauses
+
+```python
+# Use guard clauses to reduce nesting
+# BAD: Deep nesting
+def process_payment(order: Order, user: User) -> PaymentResult:
+    if order is not None:
+        if user is not None:
+            if order.total > 0:
+                if user.has_payment_method():
+                    # Actual logic buried deep
+                    return execute_payment(order, user)
+                else:
+                    return PaymentResult.no_payment_method()
+            else:
+                return PaymentResult.invalid_amount()
+        else:
+            return PaymentResult.user_required()
+    else:
+        return PaymentResult.order_required()
+
+# GOOD: Guard clauses with early returns
+def process_payment(order: Order, user: User) -> PaymentResult:
+    if order is None:
+        return PaymentResult.order_required()
+    
+    if user is None:
+        return PaymentResult.user_required()
+    
+    if order.total <= 0:
+        return PaymentResult.invalid_amount()
+    
+    if not user.has_payment_method():
+        return PaymentResult.no_payment_method()
+    
+    # Main logic at the end, not nested
+    return execute_payment(order, user)
+```
+
+## Documentation
+
+### Rule CODE-013: Docstring Requirements
+
+```python
+def calculate_order_total(
+    order: Order,
+    *,
+    include_tax: bool = True,
+    apply_discounts: bool = True
+) -> Money:
+    """
+    Calculate the total amount for an order.
+    
+    Computes the sum of all line items, optionally applying
+    taxes and discounts based on the order's configuration.
+    
+    Args:
+        order: The order to calculate total for. Must have at least
+            one line item.
+        include_tax: Whether to include applicable taxes. Defaults to True.
+        apply_discounts: Whether to apply available discounts. Defaults to True.
+    
+    Returns:
+        The calculated total as a Money object with the order's currency.
+    
+    Raises:
+        EmptyOrderError: If the order has no line items.
+        InvalidCurrencyError: If line items have mixed currencies.
+    
+    Example:
+        >>> order = Order(items=[LineItem(price=100), LineItem(price=50)])
+        >>> total = calculate_order_total(order)
+        >>> total.amount
+        Decimal('150.00')
+    
+    Note:
+        Tax calculation uses the customer's shipping address to determine
+        applicable tax rates. See TaxService for rate determination logic.
+    """
+```
+
+**When to write docstrings**:
+- All public functions and methods
+- All classes
+- All modules
+- Complex private functions
+
+**When docstrings can be minimal**:
+- Obvious getters/setters
+- Simple utility functions with clear names
+- Private methods that are straightforward
+
+### Rule CODE-014: Comment Guidelines
+
+```python
+# Comments explain WHY, not WHAT
+# BAD: Describes what code does (obvious from reading it)
+# Increment counter by 1
+counter += 1
+
+# Loop through users
+for user in users:
+    process(user)
+
+# GOOD: Explains why something is done
+# Counter starts at 1 because legacy API expects 1-indexed pagination
+counter = 1
+
+# Process users in insertion order to maintain deterministic output
+# for compliance audit requirements (see ADR-015)
+for user in users:
+    process(user)
+
+# Use comments for:
+# - Non-obvious business rules
+# - Performance optimizations that aren't intuitive
+# - Workarounds for bugs in dependencies
+# - References to external documentation or requirements
+# - TODO/FIXME with ticket references
+
+# TODO(PROJ-123): Replace with batch API when available
+for item in items:
+    api.process_single(item)
+
+# FIXME(PROJ-456): This is a workaround for a bug in library v2.3
+# Remove after upgrading to v2.4 where it's fixed
+result = library.function(data, _bypass_validation=True)
+```
+
+## Type Annotations
+
+### Rule CODE-015: Type Annotation Requirements
+
+```python
+# All function signatures must have type annotations
+# All class attributes must have type annotations
+# Local variables can omit annotations when type is obvious
+
+from typing import Optional, List, Dict, Union, TypeVar, Generic
+from dataclasses import dataclass
+
+# Function annotations (required)
+def find_user(user_id: str) -> Optional[User]:
+    ...
+
+def get_active_users(
+    limit: int = 100,
+    include_admins: bool = False
+) -> List[User]:
+    ...
+
+# Class attributes (required)
+@dataclass
+class Order:
+    id: str
+    customer_id: str
+    items: List[OrderItem]
+    total: Decimal
+    status: OrderStatus
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+# Generic types
+T = TypeVar('T')
+E = TypeVar('E', bound=Exception)
+
+class Result(Generic[T, E]):
+    """Represents success or failure."""
+    ...
+
+# Complex types - use type aliases
+UserDict = Dict[str, User]
+OrderItems = List[OrderItem]
+PriceMap = Dict[str, Decimal]
+
+def get_prices(product_ids: List[str]) -> PriceMap:
+    ...
+```
+
+## Dependency Management
+
+### Rule CODE-016: Dependency Injection
+
+```python
+# Dependencies should be injected, not created internally
+
+# BAD: Creates its own dependencies
+class OrderService:
+    def __init__(self):
+        self.repository = PostgresOrderRepository()  # Hard-coded
+        self.email_service = SmtpEmailService()  # Hard-coded
+    
+    def create_order(self, data: OrderData) -> Order:
+        order = Order.create(data)
+        self.repository.save(order)
+        self.email_service.send_confirmation(order)
+        return order
+
+# GOOD: Dependencies injected
+class OrderService:
+    def __init__(
+        self,
+        repository: OrderRepository,  # Interface, not implementation
+        email_service: EmailService,  # Interface, not implementation
+    ):
+        self._repository = repository
+        self._email_service = email_service
+    
+    def create_order(self, data: OrderData) -> Order:
+        order = Order.create(data)
+        self._repository.save(order)
+        self._email_service.send_confirmation(order)
+        return order
+
+# Usage with dependency injection container or manual wiring
+order_service = OrderService(
+    repository=PostgresOrderRepository(session),
+    email_service=SmtpEmailService(config)
+)
+```
+
+### Rule CODE-017: Interface Segregation
+
+```python
+# Depend on minimal interfaces
+
+# BAD: Fat interface with many unrelated methods
+class UserRepository:
+    def find_by_id(self, id: str) -> User: ...
+    def find_by_email(self, email: str) -> User: ...
+    def save(self, user: User) -> None: ...
+    def delete(self, id: str) -> None: ...
+    def count_all(self) -> int: ...
+    def find_inactive_for_days(self, days: int) -> List[User]: ...
+    def export_to_csv(self, path: str) -> None: ...  # Why is this here?
+
+# GOOD: Focused interfaces
+class UserReader(Protocol):
+    def find_by_id(self, id: str) -> Optional[User]: ...
+    def find_by_email(self, email: str) -> Optional[User]: ...
+
+class UserWriter(Protocol):
+    def save(self, user: User) -> None: ...
+    def delete(self, id: str) -> None: ...
+
+# Service only depends on what it needs
+class AuthenticationService:
+    def __init__(self, user_reader: UserReader):  # Only needs reading
+        self._users = user_reader
+```
+
+## Code Smells to Avoid
+
+### Rule CODE-018: Prohibited Patterns
+
+```python
+# 1. Magic numbers
+# BAD
+if user.age >= 21:
+    allow_purchase()
+
+# GOOD
+LEGAL_DRINKING_AGE = 21
+if user.age >= LEGAL_DRINKING_AGE:
+    allow_purchase()
+
+# 2. String typing
+# BAD
+def process_order(order: Order, action: str):
+    if action == "ship":
+        ship_order(order)
+    elif action == "cancel":
+        cancel_order(order)
+
+# GOOD
+class OrderAction(Enum):
+    SHIP = "ship"
+    CANCEL = "cancel"
+
+def process_order(order: Order, action: OrderAction):
+    if action == OrderAction.SHIP:
+        ship_order(order)
+    elif action == OrderAction.CANCEL:
+        cancel_order(order)
+
+# 3. Boolean parameters that change behavior
+# BAD
+def get_users(include_inactive: bool = False) -> List[User]:
+    if include_inactive:
+        return get_all_users()
+    return get_active_users()
+
+# GOOD: Separate methods
+def get_active_users() -> List[User]: ...
+def get_all_users() -> List[User]: ...
+
+# 4. None as default for mutable arguments
+# BAD
+def add_items(items: List[str] = []):  # Mutable default!
+    items.append("new")
+    return items
+
+# GOOD
+def add_items(items: Optional[List[str]] = None) -> List[str]:
+    if items is None:
+        items = []
+    items.append("new")
+    return items
+
+# 5. Excessive inheritance
+# BAD: Deep inheritance hierarchy
+class Animal: ...
+class Mammal(Animal): ...
+class Carnivore(Mammal): ...
+class Feline(Carnivore): ...
+class DomesticCat(Feline): ...
+
+# GOOD: Composition over inheritance
+@dataclass
+class Animal:
+    diet: Diet
+    locomotion: Locomotion
+    habitat: Habitat
+```
+
+## Performance Considerations
+
+### Rule CODE-019: Performance Patterns
+
+```python
+# 1. Avoid N+1 queries
+# BAD
+users = get_all_users()
+for user in users:
+    orders = get_orders_for_user(user.id)  # N queries!
+
+# GOOD
+users_with_orders = get_users_with_orders()  # Single query with join
+
+# 2. Use generators for large datasets
+# BAD
+def get_all_records() -> List[Record]:
+    return db.query(Record).all()  # Loads everything into memory
+
+# GOOD
+def get_all_records() -> Iterator[Record]:
+    for record in db.query(Record).yield_per(100):
+        yield record
+
+# 3. Cache expensive computations
+from functools import lru_cache
+
+@lru_cache(maxsize=128)
+def calculate_complex_metric(user_id: str) -> Metric:
+    # Expensive computation cached
+    ...
+
+# 4. Use appropriate data structures
+# BAD: O(n) lookup
+user_list = [user1, user2, user3, ...]
+user = next((u for u in user_list if u.id == target_id), None)
+
+# GOOD: O(1) lookup
+user_dict = {u.id: u for u in users}
+user = user_dict.get(target_id)
+```
